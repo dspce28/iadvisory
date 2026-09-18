@@ -1,0 +1,38 @@
+1:"$Sreact.fragment"
+2:I[97367,["/_next/static/chunks/3fntmmi971322.js"],"OutletBoundary"]
+3:"$Sreact.suspense"
+7:I[97367,["/_next/static/chunks/3fntmmi971322.js"],"ViewportBoundary"]
+8:I[97367,["/_next/static/chunks/3fntmmi971322.js"],"MetadataBoundary"]
+6:X
+1e:X
+1e:C
+0:{"buildId":"Qxeo270gRBH3ZY3To2P4A","data":[{"rsc":["$","$1","c",{"children":[[["$","div",null,{"className":"phero","children":["$","div",null,{"className":"wrap","children":[["$","h1",null,{"children":["Privacy ",["$","span",null,{"style":{"color":"var(--red)"},"children":"Policy"}]]}],["$","p",null,{"children":["Last updated: ","September 2026"]}]]}]}],["$","section",null,{"className":"sec","children":["$","div",null,{"className":"wrap prose","children":[["$","p",null,{"children":["iAdvisory Financial Services Pvt. Ltd."," is committed to protecting your privacy. This policy explains what we collect, why, and what you can ask us to do about it."]}],["$","h2",null,{"children":"Information we collect"}],["$","p",null,{"children":"When you use our advisory services we collect your name, contact details, city, employment and income information, and the loan amount you are seeking. Where a lender requires it, we also handle identity and financial documents such as PAN, Aadhaar, salary slips and bank statements."}],["$","h2",null,{"children":"What our website collects"}],["$","p",null,{"children":"Our enquiry and application forms deliberately do not ask for PAN, Aadhaar or date of birth. Those are collected by your advisor over a channel we control, not through this website. Details you submit through our forms are sent to our team over WhatsApp and recorded in our lead system so your enquiry is not lost."}],["$","h2",null,{"children":"How we use your information"}],["$","p",null,{"children":"To assess your eligibility, give you tailored advice, present your application to partner banks and NBFCs with your consent, and to improve our services."}],["$","h2",null,{"children":"Data sharing"}],["$","p",null,{"children":"We share your information with partner lenders only to process an application you have asked us to pursue, and with authorities where Indian law requires it. We do not sell your data."}],["$","h2",null,{"children":"Analytics"}],["$","p",null,{"children":"We use privacy-respecting web analytics to understand which pages are useful. This records page views and aggregate behaviour. It is not used to identify you personally."}],["$","h2",null,{"children":"Data security"}],["$","p",null,{"children":"Our website is served over HTTPS with TLS encryption. Internally we apply role-based access controls and share documents with lenders only through their own secure channels."}],["$","h2",null,{"children":"Your rights"}],["$","p",null,{"children":["You may ask us to show you what we hold, correct it, or delete it. Write to ",["$","a",null,{"href":"mailto:info@iadvisory.in","children":"info@iadvisory.in"}]," and we will respond within a reasonable period."]}],["$","h2",null,{"children":"Contact"}],["$","p",null,{"children":["For any privacy question: ",["$","a",null,{"href":"mailto:info@iadvisory.in","children":"info@iadvisory.in"}]," or ",["$","a",null,{"href":"tel:+919601050241","children":"+91 96010 50241"}],"."]}]]}]}]],null,["$","$L2",null,{"children":["$","$3",null,{"name":"Next.MetadataOutlet","children":"$@4"}]}]]}],"isPartial":"$@5","staleTime":"$6","varyParams":null},{"rsc":["$","$1","h",{"children":[null,["$","$L7",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$L8",null,{"children":["$","$3",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Privacy Policy | iAdvisory"}],["$","meta","1",{"name":"description","content":"How iAdvisory collects, uses and protects your personal information."}],["$","meta","2",{"name":"robots","content":"index, follow"}],["$","link","3",{"rel":"canonical","href":"https://iadvisory.in/privacy-policy/"}],["$","meta","4",{"property":"og:title","content":"iAdvisory — Smart Loan Solutions"}],["$","meta","5",{"property":"og:description","content":"iAdvisory is a loan advisory service in Ahmedabad. Compare personal, home, business and car loan offers across 30+ partner banks and NBFCs — free advice, no upfront fees."}],"$L9","$La","$Lb","$Lc","$Ld","$Le","$Lf","$L10","$L11","$L12","$L13","$L14","$L15","$L16","$L17","$L18","$L19"]}]}]}],"$L1a"]}],"isPartial":"$@1b","staleTime":"$6","varyParams":null},{"rsc":"$L1c","isPartial":"$@1d","staleTime":"$6","varyParams":"$1e"}],"isUpgradeableISRFallback":false,"a":"$@1f","rootVaryParams":null,"needsRuntimeRequest":"$@20"}
+21:I[39756,["/_next/static/chunks/3fntmmi971322.js"],"default"]
+22:I[37457,["/_next/static/chunks/3fntmmi971322.js"],"default"]
+4:null
+9:["$","meta","6",{"property":"og:url","content":"https://iadvisory.in/"}]
+a:["$","meta","7",{"property":"og:site_name","content":"iAdvisory"}]
+b:["$","meta","8",{"property":"og:locale","content":"en_IN"}]
+c:["$","meta","9",{"property":"og:image","content":"https://iadvisory.in/opengraph-image?1f678a574924698d"}]
+d:["$","meta","10",{"property":"og:image:type","content":"image/png"}]
+e:["$","meta","11",{"property":"og:image:width","content":"1200"}]
+f:["$","meta","12",{"property":"og:image:height","content":"630"}]
+10:["$","meta","13",{"property":"og:image:alt","content":"iAdvisory — Smart Loan Solutions"}]
+11:["$","meta","14",{"property":"og:type","content":"website"}]
+12:["$","meta","15",{"name":"twitter:card","content":"summary_large_image"}]
+13:["$","meta","16",{"name":"twitter:title","content":"iAdvisory — Smart Loan Solutions"}]
+14:["$","meta","17",{"name":"twitter:description","content":"iAdvisory is a loan advisory service in Ahmedabad. Compare personal, home, business and car loan offers across 30+ partner banks and NBFCs — free advice, no upfront fees."}]
+15:["$","meta","18",{"name":"twitter:image","content":"https://iadvisory.in/opengraph-image?1f678a574924698d"}]
+16:["$","meta","19",{"name":"twitter:image:alt","content":"iAdvisory — Smart Loan Solutions"}]
+17:["$","meta","20",{"name":"twitter:image:type","content":"image/png"}]
+18:["$","meta","21",{"name":"twitter:image:width","content":"1200"}]
+19:["$","meta","22",{"name":"twitter:image:height","content":"630"}]
+1a:["$","meta",null,{"name":"next-size-adjust","content":""}]
+1c:["$","$1","c",{"children":[null,["$","$L21",null,{"parallelRouterKey":"children","template":["$","$L22",null,{}]}]]}]
+20:true
+6:300
+6:C
+1f:0
+1b:"$undefined"
+1d:"$undefined"
+5:"$undefined"

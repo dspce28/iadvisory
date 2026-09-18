@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+
+Host: https://iadvisory.in
+Sitemap: https://iadvisory.in/sitemap.xml
