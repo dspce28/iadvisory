@@ -4,3 +4,7 @@ out/
 next-env.d.ts
 *.tsbuildinfo
 .env*.local
+
+# Staged into public/ by scripts/prebuild.mjs for the static target only.
+# The source of truth is config/htaccess.
+public/.htaccess
