@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/prebuild.mjs && next build",
     "start": "npx serve out",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build:static": "STATIC_EXPORT=true node scripts/prebuild.mjs && STATIC_EXPORT=true next build"
   },
   "dependencies": {
     "next": "^16.3.5",

@@ -4,10 +4,10 @@ name: Build and publish static site
 # verbatim. It cannot run `next build`, so CI builds the static export and
 # pushes the result to the `deploy` branch. Point Hostinger's Git
 # deployment at `deploy`, not `main`.
+# The site is hosted on Vercel, which builds from the repository itself, so
+# this workflow no longer runs on every push. It is kept as the Hostinger
+# fallback: run it by hand to refresh the `deploy` branch with a static export.
 on:
-  push:
-    branches: [main]
-    paths: ['site/**', '.github/workflows/deploy.yml']
   workflow_dispatch:
 
 permissions:
@@ -41,7 +41,7 @@ jobs:
           GSC_VERIFICATION: ${{ vars.GSC_VERIFICATION }}
           # This workflow targets Hostinger shared hosting, which cannot run Node.
           STATIC_EXPORT: 'true'
-        run: npm run build
+        run: npm run build:static
 
       - name: Fail if the export looks wrong
         working-directory: site
