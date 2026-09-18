@@ -39,6 +39,8 @@ jobs:
           NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
           NEXT_PUBLIC_LEAD_WEBHOOK: ${{ secrets.LEAD_WEBHOOK }}
           GSC_VERIFICATION: ${{ vars.GSC_VERIFICATION }}
+          # This workflow targets Hostinger shared hosting, which cannot run Node.
+          STATIC_EXPORT: 'true'
         run: npm run build
 
       - name: Fail if the export looks wrong

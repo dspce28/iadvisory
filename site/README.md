@@ -12,6 +12,24 @@ npm run dev     # http://localhost:3000
 npm run build   # writes ./out — plain HTML, CSS, JS and images
 ```
 
+## Two deploy targets, one codebase
+
+Nothing in `app/` or `components/` changes between them.
+
+```bash
+npm run build                   # full Next.js — SSR, Route Handlers,
+                                # Server Actions, ISR, image optimization.
+                                # Needs a Node host (Vercel).
+
+STATIC_EXPORT=true npm run build  # pre-built bundle in ./out for Hostinger
+                                  # shared hosting. No server features.
+```
+
+Hostinger cannot run Node, which is the only reason the static target exists.
+On Vercel, drop `STATIC_EXPORT` and the full framework is available — at which
+point the forms can post through a Server Action instead of handing off to
+WhatsApp, and `next/image` starts optimising.
+
 ## Deployment
 
 `main` holds the source. GitHub Actions builds it and force-pushes the contents
