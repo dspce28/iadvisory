@@ -92,6 +92,30 @@ export const loanProducts: LoanProduct[] = [
         q: 'Do you charge for home loan advice?',
         a: 'No. Our advisory is free and we do not take an upfront fee from you. Any processing or legal fee charged by the lender is disclosed to you before your application is submitted.',
       },
+          {
+        q: 'What is the minimum down payment on a home loan?',
+        a: 'Lenders fund 75–90% of the property value depending on the loan size, so you need 10–25% yourself. Crucially, that percentage is of the lender\'s valuation, not the price you agreed. Stamp duty and registration — roughly 5–7% in Gujarat — are also excluded, so budget for them separately rather than discovering them at the end.',
+      },
+      {
+        q: 'Should I choose a fixed or floating interest rate?',
+        a: 'Most Indian home loans are floating, linked to an external benchmark such as the repo rate. Fixed rates are usually priced 1–2 percentage points higher for the certainty they give, and many so-called fixed loans reset after two or three years anyway. Over a 20-year tenure, floating has historically cost less; fixed makes sense mainly if a rate rise would genuinely break your budget.',
+      },
+      {
+        q: 'Does a joint home loan help?',
+        a: 'Usually yes. A co-applicant\'s income raises eligibility, and if both are co-owners both can claim the tax deductions separately. Adding a woman as the primary applicant also attracts a concessional rate from many lenders. The catch is real: a co-applicant is equally liable, and a default damages both credit records.',
+      },
+      {
+        q: 'How much tax can I actually save?',
+        a: 'Under the old regime, Section 24(b) allows up to ₹2 lakh a year on interest for a self-occupied property and Section 80C up to ₹1.5 lakh on principal, though 80C is shared with your other investments. Under the new regime these deductions are largely unavailable for a self-occupied home. Never buy property for the tax break alone — it is a rebate on money you have already spent.',
+      },
+      {
+        q: 'What happens if I prepay part of the loan?',
+        a: 'On a floating-rate home loan taken by an individual, lenders cannot charge a prepayment penalty. Prepaying early is powerful, because the early years are almost entirely interest — a single prepayment in year three saves far more than the same amount in year twelve. Ask for the tenure to be reduced rather than the EMI, as that is where the saving is.',
+      },
+      {
+        q: 'Can I get a home loan if I am self-employed?',
+        a: 'Yes, though the assessment differs. Lenders look at two to three years of ITR, business vintage and banking conduct rather than salary slips, and they tend to lend against declared profit. Under-declaring income to save tax directly reduces how much you can borrow — a trade-off worth planning two years before you intend to buy.',
+      },
     ],
   },
   {
@@ -138,6 +162,30 @@ export const loanProducts: LoanProduct[] = [
       {
         q: 'Can I use a personal loan to clear credit card debt?',
         a: 'Often it is the single best use of one. Credit cards commonly charge 36–42% annualised, so moving that balance to a personal loan at a much lower rate reduces both your interest cost and your monthly outgo.',
+      },
+          {
+        q: 'How fast can a personal loan actually be disbursed?',
+        a: 'For a salaried applicant with a clean profile and a pre-approved offer, same-day or next-day disbursal is genuinely common. For everyone else, three to seven working days is realistic once documents are complete. Any timeline promised before your documents have been seen is a sales figure, not a commitment.',
+      },
+      {
+        q: 'What is a fair processing fee?',
+        a: 'Typically 1–3% of the loan amount plus GST, deducted from the disbursed sum — so on a ₹5 lakh loan you may receive ₹4.85 lakh while repaying interest on ₹5 lakh. Compare offers on the total cost, not the headline rate, and ask for the fee in writing before signing.',
+      },
+      {
+        q: 'Can I get a personal loan with a low credit score?',
+        a: 'Below roughly 650 the mainstream lenders usually decline, and what remains is priced at 20% and above. In most cases the better move is to spend three to six months repairing the score rather than locking into expensive debt — unless the need is genuinely urgent, in which case a secured option is normally cheaper than a high-rate personal loan.',
+      },
+      {
+        q: 'Is there a penalty for closing the loan early?',
+        a: 'Commonly 2–5% of the outstanding principal, and many lenders bar foreclosure for the first 6–12 months. This varies more between lenders than the interest rate does, so if you expect a bonus or maturity that would let you close early, weigh the foreclosure terms as heavily as the rate.',
+      },
+      {
+        q: 'Does a personal loan affect my home loan eligibility later?',
+        a: 'Yes, directly. An existing EMI reduces the income a lender counts as available, and home loan eligibility is largely a function of that figure. Taking a large personal loan within a year or two of a planned home purchase can cut your housing eligibility by several lakh.',
+      },
+      {
+        q: 'Should I take a top-up instead of a new loan?',
+        a: 'If you already hold a home loan, a top-up is almost always cheaper than a fresh personal loan, because it is secured against the property. The trade-off is that you stretch a short-term need across a long tenure, so a ₹3 lakh need repaid over 15 years can cost more in total interest despite the lower rate. Match the tenure to the purpose.',
       },
     ],
   },
@@ -186,6 +234,30 @@ export const loanProducts: LoanProduct[] = [
         q: 'How is a term loan different from an overdraft?',
         a: 'A term loan gives a lump sum repaid on a fixed EMI schedule, which suits one-off purchases like equipment. An overdraft is a limit you draw on as needed and pay interest only on what you use, which suits fluctuating working capital.',
       },
+          {
+        q: 'Why was my business loan rejected despite good profit?',
+        a: 'Most often, banking conduct. Credit officers read twelve months of statements for average balance, cheque returns and whether credits are consistent or lumpy. A profitable business that runs its account near zero, or bounces the occasional cheque, reads as higher risk than the ITR suggests.',
+      },
+      {
+        q: 'Is a secured or unsecured business loan better?',
+        a: 'Secured borrowing against property is materially cheaper and allows longer tenure and larger amounts. Unsecured is faster and puts no asset at risk. If the need is working capital that turns over quickly, unsecured often justifies its cost; if it is a long-term investment such as machinery or premises, the secured rate usually wins.',
+      },
+      {
+        q: 'What is a CGTMSE-backed loan?',
+        a: 'The Credit Guarantee Fund Trust for Micro and Small Enterprises guarantees part of the lender\'s exposure, letting banks lend to small businesses without collateral. It carries a guarantee fee and lenders apply their own eligibility on top, but for a young business without property it is frequently the only route to reasonably priced credit.',
+      },
+      {
+        q: 'How much can my business borrow?',
+        a: 'Unsecured lending commonly lands between 1.5 and 3 times monthly turnover, or is sized against declared profit, depending on the lender\'s model. Secured lending is governed by the property valuation instead. Both are then capped by whether your existing obligations leave room to service the new EMI.',
+      },
+      {
+        q: 'Do I need GST registration?',
+        a: 'Most lenders ask for GST returns as income evidence, and for a business above the registration threshold their absence is a serious obstacle. Some lenders assess non-GST businesses on banking conduct alone, but the pricing is worse and the amounts smaller.',
+      },
+      {
+        q: 'Should I choose an overdraft or a term loan?',
+        a: 'An overdraft charges interest only on what you draw, which suits fluctuating working capital and seasonal businesses. A term loan gives a lump sum on a fixed schedule, which suits a defined purchase. Businesses often take a term loan for convenience and then pay interest on idle funds — worth checking before you decide.',
+      },
     ],
   },
   {
@@ -232,6 +304,30 @@ export const loanProducts: LoanProduct[] = [
       {
         q: 'Should I choose a longer tenure to reduce the EMI?',
         a: 'It lowers the monthly outgo but raises total interest, and a car is a depreciating asset. We generally suggest the shortest tenure your budget comfortably supports.',
+      },
+          {
+        q: 'Should I take the longest tenure available?',
+        a: 'Rarely. A car depreciates while the loan amortises, so a seven-year tenure can leave you owing more than the vehicle is worth for much of the term. If you might sell or upgrade within four years, that negative equity becomes a real cash problem. Take the shortest tenure your budget genuinely supports.',
+      },
+      {
+        q: 'Is a used car loan worth it?',
+        a: 'It can be, but expect a higher rate, a shorter tenure and funding capped at 70–85% of the lender\'s valuation rather than the asking price. Lenders also restrict vehicle age, commonly declining cars that would be more than 8–10 years old at loan maturity.',
+      },
+      {
+        q: 'What does \'on-road price\' include?',
+        a: 'Ex-showroom price plus road tax, registration, insurance and any dealer handling charge. Finance is often quoted against ex-showroom while the amount you actually need is the on-road figure, which is why buyers are surprised by a shortfall at delivery. Always compare the sanction against the on-road price.',
+      },
+      {
+        q: 'Can I transfer a car loan to another person?',
+        a: 'Technically yes, but it requires the lender\'s approval, a fresh credit assessment of the buyer and a transfer of the RC and insurance. Many lenders simply decline. In practice most private sales are settled by closing the loan and releasing the hypothecation first.',
+      },
+      {
+        q: 'Does the dealer\'s zero-interest offer really cost nothing?',
+        a: 'Almost never. The cost is usually recovered through a reduced discount, an inflated processing fee, or a bundled insurance and accessory package. Ask for the cash price without finance and compare the two totals — the difference is the real interest.',
+      },
+      {
+        q: 'How do I remove the hypothecation after repayment?',
+        a: 'Once the loan closes, collect the no-objection certificate and Form 35 from the lender, then apply to the RTO to remove the hypothecation from the RC. Skipping this is common and causes real delays when you eventually sell, because the RC still shows the lender as a lienholder.',
       },
     ],
   },
@@ -280,6 +376,30 @@ export const loanProducts: LoanProduct[] = [
         q: 'Can I let out the property during the loan?',
         a: 'Generally yes for residential and commercial property, though the lender’s terms govern and rental income may even strengthen your eligibility. Confirm the specific condition before you sign.',
       },
+          {
+        q: 'How is my property valued?',
+        a: 'By a valuer the lender appoints, not by you or your broker. The figure is typically conservative and considers location, age, construction quality, title clarity and comparable transactions. It is normal for it to come in below your expectation, and the funding percentage applies to that number.',
+      },
+      {
+        q: 'What can I use the money for?',
+        a: 'Almost any legitimate purpose — business expansion, a medical need, education, or consolidating costlier debt. Lenders generally exclude speculative use such as buying securities. You will be asked to state the purpose, and it should match what the funds are actually used for.',
+      },
+      {
+        q: 'Can I raise a loan against a property that is let out?',
+        a: 'Yes, and the rental income may strengthen your eligibility. Some lenders offer lease rental discounting specifically for commercial property with a registered lease, which prices against the rental stream rather than your personal income.',
+      },
+      {
+        q: 'What if the property is jointly owned?',
+        a: 'Every co-owner must join the application as a co-applicant and sign. There is no way around it — the lender needs a charge over the whole property. This is the most common reason a family-held property stalls at the documentation stage.',
+      },
+      {
+        q: 'How long does it take?',
+        a: 'Longer than unsecured borrowing: typically two to four weeks, because legal and technical verification of the property sits in the middle. Incomplete chain documents are the usual cause of delay, so assembling them before applying saves real time.',
+      },
+      {
+        q: 'What is the biggest risk?',
+        a: 'That you are securing a short-term need against the roof over your head. Default means the lender can enforce against the property under the SARFAESI Act. Borrow against property only where the repayment is supported by dependable cash flow, not by an outcome you are hoping for.',
+      },
     ],
   },
   {
@@ -327,6 +447,30 @@ export const loanProducts: LoanProduct[] = [
         q: 'Does the interest qualify for tax relief?',
         a: 'Section 80E allows a deduction on the interest paid on an education loan for up to 8 years, with no upper limit on the amount. Confirm your own position with a tax adviser.',
       },
+          {
+        q: 'Does an education loan cover living costs?',
+        a: 'Usually yes for studying abroad — tuition, living expenses, travel, insurance, a laptop and examination fees are commonly included. For domestic courses the coverage is narrower and often restricted to tuition plus limited incidentals. Check the specific inclusions, because the gap is what parents end up funding.',
+      },
+      {
+        q: 'Who can be a co-applicant?',
+        a: 'Normally a parent, guardian or spouse. Their income and credit record largely determine the sanction, since the student typically has no income yet. A co-applicant with a weak credit history can sink an otherwise strong application, so it is worth checking their report early.',
+      },
+      {
+        q: 'Should I pay interest during the course?',
+        a: 'If you can, yes. Interest accrues through the moratorium and is capitalised, so you end up paying interest on interest. Servicing even simple interest while studying reduces the final outstanding materially, and many lenders offer a small rate concession for doing so.',
+      },
+      {
+        q: 'Is a government scheme better than a private lender?',
+        a: 'Public sector banks under the IBA model scheme usually price lower and offer interest subsidy schemes for eligible income brackets, but are slower and stricter on collateral. Private lenders and NBFCs move faster and lend larger amounts for overseas study, at a higher rate. For most families the answer depends on the deadline as much as the cost.',
+      },
+      {
+        q: 'What if I do not get a job after the course?',
+        a: 'Speak to the lender before the first EMI is due, not after. Extensions of the moratorium and restructuring are possible and are handled far more sympathetically before a default than after one. A missed EMI damages both your credit record and your co-applicant\'s.',
+      },
+      {
+        q: 'Is collateral required for studying abroad?',
+        a: 'Above roughly ₹7.5 lakh most lenders ask for it, typically property or a fixed deposit. Some lenders waive collateral for admissions to a defined list of premier institutions, which is one of the few cases where the choice of university directly changes your financing terms.',
+      },
     ],
   },
 ];
@@ -335,8 +479,9 @@ export const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/about/', label: 'About' },
   { href: '/loans/', label: 'Loans' },
-  { href: '/emi-calculator/', label: 'EMI Calculator' },
+  { href: '/compare/', label: 'Compare' },
+  { href: '/calculators/', label: 'Calculators' },
   { href: '/cibil-score/', label: 'CIBIL' },
-  { href: '/blog/', label: 'Blog' },
+  { href: '/blog/', label: 'Guides' },
   { href: '/contact/', label: 'Contact' },
 ];

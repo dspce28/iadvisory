@@ -54,7 +54,8 @@ export default function Footer() {
             <h4>Quick Links</h4>
             <ul>
               <li><Link prefetch={false} href="/about/">About Us</Link></li>
-              <li><Link prefetch={false} href="/emi-calculator/">EMI Calculator</Link></li>
+              <li><Link prefetch={false} href="/calculators/">Loan Calculators</Link></li>
+              <li><Link prefetch={false} href="/compare/">Loan Comparisons</Link></li>
               <li><Link prefetch={false} href="/cibil-score/">Check CIBIL Score</Link></li>
               <li><Link prefetch={false} href="/blog/">Blog &amp; Insights</Link></li>
               <li><Link prefetch={false} href="/privacy-policy/">Privacy Policy</Link></li>

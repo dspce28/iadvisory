@@ -88,3 +88,28 @@ a second or two.
 
 Both forms already fire a `generate_lead` event, so enquiries show up as
 conversions once you mark that event as one in GA.
+
+## Search Console
+
+Verification is opt-in and loads no script.
+
+1. Add the property at [search.google.com/search-console](https://search.google.com/search-console).
+   Prefer the **Domain** property and verify by DNS TXT record at your registrar —
+   that needs no code change at all and covers every subdomain.
+2. If you use the **URL prefix** method instead, choose the HTML tag option,
+   copy the `content` value, and add it as a GitHub repository **variable**
+   named `GSC_VERIFICATION`. Re-run the deploy workflow.
+3. Submit `https://iadvisory.in/sitemap.xml` under **Sitemaps**.
+
+## Content map
+
+| Section | Route | Source |
+|---|---|---|
+| Loan products (6) | `/loans/<slug>/` | `lib/site.ts` |
+| Comparisons (4) | `/compare/<slug>/` | `lib/comparisons.ts` |
+| Calculators (4) | `/emi-calculator/`, `/calculators/<tool>/` | `components/*Calculator.tsx` |
+| Guides (6) | `/blog/<slug>/` | `lib/posts.ts` |
+
+Adding a loan product, comparison or article means adding one object to the
+matching file. Routes, sitemap entries, share images, breadcrumbs and FAQ
+schema are all generated from it — there is no page to write by hand.

@@ -42,6 +42,12 @@ export const metadata: Metadata = {
   },
   twitter: { card: 'summary_large_image' },
   robots: { index: true, follow: true },
+  // Set GSC_VERIFICATION to the code Google Search Console gives you and it
+  // renders the meta tag. Verification only; it loads no script and collects
+  // nothing. DNS verification works too and needs no code at all.
+  ...(process.env.GSC_VERIFICATION
+    ? { verification: { google: process.env.GSC_VERIFICATION } }
+    : {}),
 };
 
 // LocalBusiness markup is what puts a service business into Google's local results.
