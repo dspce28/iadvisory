@@ -15,9 +15,9 @@
 :root{
   --navy:#0A1628; --navy2:#142238; --navy3:#1E3250;
   --red:#C41E3A;  --red2:#9E1830;  --red-a:rgba(196,30,58,.12);
-  --gold:#C8A96E; --gold2:#A68850; --gold-a:rgba(200,169,110,.15);
+  --gold:#C8A96E; --gold2:#8A6C36; --gold-ink:#9C7A33; --gold-a:rgba(200,169,110,.15);
   --cream:#FAF8F5; --cream2:#F2EFE9; --cream3:#E8E4DC;
-  --txt:#0E0E0E;  --txt2:#3D3D4A;  --txt3:#7A7A88;
+  --txt:#0E0E0E;  --txt2:#3D3D4A;  --txt3:#5E5E6C;
   --white:#FFFFFF;
   --brd:rgba(14,14,14,.09); --brd-r:rgba(196,30,58,.22); --brd-g:rgba(200,169,110,.28);
   --sh:0 2px 20px rgba(14,14,14,.07); --sh2:0 8px 40px rgba(14,14,14,.12);
@@ -70,7 +70,7 @@ body.js-ready .r:not(.show){opacity:0}
   -webkit-backdrop-filter:blur(24px);
   box-shadow:var(--sh);
 }
-.logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+.logo{display:flex;align-items:center;gap:1px;cursor:pointer}
 .logo img{height:46px;width:auto}
 .logo-name{font-family:'Cormorant',serif;font-weight:700;font-size:1.55rem;
   letter-spacing:-.01em;line-height:1}
@@ -164,7 +164,7 @@ h1.hero-h{
 h1.hero-h em{font-style:italic;color:var(--red)}
 h1.hero-h .gld{
   font-style:italic;
-  background:linear-gradient(135deg,var(--gold) 0%,#E8C87A 50%,var(--gold2) 100%);
+  background:linear-gradient(135deg,var(--gold-ink) 0%,#B08D45 50%,#7E6230 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 .hero-sub{font-size:1.08rem;color:var(--txt2);line-height:1.8;
@@ -179,7 +179,9 @@ h1.hero-h .gld{
   letter-spacing:.07em;font-weight:600;margin-top:4px}
 
 /* Hero right - floating cards */
-.hero-cards{position:relative;height:500px;display:flex;justify-content:center;align-items:center}
+.hero-illus{margin-top:.5rem;text-align:center;font-size:.7rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--txt3);opacity:.8}
+.hero-cards{position:relative;height:540px;display:flex;justify-content:center;align-items:center}
 .hc{
   position:absolute;
   background:#fff;border-radius:var(--r);padding:1.4rem 1.6rem;
@@ -188,8 +190,8 @@ h1.hero-h .gld{
   animation:fl 6s ease-in-out infinite;
 }
 .hc1{top:20px;left:0;right:60px;animation-delay:0s}
-.hc2{top:160px;right:0;left:60px;animation-delay:2.2s;border-color:var(--brd-r)}
-.hc3{bottom:20px;left:20px;right:20px;animation-delay:4.4s}
+.hc2{top:196px;right:0;left:60px;animation-delay:2.2s;border-color:var(--brd-r)}
+.hc3{bottom:45px;left:20px;right:20px;animation-delay:4.4s}
 @keyframes fl{0%,100%{transform:translateY(0px)}50%{transform:translateY(-14px)}}
 .hc-row{display:flex;align-items:center;gap:.85rem}
 .hc-ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;
@@ -204,7 +206,7 @@ h1.hero-h .gld{
   display:inline-flex;align-items:center;gap:4px;
   background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.28);
   padding:.22rem .65rem;border-radius:100px;font-size:.68rem;font-weight:700;
-  color:#059669;margin-top:8px;
+  color:#047857;margin-top:8px;
 }
 .hc-prog{margin-top:.75rem}
 .hc-prog-bar{height:5px;background:var(--cream2);border-radius:3px;overflow:hidden}
@@ -365,7 +367,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
   opacity:.06;line-height:1;pointer-events:none;
 }
 .tcard:hover{transform:translateY(-6px);box-shadow:var(--sh2);border-color:var(--brd-r)}
-.tst{color:#F59E0B;font-size:.9rem;letter-spacing:3px;margin-bottom:1.1rem}
+.tst{color:#B45309;font-size:.9rem;letter-spacing:3px;margin-bottom:1.1rem}
 .tt{font-size:.9rem;color:var(--txt2);line-height:1.8;margin-bottom:1.75rem;font-style:italic}
 .ta{display:flex;align-items:center;gap:.85rem}
 .tav{
@@ -403,7 +405,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
   font-weight:800;font-size:.9rem;color:var(--txt3);transition:all var(--tr)}
 .step.on .sdot{background:var(--red);border-color:var(--red);color:#fff;
   box-shadow:0 0 0 5px rgba(196,30,58,.15)}
-.step.done .sdot{background:#059669;border-color:#059669;color:#fff}
+.step.done .sdot{background:#047857;border-color:#047857;color:#fff}
 .slbl{font-size:.67rem;color:var(--txt3);letter-spacing:.04em;text-transform:uppercase;
   font-weight:600;transition:color var(--tr);text-align:center}
 .step.on .slbl{color:var(--red)}
@@ -444,7 +446,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
   align-items:start;margin-top:3.5rem}
 .sec-badge{display:inline-flex;align-items:center;gap:8px;
   background:rgba(5,150,105,.1);border:1px solid rgba(5,150,105,.28);
-  padding:.42rem 1rem;border-radius:100px;font-size:.78rem;color:#059669;
+  padding:.42rem 1rem;border-radius:100px;font-size:.78rem;color:#047857;
   font-weight:700;margin-bottom:1.75rem}
 .cibil-imgs{display:flex;flex-direction:column;gap:1.25rem}
 .cibil-imgs img{border-radius:var(--r);box-shadow:var(--sh2)}
@@ -584,7 +586,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
 .success-msg{color:var(--txt2);margin-bottom:2rem;font-size:1rem;line-height:1.7}
 .success-box{background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.25);
   border-radius:var(--rm);padding:1.5rem;margin-bottom:2rem}
-.success-ref{font-weight:700;color:#059669;margin-bottom:.35rem;font-size:1rem}
+.success-ref{font-weight:700;color:#047857;margin-bottom:.35rem;font-size:1rem}
 .success-note{font-size:.875rem;color:var(--txt2)}
 
 /* ═══════════════════════════════════════════════════
@@ -663,8 +665,8 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
      HEADER
 ═══════════════════════════════════════════════ -->
 <header id="hdr">
-  <div class="logo" onclick="pg('home')">
-    <img src="assets/img-1329a877e0.webp" alt="iAdvisory" width="220" height="220" decoding="async">
+  <div class="logo" onclick="pg('home')" role="link" tabindex="0" aria-label="iAdvisory — home">
+    <img src="assets/img-1329a877e0.webp" alt="" width="220" height="220" decoding="async">
     <div class="logo-name"><span class="la">Advisory</span></div>
   </div>
   <nav id="nav">
@@ -716,7 +718,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
             <div class="hc-val">₹45,00,000</div>
           </div>
         </div>
-        <div class="hc-badge">✓ Disbursed in 48 hours</div>
+        <div class="hc-badge">✓ Disbursed</div>
         <div class="hc-prog">
           <div class="hc-prog-bar"><div class="hc-prog-fill"></div></div>
           <div class="hc-prog-lbl"><span>Application</span><span>Disbursed</span></div>
@@ -746,6 +748,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
         <div style="font-size:.68rem;color:var(--txt3);margin-top:.38rem">Excellent credit profile — eligible for all loans</div>
       </div>
     </div>
+        <div class="hero-illus">Illustrative examples</div>
   </div>
 </section>
 
@@ -1095,9 +1098,9 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
         <img src="assets/img-84b571140d.webp" alt="Credit Approved" width="400" height="400" decoding="async" loading="lazy">
         <div class="score-guide">
           <div style="font-family:'Cormorant',serif;font-weight:700;font-size:1.1rem;color:var(--navy);margin-bottom:1rem">Score Range Guide</div>
-          <div class="sg-row"><div class="sg-dot" style="background:#059669"></div><div class="sg-lbl">Excellent</div><div class="sg-r">750 – 900</div></div>
+          <div class="sg-row"><div class="sg-dot" style="background:#047857"></div><div class="sg-lbl">Excellent</div><div class="sg-r">750 – 900</div></div>
           <div class="sg-row"><div class="sg-dot" style="background:#84cc16"></div><div class="sg-lbl">Good</div><div class="sg-r">700 – 749</div></div>
-          <div class="sg-row"><div class="sg-dot" style="background:#f59e0b"></div><div class="sg-lbl">Fair</div><div class="sg-r">650 – 699</div></div>
+          <div class="sg-row"><div class="sg-dot" style="background:#B45309"></div><div class="sg-lbl">Fair</div><div class="sg-r">650 – 699</div></div>
           <div class="sg-row"><div class="sg-dot" style="background:#ef4444"></div><div class="sg-lbl">Poor</div><div class="sg-r">Below 650</div></div>
         </div>
       </div>
@@ -1196,8 +1199,8 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
               <div style="font-weight:700;color:var(--red);margin-bottom:.85rem">Application Summary</div>
               <div style="font-size:.875rem;color:var(--txt2);display:flex;flex-direction:column;gap:.55rem">
                 <div style="display:flex;justify-content:space-between"><span>Reference ID</span><strong style="color:var(--navy)">Generated on submit</strong></div>
-                <div style="display:flex;justify-content:space-between"><span>Processing Time</span><strong style="color:#059669">24–48 Hours</strong></div>
-                <div style="display:flex;justify-content:space-between"><span>Status</span><strong style="color:#f59e0b">Pending Review</strong></div>
+                <div style="display:flex;justify-content:space-between"><span>Processing Time</span><strong style="color:#047857">24–48 Hours</strong></div>
+                <div style="display:flex;justify-content:space-between"><span>Status</span><strong style="color:#B45309">Pending Review</strong></div>
               </div>
             </div>
             <div style="display:flex;flex-direction:column;gap:.85rem">
@@ -1555,7 +1558,7 @@ function submitContact(e){
   var url=iadSend(msg);
   btn.disabled=true;
   btn.textContent='Sent! We will be in touch shortly.';
-  btn.style.background='#059669';
+  btn.style.background='#047857';
   form.appendChild(iadFallback(url,ref));
 }
 
