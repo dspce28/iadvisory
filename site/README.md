@@ -54,3 +54,37 @@ and the three confirmed statistics. Change them there, not in the pages.
 - **No claim of RBI registration, ISO certification, or any guarantee** appears
   anywhere. iAdvisory is an intermediary and the site says so, in the footer and
   in the structured data.
+
+## Setting up lead storage (free, ~10 minutes)
+
+Leads reach WhatsApp either way. This gives them a second, durable home so
+nothing is lost when a phone is.
+
+1. Create a new Google Sheet and name it, e.g. "iAdvisory leads".
+2. **Extensions → Apps Script**. Delete the placeholder `myFunction`, paste
+   the contents of `site/docs/lead-sheet.gs`, and save.
+3. Optionally set `NOTIFY_EMAIL` at the top to get an email per lead.
+4. **Deploy → New deployment → Web app**, with:
+   - *Execute as*: **Me**
+   - *Who has access*: **Anyone**
+5. Authorise when prompted (the warning screen is normal for your own script:
+   Advanced → Go to project).
+6. Copy the deployment URL — it ends in `/exec`.
+7. In GitHub: **Settings → Secrets and variables → Actions → Secrets → New
+   repository secret**, named `LEAD_WEBHOOK`, with that URL as the value.
+8. Re-run the deploy workflow (Actions → Build and publish static site → Run
+   workflow) so the URL is compiled into the site.
+
+To test, submit the contact form on the live site: a row should appear within
+a second or two.
+
+## Setting up analytics
+
+1. Create a Google Analytics 4 property at analytics.google.com and copy the
+   measurement ID (`G-XXXXXXXXXX`).
+2. In GitHub: **Settings → Secrets and variables → Actions → Variables → New
+   repository variable**, named `NEXT_PUBLIC_GA_ID`, with that ID as the value.
+3. Re-run the deploy workflow.
+
+Both forms already fire a `generate_lead` event, so enquiries show up as
+conversions once you mark that event as one in GA.

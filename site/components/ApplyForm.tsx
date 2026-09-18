@@ -40,7 +40,7 @@ export default function ApplyForm() {
       { label: 'Existing EMIs', value: data.emis ?? '' },
       { label: 'Purpose', value: data.purpose ?? '' },
     ];
-    const { ref, url } = await deliverLead('Loan application', fields);
+    const { ref, url } = deliverLead('Loan application', fields);
     setSent({ ref, url });
     setBusy(false);
   }

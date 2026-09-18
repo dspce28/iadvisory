@@ -25,7 +25,7 @@ export default function ContactForm() {
       { label: 'Loan Interest', value: String(fd.get('loanType') ?? '') },
       { label: 'Message', value: String(fd.get('message') ?? '') },
     ];
-    const { ref, url } = await deliverLead('Enquiry', fields);
+    const { ref, url } = deliverLead('Enquiry', fields);
     setSent({ ref, url });
     setBusy(false);
   }
