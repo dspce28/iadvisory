@@ -53,11 +53,13 @@ jobs:
 
       - name: Publish to the deploy branch
         run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
           cd site/out
           touch .nojekyll
           git init -q
+          # Identity must be set inside this fresh repo: config from the
+          # checked-out repo above does not carry into a new `git init`.
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -qb deploy
           git add -A
           git commit -qm "Build from ${GITHUB_SHA::7}"
