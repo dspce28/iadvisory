@@ -8,9 +8,9 @@ export default function Home() {
     <>
       <section id="hero">
         <HeroCanvas variant="hero" />
-        <div className="wrap hero-grid">
+        <div className="hero-inner">
           <div>
-            <div className="tag tag-r">🏆 Loan advisory since {site.since}</div>
+            <div className="hero-pill">🏆 Loan advisory since {site.since}</div>
             <h1 className="hero-h">
               Fast, Trusted &amp;<br />
               <em>Smart Loan</em>
@@ -29,16 +29,16 @@ export default function Home() {
                 Calculate EMI
               </Link>
             </div>
-            <div className="kpi">
-              <div>
+            <div className="hero-kpis">
+              <div className="kpi">
                 <div className="n">{site.stats.loansApproved}</div>
                 <div className="l">Loans Approved</div>
               </div>
-              <div>
+              <div className="kpi">
                 <div className="n">{site.stats.successRate}</div>
                 <div className="l">Success Rate</div>
               </div>
-              <div>
+              <div className="kpi">
                 <div className="n">{site.stats.partnerBanks}</div>
                 <div className="l">Partner Banks</div>
               </div>
@@ -52,14 +52,19 @@ export default function Home() {
           <Reveal>
             <h2 className="h">Complete Loan Solutions</h2>
           </Reveal>
-          <div className="scards">
+          <div className="svc-grid">
             {loanProducts.map((p, i) => (
               <Reveal key={p.slug} delay={((i % 3) + 1) as 1 | 2 | 3}>
                 <Link prefetch={false} className="scard" href={`/loans/${p.slug}/`}>
-                  <div className="scard-ic">{p.icon}</div>
-                  <div className="scard-title">{p.name}</div>
-                  <p>{p.blurb}</p>
-                  <div className="scard-rate">From {p.rateFrom}</div>
+                  <div className="scard-img">
+                    <img src={p.image} alt={p.name} width={400} height={400} loading="lazy" decoding="async" />
+                  </div>
+                  <div className="scard-body">
+                    <div className="scard-rate">From {p.rateFrom}</div>
+                    <div className="scard-title">{p.name}</div>
+                    <p className="scard-desc">{p.blurb}</p>
+                    <div className="scard-link">Learn more →</div>
+                  </div>
                 </Link>
               </Reveal>
             ))}

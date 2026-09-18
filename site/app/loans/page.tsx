@@ -20,14 +20,19 @@ export default function Loans() {
       </div>
       <section className="sec">
         <div className="wrap">
-          <div className="scards">
+          <div className="svc-grid">
             {loanProducts.map((p, i) => (
               <Reveal key={p.slug} delay={((i % 3) + 1) as 1 | 2 | 3}>
                 <Link prefetch={false} className="scard" href={`/loans/${p.slug}/`}>
-                  <div className="scard-ic">{p.icon}</div>
-                  <div className="scard-title">{p.name}</div>
-                  <p>{p.blurb}</p>
-                  <div className="scard-rate">From {p.rateFrom} · up to {p.maxAmount}</div>
+                  <div className="scard-img">
+                    <img src={p.image} alt={p.name} width={400} height={400} loading="lazy" decoding="async" />
+                  </div>
+                  <div className="scard-body">
+                    <div className="scard-rate">From {p.rateFrom} · up to {p.maxAmount}</div>
+                    <div className="scard-title">{p.name}</div>
+                    <p className="scard-desc">{p.blurb}</p>
+                    <div className="scard-link">Learn more →</div>
+                  </div>
                 </Link>
               </Reveal>
             ))}

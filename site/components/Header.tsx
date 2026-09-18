@@ -39,26 +39,25 @@ export default function Header() {
         ))}
       </nav>
 
-      <div className="hdr-cta">
-        <Link className="btn btn-ghost" href="/cibil-score/">
+      <div className="hbtns">
+        <Link className="btn btn-ghost hbtn-cibil" href="/cibil-score/">
           Check CIBIL
         </Link>
-        <Link className="btn btn-red" href="/apply/">
+        <Link className="btn btn-red hbtn-apply" href="/apply/">
           Apply Now →
         </Link>
+        <button
+          className="ham"
+          onClick={() => setOpen((v) => !v)}
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          aria-expanded={open}
+          aria-controls="nav"
+        >
+          <span />
+          <span />
+          <span />
+        </button>
       </div>
-
-      <button
-        className="ham"
-        onClick={() => setOpen((v) => !v)}
-        aria-label={open ? 'Close menu' : 'Open menu'}
-        aria-expanded={open}
-        aria-controls="nav"
-      >
-        <span />
-        <span />
-        <span />
-      </button>
     </header>
   );
 }
