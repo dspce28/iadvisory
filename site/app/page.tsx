@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import HeroCanvas from '@/components/HeroCanvas';
+import HeroCards from '@/components/HeroCards';
 import Reveal from '@/components/Reveal';
 import { loanProducts, site } from '@/lib/site';
 
@@ -44,6 +45,7 @@ export default function Home() {
               </div>
             </div>
           </div>
+          <HeroCards />
         </div>
       </section>
 
