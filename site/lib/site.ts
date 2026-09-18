@@ -1,0 +1,342 @@
+export const site = {
+  name: 'iAdvisory',
+  legalName: 'iAdvisory Financial Services Pvt. Ltd.',
+  // Update this once, before launch, and every canonical/OG/sitemap URL follows.
+  url: 'https://iadvisory.in',
+  since: 2017,
+  tagline: 'Smart Loan Solutions',
+  description:
+    'iAdvisory is a loan advisory service in Ahmedabad. Compare personal, home, business and car loan offers across 30+ partner banks and NBFCs — free advice, no upfront fees.',
+  phone: '+919601050241',
+  phoneDisplay: '+91 96010 50241',
+  whatsapp: '919601050241',
+  email: 'info@iadvisory.in',
+  address: {
+    locality: 'Ahmedabad',
+    region: 'Gujarat',
+    postalCode: '380009',
+    country: 'IN',
+  },
+  hours: 'Mon–Sat: 9 AM – 7 PM',
+  // Only figures the business has confirmed. Anything unverified stays off the site.
+  stats: {
+    loansApproved: '50,000+',
+    successRate: '98%',
+    partnerBanks: '30+',
+  },
+} as const;
+
+export const yearsInBusiness = () => new Date().getFullYear() - site.since;
+
+export type LoanProduct = {
+  slug: string;
+  name: string;
+  short: string;
+  icon: string;
+  image: string;
+  rateFrom: string;
+  maxAmount: string;
+  maxTenure: string;
+  blurb: string;
+  metaTitle: string;
+  metaDescription: string;
+  highlights: string[];
+  eligibility: string[];
+  documents: string[];
+  faqs: { q: string; a: string }[];
+};
+
+export const loanProducts: LoanProduct[] = [
+  {
+    slug: 'home-loan',
+    name: 'Home Loan',
+    short: 'Home',
+    icon: '🏠',
+    image: '/assets/img-b55452f1b6.webp',
+    rateFrom: '8.4% p.a.',
+    maxAmount: '₹5 Crore',
+    maxTenure: '30 years',
+    blurb:
+      'Finance a new, resale or under-construction home, or transfer an existing loan to a lower rate. Special rates are available for women borrowers.',
+    metaTitle: 'Home Loan in Ahmedabad — Rates from 8.4% p.a.',
+    metaDescription:
+      'Compare home loan offers from 30+ partner banks and NBFCs. Up to ₹5 Crore, tenure up to 30 years, rates from 8.4% p.a. Free advisory, no upfront fees.',
+    highlights: [
+      'New, resale and under-construction properties',
+      'Balance transfer from your existing lender',
+      'Special rates for women borrowers',
+      'Top-up against an existing home loan',
+    ],
+    eligibility: [
+      'Salaried or self-employed, aged 21–65 at maturity',
+      'Stable income for the last 2 years',
+      'CIBIL score of 700 or above improves your options',
+      'Property with a clear, marketable title',
+    ],
+    documents: [
+      'PAN and Aadhaar',
+      'Last 3 months salary slips or 2 years ITR',
+      'Last 6 months bank statements',
+      'Property documents and sale agreement',
+    ],
+    faqs: [
+      {
+        q: 'How much home loan can I get on my salary?',
+        a: 'Most lenders cap the EMI at 50–60% of your net monthly income and fund up to 75–90% of the property value. On a ₹1,00,000 net salary with no existing EMIs, that typically supports a loan in the range of ₹50–65 lakh over 20 years, depending on the lender and your credit profile.',
+      },
+      {
+        q: 'Does a balance transfer actually save money?',
+        a: 'It can, but only if the rate difference covers the processing and legal costs and you still have a long tenure left. We compare your outstanding loan against current offers and tell you the break-even point before you switch — including when the answer is that you should stay put.',
+      },
+      {
+        q: 'Do you charge for home loan advice?',
+        a: 'No. Our advisory is free and we do not take an upfront fee from you. Any processing or legal fee charged by the lender is disclosed to you before your application is submitted.',
+      },
+    ],
+  },
+  {
+    slug: 'personal-loan',
+    name: 'Personal Loan',
+    short: 'Personal',
+    icon: '💳',
+    image: '/assets/img-0e713b359b.webp',
+    rateFrom: '10.5% p.a.',
+    maxAmount: '₹40 Lakh',
+    maxTenure: '7 years',
+    blurb:
+      'Unsecured funding for a wedding, medical expense, education, travel or debt consolidation, with minimal documentation and no collateral.',
+    metaTitle: 'Personal Loan in Ahmedabad — Rates from 10.5% p.a.',
+    metaDescription:
+      'Compare personal loan offers across 30+ lenders. Up to ₹40 Lakh, no collateral, minimal documentation. Free advisory from iAdvisory, no upfront fees.',
+    highlights: [
+      'No collateral or guarantor required',
+      'Minimal documentation for salaried applicants',
+      'Consolidate costlier credit card debt',
+      'Flexible tenure from 1 to 7 years',
+    ],
+    eligibility: [
+      'Salaried or self-employed, aged 21–60',
+      'Net monthly income from ₹25,000 upward',
+      'CIBIL score of 750+ gets the sharpest rates',
+      'At least 1 year in your current job or business',
+    ],
+    documents: [
+      'PAN and Aadhaar',
+      'Last 3 months salary slips',
+      'Last 6 months bank statements',
+      'Employment proof or business registration',
+    ],
+    faqs: [
+      {
+        q: 'What interest rate will I actually get?',
+        a: 'Personal loan pricing is driven by your credit score, employer category and existing obligations. Advertised rates start at 10.5% p.a., but the rate offered to you is set by the lender after assessment. We show you the real offers you qualify for rather than the headline number.',
+      },
+      {
+        q: 'Will applying to several lenders hurt my credit score?',
+        a: 'Yes — each formal application triggers a hard enquiry, and several in a short window lowers your score. That is precisely why we assess your profile first and approach only the lenders you are likely to qualify with.',
+      },
+      {
+        q: 'Can I use a personal loan to clear credit card debt?',
+        a: 'Often it is the single best use of one. Credit cards commonly charge 36–42% annualised, so moving that balance to a personal loan at a much lower rate reduces both your interest cost and your monthly outgo.',
+      },
+    ],
+  },
+  {
+    slug: 'business-loan',
+    name: 'Business Loan',
+    short: 'Business',
+    icon: '💼',
+    image: '/assets/img-e62d81f729.webp',
+    rateFrom: '11% p.a.',
+    maxAmount: '₹1 Crore',
+    maxTenure: '5 years',
+    blurb:
+      'Unsecured working capital, expansion funding and equipment finance for proprietors, partnerships and private limited companies.',
+    metaTitle: 'Business Loan in Ahmedabad — Up to ₹1 Crore',
+    metaDescription:
+      'Unsecured business loans up to ₹1 Crore with no collateral. Working capital, expansion and equipment finance compared across 30+ lenders. Free advisory.',
+    highlights: [
+      'No collateral for eligible profiles',
+      'Working capital, expansion and equipment finance',
+      'Proprietorship, partnership and Pvt Ltd accepted',
+      'Overdraft and term loan structures compared',
+    ],
+    eligibility: [
+      'Business vintage of at least 2–3 years',
+      'Annual turnover above ₹40 lakh, lender dependent',
+      'Filed ITR and GST returns',
+      'Healthy bank statement conduct',
+    ],
+    documents: [
+      'PAN and Aadhaar of proprietor or directors',
+      'Last 2 years ITR with computation',
+      'Last 12 months bank statements',
+      'GST returns and business registration proof',
+    ],
+    faqs: [
+      {
+        q: 'Can I get a business loan without collateral?',
+        a: 'Yes. Unsecured business loans are common for businesses with 2–3 years of vintage, filed returns and clean banking conduct. Rates run higher than secured lending, so where you do have property to offer, we will show you both options side by side.',
+      },
+      {
+        q: 'What matters most in a business loan decision?',
+        a: 'Bank statement conduct, usually more than the profit figure in your ITR. Lenders look at average balances, cheque bounces and the consistency of credits. Cleaning up three months of banking conduct before applying frequently changes the offer materially.',
+      },
+      {
+        q: 'How is a term loan different from an overdraft?',
+        a: 'A term loan gives a lump sum repaid on a fixed EMI schedule, which suits one-off purchases like equipment. An overdraft is a limit you draw on as needed and pay interest only on what you use, which suits fluctuating working capital.',
+      },
+    ],
+  },
+  {
+    slug: 'car-loan',
+    name: 'Car Loan',
+    short: 'Car',
+    icon: '🚗',
+    image: '/assets/img-34bb957ba9.webp',
+    rateFrom: '7.2% p.a.',
+    maxAmount: '100% on-road',
+    maxTenure: '7 years',
+    blurb:
+      'New and used car finance with funding up to the full on-road price for strong profiles, and quick turnaround at the dealership.',
+    metaTitle: 'Car Loan in Ahmedabad — Rates from 7.2% p.a.',
+    metaDescription:
+      'New and used car loans with up to 100% on-road funding and tenure to 7 years. Compare offers across 30+ lenders with iAdvisory. Free advisory, no upfront fees.',
+    highlights: [
+      'Up to 100% on-road funding for eligible profiles',
+      'New and pre-owned vehicles',
+      'Tenure up to 7 years',
+      'Dealer-tied offers compared against bank offers',
+    ],
+    eligibility: [
+      'Salaried or self-employed, aged 21–65',
+      'Net monthly income from ₹20,000 upward',
+      'CIBIL score of 700 or above',
+      'Valid driving licence',
+    ],
+    documents: [
+      'PAN and Aadhaar',
+      'Last 3 months salary slips or 2 years ITR',
+      'Last 6 months bank statements',
+      'Vehicle quotation or proforma invoice',
+    ],
+    faqs: [
+      {
+        q: 'Is dealership finance cheaper than a bank?',
+        a: 'Not usually, though it is faster. Dealer-arranged finance often carries a margin built into the rate. It is worth comparing the dealer offer against a direct bank offer before signing — the difference over a five year tenure is frequently significant.',
+      },
+      {
+        q: 'Can I finance a used car?',
+        a: 'Yes, though lenders cap the funding by vehicle age and valuation, typically 70–85% of value for cars under a certain age. Rates are higher than new car finance.',
+      },
+      {
+        q: 'Should I choose a longer tenure to reduce the EMI?',
+        a: 'It lowers the monthly outgo but raises total interest, and a car is a depreciating asset. We generally suggest the shortest tenure your budget comfortably supports.',
+      },
+    ],
+  },
+  {
+    slug: 'loan-against-property',
+    name: 'Loan Against Property',
+    short: 'LAP',
+    icon: '🏢',
+    image: '/assets/img-483ddee7ed.webp',
+    rateFrom: '9.5% p.a.',
+    maxAmount: '₹10 Crore',
+    maxTenure: '15 years',
+    blurb:
+      'Raise secured funding against residential or commercial property you already own, at rates well below unsecured borrowing.',
+    metaTitle: 'Loan Against Property in Ahmedabad — From 9.5% p.a.',
+    metaDescription:
+      'Loan against residential or commercial property, up to ₹10 Crore and 15 year tenure at rates from 9.5% p.a. Compared across 30+ lenders by iAdvisory.',
+    highlights: [
+      'Residential, commercial and industrial property',
+      'Materially cheaper than unsecured borrowing',
+      'Tenure up to 15 years keeps the EMI manageable',
+      'Usable for business or personal needs',
+    ],
+    eligibility: [
+      'You own a property with clear title',
+      'Demonstrable repayment capacity',
+      'Aged 21–70 at loan maturity',
+      'Property free of legal dispute',
+    ],
+    documents: [
+      'PAN and Aadhaar',
+      'Income proof — salary slips or 2 years ITR',
+      'Last 6–12 months bank statements',
+      'Full property chain documents',
+    ],
+    faqs: [
+      {
+        q: 'How much can I raise against my property?',
+        a: 'Lenders typically fund 50–70% of the assessed market value, not your expected value. The lender’s own valuation governs, and it is often more conservative than a broker estimate.',
+      },
+      {
+        q: 'Why is it cheaper than a personal loan?',
+        a: 'Because the lender holds security. If repayment fails they can recover against the property, so they price the risk lower. The flip side is real: you are putting an asset at stake, so borrow only what the cash flow genuinely supports.',
+      },
+      {
+        q: 'Can I let out the property during the loan?',
+        a: 'Generally yes for residential and commercial property, though the lender’s terms govern and rental income may even strengthen your eligibility. Confirm the specific condition before you sign.',
+      },
+    ],
+  },
+  {
+    slug: 'education-loan',
+    name: 'Education Loan',
+    short: 'Education',
+    icon: '🎓',
+    image: '/assets/img-601e658aed.webp',
+    rateFrom: '8.9% p.a.',
+    maxAmount: '₹1.5 Crore',
+    maxTenure: '15 years',
+    blurb:
+      'Funding for study in India or abroad, covering tuition, living costs and travel, with repayment beginning after your course ends.',
+    metaTitle: 'Education Loan in Ahmedabad — Study in India or Abroad',
+    metaDescription:
+      'Education loans up to ₹1.5 Crore for study in India and abroad, with a moratorium during the course. Compared across 30+ lenders by iAdvisory. Free advisory.',
+    highlights: [
+      'Study in India or overseas',
+      'Covers tuition, living costs and travel',
+      'Moratorium through the course plus grace period',
+      'Tax deduction on interest under Section 80E',
+    ],
+    eligibility: [
+      'Confirmed admission to a recognised institution',
+      'Indian citizen, typically 18–35',
+      'Co-applicant, usually a parent or guardian',
+      'Collateral required above lender-set limits',
+    ],
+    documents: [
+      'Admission letter and fee schedule',
+      'Academic records and entrance scores',
+      'Co-applicant income and KYC documents',
+      'Collateral documents where applicable',
+    ],
+    faqs: [
+      {
+        q: 'When do repayments start?',
+        a: 'Most education loans allow a moratorium covering the course duration plus 6–12 months. Interest usually accrues during that period, so paying simple interest while studying, where you can, materially reduces the final burden.',
+      },
+      {
+        q: 'Is collateral always needed?',
+        a: 'No. Loans up to roughly ₹7.5 lakh are commonly unsecured with a co-applicant. Above that, most lenders ask for collateral, although some make exceptions for premier institutions.',
+      },
+      {
+        q: 'Does the interest qualify for tax relief?',
+        a: 'Section 80E allows a deduction on the interest paid on an education loan for up to 8 years, with no upper limit on the amount. Confirm your own position with a tax adviser.',
+      },
+    ],
+  },
+];
+
+export const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/about/', label: 'About' },
+  { href: '/loans/', label: 'Loans' },
+  { href: '/emi-calculator/', label: 'EMI Calculator' },
+  { href: '/cibil-score/', label: 'CIBIL' },
+  { href: '/blog/', label: 'Blog' },
+  { href: '/contact/', label: 'Contact' },
+];

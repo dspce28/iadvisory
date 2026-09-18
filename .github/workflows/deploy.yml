@@ -1,0 +1,64 @@
+name: Build and publish static site
+
+# Hostinger shared hosting clones a branch into public_html and serves it
+# verbatim. It cannot run `next build`, so CI builds the static export and
+# pushes the result to the `deploy` branch. Point Hostinger's Git
+# deployment at `deploy`, not `main`.
+on:
+  push:
+    branches: [main]
+    paths: ['site/**', '.github/workflows/deploy.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Install dependencies
+        working-directory: site
+        run: npm ci
+
+      - name: Build static export
+        working-directory: site
+        env:
+          NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
+          NEXT_PUBLIC_LEAD_WEBHOOK: ${{ secrets.LEAD_WEBHOOK }}
+        run: npm run build
+
+      - name: Fail if the export looks wrong
+        working-directory: site
+        run: |
+          test -f out/index.html
+          test -f out/sitemap.xml
+          test -f out/robots.txt
+          test -f out/.htaccess
+          test -f out/loans/home-loan/index.html
+          test -f out/opengraph-image
+          echo "export contains $(find out -name index.html | wc -l) pages"
+
+      - name: Publish to the deploy branch
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          cd site/out
+          touch .nojekyll
+          git init -q
+          git checkout -qb deploy
+          git add -A
+          git commit -qm "Build from ${GITHUB_SHA::7}"
+          git push -qf "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" deploy
