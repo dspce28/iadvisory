@@ -74,8 +74,8 @@ textarea:focus-visible,.logo:focus-visible,summary:focus-visible{
   outline:3px solid var(--red);outline-offset:3px;border-radius:var(--rs)}
 
 /* Cards lift onto a gold edge rather than just moving. */
-.kpi-card,.wf,.bcard,.fcard,.astat{transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr)}
-.kpi-card:hover,.bcard:hover{transform:translateY(-6px);box-shadow:var(--sh-3);border-color:var(--brd-g)}
+.wf,.bcard,.fcard,.astat{transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr)}
+.bcard:hover{transform:translateY(-6px);box-shadow:var(--sh-3);border-color:var(--brd-g)}
 
 #sp{position:fixed;top:0;left:0;height:3px;width:0;z-index:9999;
   background:linear-gradient(90deg,var(--red),var(--gold));transition:width .08s}
@@ -341,22 +341,6 @@ h1.hero-h .gld{
 }
 .wf-t{font-weight:700;font-size:1rem;color:var(--navy);margin-bottom:.28rem}
 .wf-d{font-size:.86rem;color:var(--txt2);line-height:1.65}
-.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-top:5rem}
-.kpi-card{
-  background:var(--navy);border-radius:var(--r);padding:2rem 1.5rem;
-  text-align:center;border:1px solid var(--navy2);transition:all var(--tr);
-  position:relative;overflow:hidden;
-}
-.kpi-card::before{
-  content:'';position:absolute;top:-40%;right:-20%;width:120px;height:120px;
-  border-radius:50%;background:rgba(196,30,58,.12);
-}
-.kpi-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(10,22,40,.35)}
-.kpi-icon{font-size:2rem;margin-bottom:.85rem;display:block}
-.kpi-n{font-family:'Cormorant',serif;font-weight:700;font-size:3rem;
-  color:#fff;line-height:1;letter-spacing:-.03em}
-.kpi-l{font-size:.74rem;color:rgba(255,255,255,.55);margin-top:.55rem;
-  text-transform:uppercase;letter-spacing:.07em;font-weight:600}
 
 /* ═══════════════════════════════════════════════════
    EMI CALCULATOR
@@ -638,7 +622,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
    RESPONSIVE
 ═══════════════════════════════════════════════════ */
 @media(max-width:1024px){
-  .grid-4,.kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .grid-4{grid-template-columns:repeat(2,1fr)}
   .svc-grid{grid-template-columns:repeat(2,1fr)}
   .fg5{grid-template-columns:1fr 1fr}
 }
@@ -668,7 +652,6 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
   .sub,.sub-w{font-size:.95rem}
   .grid-2,.grid-3,.why-layout,.calc-wrap,.about-layout,.cibil-layout,.cont-layout{grid-template-columns:1fr}
   .svc-grid,.tgrid,.bgrid{grid-template-columns:1fr}
-  .kpi-grid{grid-template-columns:1fr 1fr}
   .fg5{grid-template-columns:1fr 1fr;gap:1.5rem 2rem}
   .fb{grid-column:1/-1;padding-bottom:1.25rem;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:.5rem}
   .fb p{max-width:100%}
@@ -690,7 +673,6 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
   .phero{padding:110px 1.25rem 55px}
 }
 @media(max-width:480px){
-  .kpi-grid{grid-template-columns:1fr 1fr}
   .hero-actions{gap:.65rem}
   .fg5{grid-template-columns:1fr}
   .fbadges{gap:.4rem}
@@ -904,12 +886,6 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
       <div class="r right" style="display:flex;justify-content:center">
         <img src="assets/img-f91855b0ec.webp" alt="Expert Financial Team" style="max-width:480px;filter:drop-shadow(0 16px 36px rgba(10,22,40,.12));border-radius:var(--r)" width="500" height="500" decoding="async" loading="lazy">
       </div>
-    </div>
-    <div class="kpi-grid" style="margin-top:5rem">
-      <div class="kpi-card r scale d1"><span class="kpi-icon">🎯</span><div class="kpi-n" data-c="250">0</div><div class="kpi-l">Loans Approved</div></div>
-      
-      <div class="kpi-card r scale d3"><span class="kpi-icon">🏦</span><div class="kpi-n" data-c="15" data-plus="1">0</div><div class="kpi-l">Partner Banks</div></div>
-      <div class="kpi-card r scale d4"><span class="kpi-icon">📅</span><div class="kpi-n" data-c="9" data-since="2017">0</div><div class="kpi-l">Years Experience</div></div>
     </div>
   </div>
 </section>
@@ -1456,40 +1432,10 @@ function pg(name){
   window.scrollTo({top:0,behavior:'smooth'});
   document.getElementById('nav').classList.remove('open');
   setTimeout(function(){reveal();revealAll()},100);
-  if(name==='home')setTimeout(runCounters,300);
   return false;
 }
 
 // ── COUNTERS ──
-function animCount(el){
-  var t=parseInt(el.getAttribute('data-c')),dur=2000,s=t/(dur/16),c=0;
-  el.setAttribute('data-counted','1');
-  var iv=setInterval(function(){
-    c=Math.min(c+s,t);
-    el.textContent=Math.round(c).toLocaleString('en-IN')+((t>=100||el.getAttribute('data-plus'))?'+':'');
-    if(c>=t)clearInterval(iv);
-  },16);
-}
-function runCounters(){
-  // keep the years-in-business counter honest without anyone remembering to edit it
-  document.querySelectorAll('[data-since]').forEach(function(el){
-    el.setAttribute('data-c', String(new Date().getFullYear()-parseInt(el.getAttribute('data-since'),10)));
-  });
-  var io=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(e.isIntersecting&&!e.target.getAttribute('data-counted'))animCount(e.target);
-    });
-  },{threshold:.2});
-  document.querySelectorAll('[data-c]').forEach(function(el){
-    if(!el.getAttribute('data-counted'))io.observe(el);
-  });
-  // Force run after 700ms
-  setTimeout(function(){
-    document.querySelectorAll('[data-c]').forEach(function(el){
-      if(!el.getAttribute('data-counted'))animCount(el);
-    });
-  },700);
-}
 
 // ── EMI CALC ──
 function fmt(n){return '&#x20B9;'+Math.round(n).toLocaleString('en-IN')}
@@ -1744,14 +1690,12 @@ function iadCtaCanvas(){
   })();
 }
 // ── BOOT ──
-// reveal(), revealAll() and runCounters() were only ever called from inside
-// pg(). On a fresh load pg() never runs — the home page is already .active in
-// the markup — so the scroll reveals were never wired up and the stat counters
-// sat on their literal "0" placeholders until you navigated away and back.
+// reveal() was only ever called from inside pg(). On a fresh load pg() never
+// runs — the home page is already .active in the markup — so the scroll
+// reveals were never wired up until you navigated away and back.
 (function(){
   function boot(){
     reveal();
-    runCounters();
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot);
   else boot();
