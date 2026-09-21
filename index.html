@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="description" content="iAdvisory is a loan advisory service in Ahmedabad. Compare personal, home, business and car loan offers across partner banks and NBFCs — free advice, no upfront fees.">
 <title>iAdvisory — Smart Loan Solutions</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#0A1628">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;0,600;0,700;1,500;1,700&family=Nunito:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -71,12 +76,10 @@ body.js-ready .r:not(.show){opacity:0}
   box-shadow:var(--sh);
 }
 .logo{display:flex;align-items:center;gap:1px;cursor:pointer}
-.logo img{height:46px;width:auto}
-.logo-name{font-family:'Cormorant',serif;font-weight:700;font-size:1.55rem;
-  letter-spacing:-.01em;line-height:1}
-.logo-name .li{color:var(--red)}
-.logo-name .la{color:var(--navy);transition:color var(--tr)}
-#hdr:not(.scrolled) .logo-name .la{color:var(--navy)}
+/* The wordmark is a script face: below about 150px wide its hairlines
+   disappear, so the lockup is sized by width, not by header height. */
+.logo-img{width:160px;height:auto;display:block}
+.logo-img-ft{width:190px}
 #hdr:not(.scrolled) nav a{color:rgba(30,30,40,.85)}
 nav{display:flex;align-items:center;gap:.1rem}
 nav a{font-size:.85rem;font-weight:500;color:var(--txt2);padding:.4rem .85rem;
@@ -604,8 +607,8 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
     border-bottom:1px solid var(--brd);padding:1.25rem;z-index:998;box-shadow:var(--sh2)}
   .ham{display:flex}
   #hdr{padding:0 1.1rem;height:64px}
-  .logo img{height:40px}
-  .logo-name{font-size:1.3rem}
+  .logo-img{width:132px}
+  .logo-img-ft{width:160px}
   .hbtn-cibil{display:none}
   .btn-red.hbtn-apply{padding:.52rem 1rem;font-size:.8rem}
   /* Hero */
@@ -666,8 +669,8 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
 ═══════════════════════════════════════════════ -->
 <header id="hdr">
   <div class="logo" onclick="pg('home')" role="link" tabindex="0" aria-label="iAdvisory — home">
-    <img src="assets/img-1329a877e0.webp" alt="" width="220" height="220" decoding="async">
-    <div class="logo-name"><span class="la">Advisory</span></div>
+    <img class="logo-img" src="assets/logo-horizontal.webp" alt="iAdvisory"
+         width="480" height="162" decoding="async" fetchpriority="high">
   </div>
   <nav id="nav">
     <a onclick="pg('home')" id="n-home" class="on">Home</a>
@@ -1301,8 +1304,8 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
       <!-- Brand Column -->
       <div class="fb">
         <div class="logo" onclick="pg('home')" style="margin-bottom:.5rem;cursor:pointer">
-          <img src="assets/img-1329a877e0.webp" alt="iAdvisory" style="height:44px;filter:brightness(0) invert(1);mix-blend-mode:normal" width="220" height="220" decoding="async" loading="lazy">
-          <div class="logo-name" style="color:#fff"><span style="color:#ff7a7a">i</span><span>Advisory</span></div>
+          <img class="logo-img logo-img-ft" src="assets/logo-horizontal-light.webp" alt="iAdvisory"
+               width="480" height="162" decoding="async" loading="lazy">
         </div>
         <p>India's trusted loan advisory — connecting borrowers with 30+ partner banks and NBFCs since 2017. Expert guidance, transparent comparisons, no upfront fees.</p>
         <div class="fsoc">
