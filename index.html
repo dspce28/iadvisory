@@ -749,9 +749,9 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
       </div>
       <div class="hero-divider"></div>
       <div class="hero-kpis">
-        <div class="kpi"><div class="n"><span id="hk1">50,000</span>+</div><div class="l">Loans Approved</div></div>
+        <div class="kpi"><div class="n"><span id="hk1">250</span>+</div><div class="l">Loans Approved</div></div>
         <div class="kpi"><div class="n"><span id="hk2">98</span>%</div><div class="l">Success Rate</div></div>
-        <div class="kpi"><div class="n"><span id="hk3">30</span>+</div><div class="l">Partner Banks</div></div>
+        <div class="kpi"><div class="n"><span id="hk3">15</span>+</div><div class="l">Partner Banks</div></div>
       </div>
     </div>
     <div class="hero-aside">
@@ -906,9 +906,9 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
       </div>
     </div>
     <div class="kpi-grid" style="margin-top:5rem">
-      <div class="kpi-card r scale d1"><span class="kpi-icon">🎯</span><div class="kpi-n" data-c="50000">0</div><div class="kpi-l">Loans Approved</div></div>
+      <div class="kpi-card r scale d1"><span class="kpi-icon">🎯</span><div class="kpi-n" data-c="250">0</div><div class="kpi-l">Loans Approved</div></div>
       
-      <div class="kpi-card r scale d3"><span class="kpi-icon">🏦</span><div class="kpi-n" data-c="30">0</div><div class="kpi-l">Partner Banks</div></div>
+      <div class="kpi-card r scale d3"><span class="kpi-icon">🏦</span><div class="kpi-n" data-c="15" data-plus="1">0</div><div class="kpi-l">Partner Banks</div></div>
       <div class="kpi-card r scale d4"><span class="kpi-icon">📅</span><div class="kpi-n" data-c="9" data-since="2017">0</div><div class="kpi-l">Years Experience</div></div>
     </div>
   </div>
@@ -958,7 +958,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
   <div class="wrap" style="margin-bottom:2.25rem">
     <div class="tc">
       <div class="tag tag-r r fade">Our Partners</div>
-      <h2 class="h r up d1">30+ Trusted <em>Banking Partners</em></h2>
+      <h2 class="h r up d1">15+ Trusted <em>Banking Partners</em></h2>
     </div>
   </div>
   <div class="marquee-wrap">
@@ -1014,7 +1014,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
     <div class="cta-inner">
       <div class="cta-pill r fade">✨ Zero Processing Fees — Limited Time</div>
       <h2 class="hw r up d1" style="margin-bottom:1rem">Get Your Loan<br><em>Approved Today</em></h2>
-      <p class="sub-w r up d2" style="margin:0 auto 2.5rem">Join 50,000+ Indians who trusted iAdvisory. Expert guidance · One application · Offers compared across lenders.</p>
+      <p class="sub-w r up d2" style="margin:0 auto 2.5rem">Join the borrowers who trusted iAdvisory. Expert guidance · One application · Offers compared across lenders.</p>
       <div class="cta-btns r up d3">
         <a class="btn btn-xl" style="background:#fff;color:var(--red);font-weight:800" onclick="pg('apply')">🚀 Apply Now — Free</a>
         <a class="btn btn-xl" style="background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.28)" href="https://wa.me/919601050241" target="_blank">💬 Talk to Advisor</a>
@@ -1039,8 +1039,8 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
         <p class="sub" style="margin-bottom:2rem">Our advisory team works to simplify the entire loan journey, from first inquiry to final disbursement — and beyond.</p>
         <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem"><a class="btn btn-red" onclick="pg('apply')">Apply Now</a><a class="btn btn-ghost" onclick="pg('contact')">Contact Us</a></div>
         <div class="astat-grid">
-          <div class="astat"><div class="astat-n">50,000+</div><div class="astat-l">Loans Approved</div></div>
-          <div class="astat"><div class="astat-n">30+</div><div class="astat-l">Partner Banks</div></div>
+          <div class="astat"><div class="astat-n">250+</div><div class="astat-l">Loans Approved</div></div>
+          <div class="astat"><div class="astat-n">15+</div><div class="astat-l">Partner Banks</div></div>
           <div class="astat"><div class="astat-n">2017</div><div class="astat-l">Advising Since</div></div>
           <div class="astat"><div class="astat-n">98%</div><div class="astat-l">Approval Rate</div></div>
         </div>
@@ -1344,7 +1344,7 @@ footer{background:var(--navy);color:rgba(255,255,255,.9);padding:5rem 0 2rem}
           <img class="logo-img logo-img-ft" src="assets/logo-horizontal-light.webp" alt="iAdvisory"
                width="480" height="162" decoding="async" loading="lazy">
         </div>
-        <p>India's trusted loan advisory — connecting borrowers with 30+ partner banks and NBFCs since 2017. Expert guidance, transparent comparisons, no upfront fees.</p>
+        <p>India's trusted loan advisory — connecting borrowers with 15+ partner banks and NBFCs since 2017. Expert guidance, transparent comparisons, no upfront fees.</p>
         <div class="fsoc">
           <a class="fsl" href="https://wa.me/919601050241" target="_blank" rel="noopener" aria-label="WhatsApp">wa</a>
         </div>
@@ -1466,7 +1466,7 @@ function animCount(el){
   el.setAttribute('data-counted','1');
   var iv=setInterval(function(){
     c=Math.min(c+s,t);
-    el.textContent=Math.round(c).toLocaleString('en-IN')+(t>=100?'+':'');
+    el.textContent=Math.round(c).toLocaleString('en-IN')+((t>=100||el.getAttribute('data-plus'))?'+':'');
     if(c>=t)clearInterval(iv);
   },16);
 }
@@ -1743,6 +1743,20 @@ function iadCtaCanvas(){
     renderer.render(scene,camera);
   })();
 }
+// ── BOOT ──
+// reveal(), revealAll() and runCounters() were only ever called from inside
+// pg(). On a fresh load pg() never runs — the home page is already .active in
+// the markup — so the scroll reveals were never wired up and the stat counters
+// sat on their literal "0" placeholders until you navigated away and back.
+(function(){
+  function boot(){
+    reveal();
+    runCounters();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot);
+  else boot();
+})();
+
 // ── LOAD THREE.JS ONLY WHERE THE DECORATION IS WORTH 600KB ──
 (function(){
   var small = window.matchMedia('(max-width:900px)').matches;
