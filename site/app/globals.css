@@ -177,7 +177,7 @@ button{font:inherit;color:inherit}
 .nav{display:flex;align-items:center;gap:clamp(14px,2vw,30px)}
 .nav a{
   position:relative;font-size:.78rem;font-weight:600;letter-spacing:.07em;
-  text-transform:uppercase;color:var(--ink-2);padding-block:6px;
+  text-transform:uppercase;color:var(--ink-2);padding-block:10px;
 }
 .nav a::after{
   content:'';position:absolute;left:0;right:100%;bottom:0;height:1.5px;
@@ -213,6 +213,24 @@ button{font:inherit;color:inherit}
 .burger span{display:block;width:15px;height:1.5px;background:var(--ink);transition:transform var(--t) var(--ease)}
 .burger[aria-expanded="true"] span:first-child{transform:translateY(2.75px) rotate(45deg)}
 .burger[aria-expanded="true"] span:last-child{transform:translateY(-2.75px) rotate(-45deg)}
+
+/* The header collapses well before the phone breakpoint: eight nav links
+   beside two buttons overflowed by 175px at tablet widths. */
+@media (max-width:1000px){
+  .nav{
+    position:fixed;inset:0 0 auto 0;top:0;padding:88px var(--gut) 30px;
+    flex-direction:column;align-items:flex-start;gap:4px;
+    background:var(--paper);border-bottom:1px solid var(--line);
+    transform:translateY(-102%);transition:transform var(--t) var(--ease);
+  }
+  .nav.open{transform:none}
+  .nav a{font-size:1.08rem;letter-spacing:-.015em;text-transform:none;padding-block:11px;width:100%}
+  .burger{display:flex}
+  .hdr-cta .btn-line{display:none}
+}
+@media (max-width:760px){
+  .hdr-logo,.hdr-logo img{width:114px}
+}
 
 /* ── Hero: the media shows through the letterforms ─────────────── */
 .hero{
@@ -322,6 +340,7 @@ button{font:inherit;color:inherit}
 
 .face-rate{
   display:block;margin:clamp(16px,1.8vw,24px) clamp(16px,1.8vw,26px) 0;
+  position:relative;
   font-size:.7rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
   color:var(--accent-ink);
 }
@@ -334,6 +353,21 @@ button{font:inherit;color:inherit}
   display:block;margin:.65rem clamp(16px,1.8vw,26px) 0;
   font-size:.92rem;line-height:1.6;color:var(--mute);
 }
+.face-points{
+  display:none;flex-direction:column;gap:.55rem;
+  margin:1.1rem clamp(16px,1.8vw,26px) 0;
+}
+.face-points span{
+  position:relative;padding-left:1.5rem;
+  font-size:.86rem;line-height:1.5;color:var(--ink-2);
+}
+.face-points span::before{
+  content:'';position:absolute;left:1px;top:.42rem;width:10px;height:6px;
+  border-left:1.7px solid var(--accent);border-bottom:1.7px solid var(--accent);
+  transform:rotate(-45deg);
+}
+.book[data-book="on"] .face-points{display:flex}
+
 .face-meta{
   display:flex;flex-wrap:wrap;gap:.4rem .9rem;
   margin:auto clamp(16px,1.8vw,26px) 0;padding-top:1.1rem;
@@ -342,7 +376,10 @@ button{font:inherit;color:inherit}
 }
 .face-open{
   display:inline-flex;align-items:center;gap:.45rem;align-self:flex-start;
-  margin:.9rem clamp(16px,1.8vw,26px) clamp(16px,1.8vw,24px);
+  /* A line of text is not a tap target; this is the only way into the
+     product from inside the book. */
+  padding-block:10px;
+  margin:.5rem clamp(16px,1.8vw,26px) clamp(10px,1.2vw,16px);
   font-size:.66rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
   color:var(--ink);transition:gap var(--t) var(--ease),color var(--t) var(--ease);
 }
@@ -357,13 +394,15 @@ button{font:inherit;color:inherit}
 /* ── The book proper ───────────────────────────────────────────── */
 .book[data-book="on"]{
   display:block;position:relative;
-  width:min(100%,940px);margin-inline:auto;
+  /* Bounded by the viewport's height as well as its width, so the spread
+     always sits inside the screen rather than filling it. */
+  width:min(100%,860px,calc(56vh * 1.87));margin-inline:auto;
   /* Shut, only the right-hand half exists, so the whole thing slides left to
      stand the cover in the middle. Opening widens it into a spread. */
   transition:transform .95s var(--ease);
   /* Shorter than it is wide now the picture has a page of its own, so the
      whole spread clears the fold on a laptop. */
-  aspect-ratio:2/1.08;
+  aspect-ratio:2/1.07;
   perspective:2400px;
   outline:none;
 }
@@ -378,17 +417,42 @@ button{font:inherit;color:inherit}
 
 /* The picture page. */
 .plate{
+  position:relative;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:clamp(14px,2vw,26px);width:100%;height:100%;
-  padding:clamp(20px,3vw,44px);
+  gap:clamp(12px,1.8vw,22px);width:100%;height:100%;
+  padding:clamp(18px,2.6vw,38px);
+}
+/* The ground the illustration sits on, and the chapter number behind it.
+   Grey art on a grey page was the whole of the left-hand page; this gives
+   it something to sit on and the spread a second colour. */
+.plate-ring{
+  position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);
+  width:min(74%,300px);aspect-ratio:1;border-radius:50%;
+  background:
+    radial-gradient(circle at 34% 28%,rgba(248,0,0,.13) 0%,rgba(248,0,0,.05) 46%,rgba(248,0,0,0) 72%),
+    linear-gradient(150deg,#FBEDEB 0%,#F4F3EF 72%);
+  box-shadow:inset 0 0 0 1px rgba(248,0,0,.08);
+}
+.plate-n{
+  position:absolute;top:clamp(10px,2vw,26px);left:clamp(14px,2.4vw,32px);
+  font-size:clamp(2.6rem,6vw,4.6rem);font-weight:700;line-height:1;
+  letter-spacing:-.05em;color:rgba(15,16,17,.055);
+  font-variant-numeric:tabular-nums;
 }
 .plate img{
-  width:auto;height:auto;max-height:62%;max-width:74%;object-fit:contain;
-  mix-blend-mode:multiply;filter:grayscale(1) contrast(1.04);
+  position:relative;
+  width:auto;height:auto;max-height:58%;max-width:66%;object-fit:contain;
+  /* In colour here — the grid elsewhere holds the art to the page's
+     monochrome; on its own page it is the only picture there is. Multiply
+     drops the white box the source art is drawn on, which otherwise sits
+     as a hard rectangle on the tinted ground. */
+  mix-blend-mode:multiply;
+  filter:saturate(1.06);
 }
 .plate-name{
+  position:relative;
   font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;
-  font-weight:700;color:var(--mute);
+  font-weight:700;color:var(--ink-2);
 }
 .plate-end{
   display:grid;place-items:center;width:100%;height:100%;
@@ -464,7 +528,10 @@ button{font:inherit;color:inherit}
   overflow:clip;
 }
 .book[data-book="on"] .face-front{
-  border-left:none;background:var(--paper);
+  border-left:none;
+  background:
+    linear-gradient(180deg,rgba(248,0,0,.035) 0%,rgba(248,0,0,0) 190px),
+    var(--paper);
   padding-top:clamp(18px,3vw,42px);
   box-shadow:22px 30px 70px rgba(15,16,17,.18);
 }
@@ -487,6 +554,10 @@ button{font:inherit;color:inherit}
 .book[data-book="on"] .face-back::before{
   content:'';position:absolute;inset:0 0 0 auto;width:38px;pointer-events:none;
   background:linear-gradient(270deg,rgba(15,16,17,.13),rgba(15,16,17,0));
+}
+.book[data-book="on"] .face-name::after{
+  content:'';display:block;width:38px;height:2px;background:var(--brand);
+  margin-top:.85rem;
 }
 .book[data-book="on"] .face-folio{
   display:block;position:absolute;right:clamp(16px,1.8vw,26px);
@@ -636,17 +707,6 @@ button{font:inherit;color:inherit}
   .ftr-grid{grid-template-columns:1fr 1fr}
 }
 @media (max-width:760px){
-  .nav{
-    position:fixed;inset:0 0 auto 0;top:0;padding:88px var(--gut) 30px;
-    flex-direction:column;align-items:flex-start;gap:4px;
-    background:var(--paper);border-bottom:1px solid var(--line);
-    transform:translateY(-102%);transition:transform var(--t) var(--ease);
-  }
-  .nav.open{transform:none}
-  .hdr-logo,.hdr-logo img{width:114px}
-  .nav a{font-size:1.08rem;letter-spacing:-.015em;text-transform:none;padding-block:11px;width:100%}
-  .burger{display:flex}
-  .hdr-cta .btn-line{display:none}
   .offset-grid,.stats,.field-row{grid-template-columns:1fr}
   .hero-grid{grid-template-columns:1fr;align-items:start}
   .ftr-grid{grid-template-columns:1fr}
@@ -899,7 +959,11 @@ button{font:inherit;color:inherit}
 .consent{display:flex;gap:.6rem;align-items:flex-start;cursor:pointer}
 .consent input{margin-top:3px;accent-color:var(--accent);flex:none}
 .consent span{font-size:.79rem;color:var(--mute);line-height:1.6}
-.consent a{color:var(--accent-ink);font-weight:600}
+.consent a{
+  color:var(--accent-ink);font-weight:600;
+  /* Reaches a comfortable height without displacing the sentence it is in. */
+  padding-block:7px;margin-block:-7px;
+}
 .form-done{text-align:center;padding:2.4rem 1.4rem}
 .form-done-ic{
   width:54px;height:54px;margin:0 auto 1.1rem;border-radius:100px;background:var(--accent);
@@ -1578,4 +1642,42 @@ button{font:inherit;color:inherit}
   .note-card,.note-card:hover{--tilt:0deg}
   .pcard:hover{transform:none}
   .pcard:hover .pcard-shine{animation:none}
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   Small screens: the two things a sweep of every route at ten
+   widths actually found.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width:1280px){
+  /* 1. Tracked uppercase labels were landing at 10.5–10.9px. Letter-spaced
+     capitals read smaller than their size suggests, and on a phone that is
+     below what is comfortable. Nothing goes under 11px. */
+  .face-meta,.face-open,.plate-name,.cover-t,.cover-cta,.face-folio,
+  .emi-head,.emi-note,.bcat,.bmeta,.astat-l,.vs-head,.wiz-lbl,
+  .scard-rate,.scard-link,.tool-link span,.note-n,.work-rate,
+  .ftr h4,.ftr-note,.ftr-bot,.crumbs,.pfacts span,.stat-l,.step-n,
+  .eyebrow,.band strong,.factor-w,.book-folio,.score-read span,
+  .fg label,.field label,.consent span,.cover-brand,.zoom-hint,
+  .table-scroll thead th,.lead-fallback,.lead-ref{
+    font-size:11.2px;
+  }
+
+}
+
+@media (max-width:820px){
+  /* 2. Footer and list links were 18px tall — a text line with no padding
+     is not a tap target. These are block links, so the padding costs
+     nothing but height. */
+  .ftr ul li a,
+  .ftr-bot a,
+  .ftr-bot div a,
+  .contact-list a,
+  .crumbs a,
+  .scard-link,
+  .tool-link{
+    display:inline-flex;padding-block:11px;
+  }
+  .ftr ul{gap:.1rem}
+  .ftr-bot{gap:.2rem 1.4rem}
 }

@@ -46,8 +46,10 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
     }
   };
 
-  const plate = (p: LoanProduct, eager: boolean) => (
+  const plate = (p: LoanProduct, n: number, eager: boolean) => (
     <span className="plate">
+      <span className="plate-n" aria-hidden="true">{String(n).padStart(2, '0')}</span>
+      <span className="plate-ring" aria-hidden="true" />
       <img
         src={p.image}
         alt=""
@@ -89,7 +91,7 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
             <span className="cover-brand">{site.name}</span>
           </div>
           <div className="face face-back" onClick={prev} aria-hidden="true">
-            {plate(products[0], true)}
+            {plate(products[0], 1, true)}
           </div>
         </div>
 
@@ -112,6 +114,14 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
                 <span className="face-rate">From {p.rateFrom}</span>
                 <span className="face-name">{p.name}</span>
                 <span className="face-blurb">{p.blurb}</span>
+                {/* The right page had a hole in the middle of it. These are
+                    the product's own highlights, so it fills with something
+                    worth reading rather than with spacing. */}
+                <span className="face-points">
+                  {p.highlights.slice(0, 3).map((h) => (
+                    <span key={h}>{h}</span>
+                  ))}
+                </span>
                 <span className="face-meta">
                   <span>Up to {p.maxAmount}</span>
                   <span>Tenure {p.maxTenure}</span>
@@ -129,7 +139,7 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
               </div>
 
               <div className="face face-back" onClick={prev} aria-hidden="true">
-                {facing ? plate(facing, false) : <span className="plate-end">{site.name}</span>}
+                {facing ? plate(facing, idx + 2, false) : <span className="plate-end">{site.name}</span>}
               </div>
             </div>
           );
