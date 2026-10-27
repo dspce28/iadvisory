@@ -6,14 +6,15 @@ import type { LoanProduct } from '@/lib/site';
 /**
  * The six products as the leaves of a book.
  *
- * Each leaf is hinged at the spine (transform-origin at its left edge) inside
- * a container that carries the perspective, and holds two faces with their
- * backs hidden — the recto is the product, the verso is the back of that
- * printed page. Turning a leaf is one rotateY to -180°.
+ * Each product is a spread: its picture on the left page, its details on the
+ * right. That falls out of how a book is actually bound — the verso of leaf k
+ * and the recto of leaf k+1 face each other — so leaf k carries the details
+ * of product k on its front and the picture of product k+1 on its back.
  *
- * Without JavaScript the 3D never switches on and the same markup lays out
- * as a plain grid of six cards, because a book you cannot turn is worse than
- * no book at all.
+ * Clicking the right page turns forward, the left page turns back, and the
+ * link inside the right page stops the click so it can do its own job.
+ * Click-to-turn is a mouse affordance only: the arrows are real buttons and
+ * the arrow keys work, so nothing here depends on being able to click a div.
  */
 export default function ProductBook({ products }: { products: LoanProduct[] }) {
   const [turned, setTurned] = useState(0);
@@ -41,6 +42,20 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
     }
   };
 
+  const plate = (p: LoanProduct, eager: boolean) => (
+    <span className="plate">
+      <img
+        src={p.image}
+        alt=""
+        width={400}
+        height={400}
+        loading={eager ? 'eager' : 'lazy'}
+        decoding="async"
+      />
+      <span className="plate-name">{p.name}</span>
+    </span>
+  );
+
   return (
     <div className="bookwrap">
       <div
@@ -52,39 +67,30 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
         aria-roledescription="book"
         aria-label={`Loan products, page ${turned + 1} of ${products.length}`}
       >
-        {/* The left-hand page, only ever seen before the first turn. */}
-        <div className="book-left" aria-hidden="true">
-          <span className="eyebrow eyebrow-plain">Six products</span>
-          <p className="book-left-t">One application, and the same set of lenders behind all of it.</p>
-          <span className="book-left-h">Turn the page</span>
+        {/* The left page before anything has been turned: the first picture. */}
+        <div className="book-left" onClick={() => go(-1)} aria-hidden="true">
+          {plate(products[0], true)}
         </div>
 
         {products.map((p, i) => {
-          const isTurned = i < turned;
           const current = i === turned;
+          const facing = products[i + 1];
           return (
             <div
               key={p.slug}
-              className={`leaf${isTurned ? ' turned' : ''}`}
-              style={{ zIndex: isTurned ? i + 1 : products.length * 2 - i }}
+              className={`leaf${i < turned ? ' turned' : ''}`}
+              style={{ zIndex: i < turned ? i + 1 : products.length * 2 - i }}
             >
-              {/* Recto: the product. */}
-              <Link
+              {/* Recto: the details. */}
+              <div
                 className="face face-front"
-                href={`/loans/${p.slug}/`}
-                prefetch={false}
-                tabIndex={current ? 0 : -1}
+                onClick={() => go(1)}
                 aria-hidden={current ? undefined : true}
               >
-                <span className="face-plate">
-                  <img
-                    src={p.image}
-                    alt=""
-                    width={400}
-                    height={400}
-                    loading={i < 2 ? 'eager' : 'lazy'}
-                    decoding="async"
-                  />
+                {/* Only ever seen in the no-JS grid, where a card with no
+                    picture would be a worse card. */}
+                <span className="plate plate-flat">
+                  <img src={p.image} alt="" width={400} height={400} loading="lazy" decoding="async" />
                 </span>
                 <span className="face-rate">From {p.rateFrom}</span>
                 <span className="face-name">{p.name}</span>
@@ -93,50 +99,64 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
                   <span>Up to {p.maxAmount}</span>
                   <span>Tenure {p.maxTenure}</span>
                 </span>
-                <span className="face-open">Open this loan</span>
+                <Link
+                  className="face-open"
+                  href={`/loans/${p.slug}/`}
+                  prefetch={false}
+                  tabIndex={current ? 0 : -1}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  Open this loan
+                </Link>
                 <span className="face-folio">{String(i + 1).padStart(2, '0')}</span>
-              </Link>
+              </div>
 
-              {/* Verso: the back of that printed page. */}
-              <span className="face face-back" aria-hidden="true">
-                <span className="verso-mark">i</span>
-                <span className="verso-name">{p.name}</span>
-              </span>
+              {/* Verso: the picture of the product this page faces. */}
+              <div className="face face-back" onClick={() => go(-1)} aria-hidden="true">
+                {facing ? plate(facing, i === 0) : <span className="plate-end">iAdvisory</span>}
+              </div>
             </div>
           );
         })}
-      </div>
 
-      <div className="book-ctl">
-        <button
-          type="button"
-          className="book-arrow"
-          onClick={() => go(-1)}
-          disabled={turned === 0}
-          aria-label="Previous product"
-        >
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M15 5 8 12l7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
+        {/* The thumb controls, over the pages rather than beneath the book. */}
+        <div className="book-nav" aria-hidden={false}>
+          <button
+            type="button"
+            className="book-arrow prev"
+            onClick={(e) => {
+              e.stopPropagation();
+              go(-1);
+            }}
+            disabled={turned === 0}
+            aria-label="Previous product"
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M15 5 8 12l7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
 
-        <span className="book-folio" aria-live="polite">
-          <strong>{String(turned + 1).padStart(2, '0')}</strong>
-          <i />
-          {String(products.length).padStart(2, '0')}
-        </span>
+          <span className="book-folio" aria-live="polite">
+            <strong>{String(turned + 1).padStart(2, '0')}</strong>
+            <i />
+            {String(products.length).padStart(2, '0')}
+          </span>
 
-        <button
-          type="button"
-          className="book-arrow"
-          onClick={() => go(1)}
-          disabled={turned === last}
-          aria-label="Next product"
-        >
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
+          <button
+            type="button"
+            className="book-arrow next"
+            onClick={(e) => {
+              e.stopPropagation();
+              go(1);
+            }}
+            disabled={turned === last}
+            aria-label="Next product"
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   );
