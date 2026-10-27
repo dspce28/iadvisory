@@ -743,7 +743,7 @@ button{font:inherit;color:inherit}
   --ox:36%;
   --oy:50%;
 }
-.zoom[data-zoom="on"]{height:330svh}
+.zoom[data-zoom="on"]{height:440svh}
 .zoom-stage{
   position:sticky;top:0;height:100svh;overflow:clip;
   display:grid;
@@ -805,6 +805,7 @@ button{font:inherit;color:inherit}
 }
 .zoom-copy{
   position:relative;z-index:4;align-self:end;justify-self:start;
+  transform:translateY(var(--copy-y,0px));
   padding:0 var(--gut) clamp(54px,9vh,104px);
   max-width:min(720px,92vw);
   color:var(--paper);
@@ -842,7 +843,7 @@ button{font:inherit;color:inherit}
 .zoom[data-zoom="on"] .zoom-hint{color:var(--ink-2)}
 
 @media (max-width:760px){
-  .zoom[data-zoom="on"]{height:300svh}
+  .zoom[data-zoom="on"]{height:390svh}
   .zoom-copy{justify-self:stretch;max-width:none;padding-bottom:clamp(44px,8vh,72px)}
   .zoom-hint{display:none}
 }
@@ -858,6 +859,11 @@ button{font:inherit;color:inherit}
 .zoom:not([data-zoom="on"]) .zoom-hint{display:none}
 .zoom:not([data-zoom="on"]) .zoom-space{display:block;opacity:1}
 .zoom:not([data-zoom="on"]) .zoom-scrim{opacity:1}
+/* Land on the resolved composition rather than the opening frame: mark to
+   the right, arc turned under it, words already gone. */
+.zoom:not([data-zoom="on"]) .ws-mark{transform:translateX(26vw)}
+.zoom:not([data-zoom="on"]) .ws-arc{transform:rotate(180deg)}
+.zoom:not([data-zoom="on"]) .ws-words{opacity:0}
 
 @media (prefers-reduced-motion:reduce){
   .zoom,.zoom[data-zoom="on"]{height:auto;min-height:100svh}
@@ -865,7 +871,10 @@ button{font:inherit;color:inherit}
   .zoom-mask,.zoom-canvas,.zoom-grain,.zoom-hint{display:none}
   .zoom[data-zoom="on"] .zoom-space,
   .zoom .zoom-space{display:block;opacity:1}
-  .zoom-scrim,.zoom-copy{opacity:1}
+  .zoom-scrim,.zoom-copy{opacity:1;transform:none}
+  .ws-mark{transform:translateX(26vw)}
+  .ws-arc{transform:rotate(180deg)}
+  .ws-words{opacity:0}
 }
 
 /* ── Credit-health estimator ───────────────────────────────────── */
@@ -1182,6 +1191,8 @@ button{font:inherit;color:inherit}
 /* ── The mark, its halo and its arc ───────────────────────────── */
 .ws-mark{
   position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;
+  --mark-rest-y:0px;
+  transform:translateX(var(--mark-x,0px));
 }
 .ws-mark > *{grid-area:1/1;justify-self:center;align-self:center}
 .ws-glow{
@@ -1192,12 +1203,18 @@ button{font:inherit;color:inherit}
     rgba(248,72,0,.015) 58%,
     rgba(248,72,0,0) 74%);
 }
-.ws-arc{width:auto;height:clamp(230px,40svh,400px);overflow:visible}
+.ws-arc{
+  width:auto;height:clamp(230px,40svh,400px);overflow:visible;
+  /* One rotation about the mark's centre takes the crown to the far side of
+     the circle, where the same curve reads as a smile. It is the same arc:
+     nothing is redrawn. */
+  transform:rotate(var(--arc-rot,0deg));
+}
 .ws-arc-halo{filter:blur(4px)}
 .ws-i{width:auto;height:clamp(120px,21svh,205px)}
 
 /* The vocabulary. */
-.ws-words{position:absolute;inset:0;pointer-events:none}
+.ws-words{position:absolute;inset:0;pointer-events:none;opacity:var(--words,1)}
 .ws-w{
   position:absolute;left:var(--x);top:var(--y);
   transform:translate(-50%,-50%);
@@ -1214,7 +1231,7 @@ button{font:inherit;color:inherit}
 }
 .ws-w.hot{color:#F84800}
 .ws-w:hover{color:#F84800}
-.ws-w.hot:hover{color:#9A9A9A}
+.ws-w.hot:hover{color:#FFFFFF}
 @keyframes wsfloat{
   from{transform:translate(-50%,-50%) translateY(calc(var(--drift) * -1))}
   to{transform:translate(-50%,-50%) translateY(var(--drift))}
@@ -1228,6 +1245,12 @@ button{font:inherit;color:inherit}
 }
 
 @media (max-width:860px){
+  /* On a phone the copy fills the lower half, so the mark lifts as the copy
+     arrives — otherwise the heading is set straight through the smile. */
+  .ws-mark{--mark-rest-y:-13svh;transform:translate(var(--mark-x,0px),calc(var(--copy,0) * -13svh))}
+  /* The fallbacks render the resolved composition, so they need the same
+     lift the phone layout applies at the end of the flight. */
+  .zoom:not([data-zoom="on"]) .ws-mark{transform:translate(26vw,var(--mark-rest-y))}
   .ws-w{font-size:calc(var(--sz) * clamp(.62rem,2.5vw,.86rem))}
   /* On a phone the heading and buttons take most of the lower half, so the
      words that live there are dropped rather than set behind the type. */
@@ -1236,4 +1259,5 @@ button{font:inherit;color:inherit}
 }
 @media (prefers-reduced-motion:reduce){
   .ws-w{animation:none}
+  .ws-mark{transform:translate(26vw,var(--mark-rest-y))}
 }

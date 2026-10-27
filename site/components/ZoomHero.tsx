@@ -78,25 +78,45 @@ export default function ZoomHero({ variant = 'engrave' }: { variant?: FieldVaria
       if (travel <= 0) return;
       const raw = clamp(-el.getBoundingClientRect().top / travel);
 
+      // Three acts, with a deliberate hold between the second and the third
+      // so the scene is allowed to be just the scene before anything else
+      // asks for attention.
+      //
+      //   0.00 – 0.44  the dive, through the tittle
+      //   0.44 – 0.64  the hold: the image, and nothing else
+      //   0.64 – 0.94  the resolve: copy rises, mark goes right, the arc
+      //                swings under it, the words go to ground
+
       // Geometric, so the approach reads at a constant rate rather than
       // stalling and then lurching.
-      const s = Math.pow(MAX_SCALE, raw);
-      const veil = 1 - clamp((raw - 0.78) / 0.16);
+      const s = Math.pow(MAX_SCALE, clamp(raw / 0.44));
+      const veil = 1 - clamp((raw - 0.32) / 0.12);
       // The engraving hands over to the word space on the way through.
-      const media = 1 - clamp((raw - 0.52) / 0.22);
-      const space = clamp((raw - 0.58) / 0.26);
-      const copy = clamp((raw - 0.84) / 0.14);
+      const media = 1 - clamp((raw - 0.26) / 0.14);
+      const space = clamp((raw - 0.28) / 0.16);
+
+      const t3 = clamp((raw - 0.64) / 0.3);
+      // The words leave before the copy is strong enough to compete with
+      // them, so the crossover is a handover rather than two things shouting
+      // over each other at half opacity.
+      const words = clamp(1 - t3 * 2);
+      // Eased, so the copy arrives rather than slides in at constant speed.
+      const e3 = 1 - Math.pow(1 - clamp((t3 - 0.22) / 0.78), 3);
 
       el.style.setProperty('--s', s.toFixed(3));
       el.style.setProperty('--veil', veil.toFixed(3));
       el.style.setProperty('--media', media.toFixed(3));
       el.style.setProperty('--space', space.toFixed(3));
-      el.style.setProperty('--copy', copy.toFixed(3));
+      el.style.setProperty('--copy', e3.toFixed(3));
+      el.style.setProperty('--copy-y', `${((1 - e3) * 64).toFixed(1)}px`);
+      el.style.setProperty('--mark-x', `${(e3 * 26).toFixed(2)}vw`);
+      el.style.setProperty('--arc-rot', `${(e3 * 180).toFixed(1)}deg`);
+      el.style.setProperty('--words', words.toFixed(3));
       el.style.setProperty('--hint', (1 - clamp(raw * 6)).toFixed(3));
 
       // The bar is over black from here, and the words only become
       // hoverable once they are actually on screen.
-      const ink = raw > 0.5;
+      const ink = raw > 0.42;
       if (ink !== wasInk) {
         wasInk = ink;
         if (ink) el.setAttribute('data-ink', '');
@@ -105,14 +125,15 @@ export default function ZoomHero({ variant = 'engrave' }: { variant?: FieldVaria
       }
       fieldLive.current = media > 0.01;
 
-      const near = raw > 0.5;
+      const near = raw > 0.2;
       if (near !== wasNear) {
         wasNear = near;
         if (near) el.setAttribute('data-near', '');
         else el.removeAttribute('data-near');
       }
 
-      const live = raw > 0.86;
+      // The words are hoverable only while they are actually there to hover.
+      const live = space > 0.9 && words > 0.35;
       if (live !== wasSpace) {
         wasSpace = live;
         if (live) el.setAttribute('data-space', '');
