@@ -291,9 +291,14 @@ button{font:inherit;color:inherit}
 
 /* ── Fallback: six cards ───────────────────────────────────────── */
 .book{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.6vw,24px)}
-.book .book-left,
-.book .face-back,
-.book .book-nav{display:none}
+/* Hidden only while the book is NOT running, so book mode never has to
+   undo it. Hiding them unconditionally and re-enabling each one in book
+   mode cost me the same bug twice: the fallback rule is less specific but
+   still wins on `display`, which the book-mode rule never restated. */
+.book:not([data-book="on"]) .book-board,
+.book:not([data-book="on"]) .leaf-cover,
+.book:not([data-book="on"]) .face-back,
+.book:not([data-book="on"]) .book-nav{display:none}
 .book .leaf{position:relative}
 .face-front{
   display:flex;flex-direction:column;
@@ -353,6 +358,9 @@ button{font:inherit;color:inherit}
 .book[data-book="on"]{
   display:block;position:relative;
   width:min(100%,940px);margin-inline:auto;
+  /* Shut, only the right-hand half exists, so the whole thing slides left to
+     stand the cover in the middle. Opening widens it into a spread. */
+  transition:transform .95s var(--ease);
   /* Shorter than it is wide now the picture has a page of its own, so the
      whole spread clears the fold on a laptop. */
   aspect-ratio:2/1.08;
@@ -360,6 +368,9 @@ button{font:inherit;color:inherit}
   outline:none;
 }
 .book[data-book="on"]:focus-visible{outline:2px solid var(--accent);outline-offset:14px;border-radius:4px}
+.book[data-book="on"][data-open="no"]{transform:translateX(-25%)}
+.book[data-book="on"][data-open="no"] .book-nav{opacity:0;pointer-events:none}
+.book-nav{transition:opacity .5s var(--ease) .25s}
 .book[data-book="on"] .plate-flat{display:none}
 .book[data-book="on"] .face-front,
 .book[data-book="on"] .face-back,
@@ -385,12 +396,56 @@ button{font:inherit;color:inherit}
   font-weight:700;color:var(--line-2);
 }
 
-.book[data-book="on"] .book-left{
-  display:block;
+/* What the turned pages come to rest on. */
+.book[data-book="on"] .book-board{
   position:absolute;inset:0 50% 0 0;z-index:0;
-  background:linear-gradient(90deg,#FBFAF8 0%,#F3F2EE 86%,#E4E3DE 100%);
+  background:linear-gradient(90deg,#FBFAF8 0%,#F3F2EE 86%,#E2E1DC 100%);
   border:1px solid var(--line);border-right:none;
   border-radius:var(--r) 0 0 var(--r);
+  box-shadow:-18px 26px 60px rgba(15,16,17,.16);
+  opacity:0;transition:opacity .45s var(--ease);
+}
+.book[data-book="on"][data-open="yes"] .book-board{opacity:1}
+
+/* ── The cover ─────────────────────────────────────────────────── */
+.book[data-book="on"] .face-cover{
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+  gap:.1rem;padding:clamp(26px,3.6vw,54px);
+  /* An explicit colour under the gradients. Declared with gradients alone
+     the computed background-color is transparent, so anything that stops
+     them painting leaves white text on white. */
+  background-color:#0C0D10;
+  background-image:
+    radial-gradient(120% 90% at 86% 8%,rgba(248,0,0,.26) 0%,rgba(248,0,0,0) 58%),
+    linear-gradient(145deg,#17181C 0%,#0C0D10 62%,#141519 100%);
+  color:var(--paper);
+  border-color:#0C0D10;
+  box-shadow:22px 30px 70px rgba(15,16,17,.34),inset 0 1px 0 rgba(255,255,255,.07);
+}
+.cover-mark{font-size:clamp(2.2rem,3.4vw,3.2rem);font-weight:700;line-height:1;color:var(--brand)}
+.cover-rule{display:block;width:44px;height:2px;background:var(--brand);margin:1.3rem 0 1.5rem}
+.cover-t{
+  font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;font-weight:700;
+  color:rgba(255,255,255,.52);
+}
+.cover-s{
+  margin-top:.7rem;font-size:clamp(1.1rem,1.7vw,1.5rem);line-height:1.26;
+  letter-spacing:-.024em;font-weight:600;max-width:22ch;
+}
+.cover-cta{
+  margin-top:auto;display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+  color:var(--accent-dk);
+}
+.cover-cta::after{
+  content:'';width:8px;height:8px;
+  border-right:1.7px solid currentColor;border-top:1.7px solid currentColor;
+  transform:rotate(45deg);
+}
+.cover-brand{
+  position:absolute;right:clamp(20px,2.4vw,34px);bottom:clamp(18px,2vw,28px);
+  font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;font-weight:700;
+  color:rgba(255,255,255,.26);
 }
 
 .book[data-book="on"] .leaf{
@@ -411,16 +466,27 @@ button{font:inherit;color:inherit}
 .book[data-book="on"] .face-front{
   border-left:none;background:var(--paper);
   padding-top:clamp(18px,3vw,42px);
-  /* The gutter: the page darkens as it falls into the spine. */
-  box-shadow:inset 30px 0 38px -30px rgba(15,16,17,.42);
+  box-shadow:22px 30px 70px rgba(15,16,17,.18);
 }
-.book[data-book="on"] .face-front:hover{transform:none;box-shadow:inset 30px 0 38px -30px rgba(15,16,17,.42)}
+/* The gutter, and the cut edge of the pages stacked under this one. */
+.book[data-book="on"] .face-front::before{
+  content:'';position:absolute;inset:0 auto 0 0;width:38px;pointer-events:none;
+  background:linear-gradient(90deg,rgba(15,16,17,.13),rgba(15,16,17,0));
+}
+.book[data-book="on"] .face-front::after{
+  content:'';position:absolute;inset:7px 0 7px auto;right:0;width:5px;pointer-events:none;
+  background:repeating-linear-gradient(90deg,#FFF 0 1px,#E2E1DC 1px 2px);
+  opacity:.9;
+}
+.book[data-book="on"] .face-front:hover{transform:none}
 .book[data-book="on"] .face-back{
-  display:block;
   transform:rotateY(180deg);
   border-radius:var(--r) 0 0 var(--r);border-right:none;
-  background:linear-gradient(90deg,#E4E3DE 0%,#F3F2EE 14%,#FBFAF8 100%);
-  box-shadow:inset -30px 0 38px -30px rgba(15,16,17,.42);
+  background:linear-gradient(90deg,#E2E1DC 0%,#F3F2EE 14%,#FBFAF8 100%);
+}
+.book[data-book="on"] .face-back::before{
+  content:'';position:absolute;inset:0 0 0 auto;width:38px;pointer-events:none;
+  background:linear-gradient(270deg,rgba(15,16,17,.13),rgba(15,16,17,0));
 }
 .book[data-book="on"] .face-folio{
   display:block;position:absolute;right:clamp(16px,1.8vw,26px);
@@ -431,7 +497,7 @@ button{font:inherit;color:inherit}
 
 /* ── Thumb controls, over the pages ────────────────────────────── */
 .book[data-book="on"] .book-nav{
-  display:block;position:absolute;inset:0;z-index:60;pointer-events:none;
+  position:absolute;inset:0;z-index:60;pointer-events:none;
 }
 .book-arrow{
   position:absolute;top:50%;transform:translateY(-50%);pointer-events:auto;
@@ -465,7 +531,8 @@ button{font:inherit;color:inherit}
   /* One page at a time on a phone: a two-page spread at this width is two
      columns of nothing. The picture rides above the details instead. */
   .book[data-book="on"]{aspect-ratio:1/1.2;width:min(100%,420px)}
-  .book[data-book="on"] .book-left{display:none}
+  .book[data-book="on"][data-open="no"]{transform:none}
+  .book[data-book="on"] .book-board{display:none}
   .book[data-book="on"] .leaf{left:0;width:100%}
   .book[data-book="on"] .face{border-radius:var(--r)}
   .book[data-book="on"] .face-front{border-left:1px solid var(--line)}

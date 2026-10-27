@@ -2,24 +2,26 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import type { LoanProduct } from '@/lib/site';
+import { site } from '@/lib/site';
 
 /**
- * The six products as the leaves of a book.
+ * The six products as a book, with a cover.
  *
- * Each product is a spread: its picture on the left page, its details on the
- * right. That falls out of how a book is actually bound — the verso of leaf k
- * and the recto of leaf k+1 face each other — so leaf k carries the details
- * of product k on its front and the picture of product k+1 on its back.
+ * Leaf 0 is the cover; leaves 1..6 are the products. Each product is a
+ * spread — picture on the left page, details on the right — which falls out
+ * of how a book is bound: the verso of one leaf faces the recto of the next,
+ * so leaf k carries product k's details on its front and the next product's
+ * picture on its back.
  *
- * Clicking the right page turns forward, the left page turns back, and the
- * link inside the right page stops the click so it can do its own job.
- * Click-to-turn is a mouse affordance only: the arrows are real buttons and
- * the arrow keys work, so nothing here depends on being able to click a div.
+ * `turned` is how many leaves have been turned. 0 means the book is shut and
+ * only the cover is showing; 6 is the last spread. Turning past the last
+ * spread shuts the book again.
  */
 export default function ProductBook({ products }: { products: LoanProduct[] }) {
   const [turned, setTurned] = useState(0);
   const root = useRef<HTMLDivElement>(null);
-  const last = products.length - 1;
+  const lastSpread = products.length; // leaf index of the final right-hand page
+  const open = turned > 0;
 
   useEffect(() => {
     const el = root.current;
@@ -30,15 +32,17 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
     };
   }, []);
 
-  const go = (d: -1 | 1) => setTurned((v) => Math.min(last, Math.max(0, v + d)));
+  /** Forward from the last spread shuts the book rather than stopping dead. */
+  const next = () => setTurned((v) => (v >= lastSpread ? 0 : v + 1));
+  const prev = () => setTurned((v) => Math.max(0, v - 1));
 
   const onKey = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowRight') {
+    if (e.key === 'ArrowRight' || e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      go(1);
+      next();
     } else if (e.key === 'ArrowLeft') {
       e.preventDefault();
-      go(-1);
+      prev();
     }
   };
 
@@ -61,32 +65,45 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
       <div
         className="book"
         ref={root}
+        data-open={open ? 'yes' : 'no'}
         onKeyDown={onKey}
         tabIndex={0}
         role="group"
         aria-roledescription="book"
-        aria-label={`Loan products, page ${turned + 1} of ${products.length}`}
+        aria-label={open ? `Loan products, page ${turned} of ${products.length}` : 'Loan products, closed. Open the book.'}
       >
-        {/* The left page before anything has been turned: the first picture. */}
-        <div className="book-left" onClick={() => go(-1)} aria-hidden="true">
-          {plate(products[0], true)}
+        {/* The pages already turned rest on this. */}
+        <span className="book-board" aria-hidden="true" />
+
+        {/* Leaf 0: the cover. */}
+        <div
+          className={`leaf leaf-cover${turned > 0 ? ' turned' : ''}`}
+          style={{ zIndex: turned > 0 ? 1 : (products.length + 1) * 2 }}
+        >
+          <div className="face face-cover" onClick={next} aria-hidden={open ? true : undefined}>
+            <span className="cover-mark">i</span>
+            <span className="cover-rule" />
+            <span className="cover-t">Six products</span>
+            <span className="cover-s">One application, and the same set of lenders behind all of it.</span>
+            <span className="cover-cta">Open the book</span>
+            <span className="cover-brand">{site.name}</span>
+          </div>
+          <div className="face face-back" onClick={prev} aria-hidden="true">
+            {plate(products[0], true)}
+          </div>
         </div>
 
-        {products.map((p, i) => {
-          const current = i === turned;
-          const facing = products[i + 1];
+        {products.map((p, idx) => {
+          const leaf = idx + 1;
+          const current = leaf === turned;
+          const facing = products[idx + 1];
           return (
             <div
               key={p.slug}
-              className={`leaf${i < turned ? ' turned' : ''}`}
-              style={{ zIndex: i < turned ? i + 1 : products.length * 2 - i }}
+              className={`leaf${leaf < turned ? ' turned' : ''}`}
+              style={{ zIndex: leaf < turned ? leaf + 1 : (products.length + 1) * 2 - leaf }}
             >
-              {/* Recto: the details. */}
-              <div
-                className="face face-front"
-                onClick={() => go(1)}
-                aria-hidden={current ? undefined : true}
-              >
+              <div className="face face-front" onClick={next} aria-hidden={current ? undefined : true}>
                 {/* Only ever seen in the no-JS grid, where a card with no
                     picture would be a worse card. */}
                 <span className="plate plate-flat">
@@ -108,28 +125,26 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
                 >
                   Open this loan
                 </Link>
-                <span className="face-folio">{String(i + 1).padStart(2, '0')}</span>
+                <span className="face-folio">{String(leaf).padStart(2, '0')}</span>
               </div>
 
-              {/* Verso: the picture of the product this page faces. */}
-              <div className="face face-back" onClick={() => go(-1)} aria-hidden="true">
-                {facing ? plate(facing, i === 0) : <span className="plate-end">iAdvisory</span>}
+              <div className="face face-back" onClick={prev} aria-hidden="true">
+                {facing ? plate(facing, false) : <span className="plate-end">{site.name}</span>}
               </div>
             </div>
           );
         })}
 
-        {/* The thumb controls, over the pages rather than beneath the book. */}
-        <div className="book-nav" aria-hidden={false}>
+        <div className="book-nav">
           <button
             type="button"
             className="book-arrow prev"
             onClick={(e) => {
               e.stopPropagation();
-              go(-1);
+              prev();
             }}
-            disabled={turned === 0}
-            aria-label="Previous product"
+            disabled={!open}
+            aria-label="Previous page"
           >
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M15 5 8 12l7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -137,9 +152,15 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
           </button>
 
           <span className="book-folio" aria-live="polite">
-            <strong>{String(turned + 1).padStart(2, '0')}</strong>
-            <i />
-            {String(products.length).padStart(2, '0')}
+            {open ? (
+              <>
+                <strong>{String(turned).padStart(2, '0')}</strong>
+                <i />
+                {String(products.length).padStart(2, '0')}
+              </>
+            ) : (
+              <strong>Cover</strong>
+            )}
           </span>
 
           <button
@@ -147,10 +168,9 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
             className="book-arrow next"
             onClick={(e) => {
               e.stopPropagation();
-              go(1);
+              next();
             }}
-            disabled={turned === last}
-            aria-label="Next product"
+            aria-label={turned >= lastSpread ? 'Close the book' : 'Next page'}
           >
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />

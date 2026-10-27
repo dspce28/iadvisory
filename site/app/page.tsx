@@ -270,7 +270,7 @@ export default function Home() {
       </section>
 
       {/* ── Products ─────────────────────────────────────────── */}
-      <section className="section section-warm">
+      <section className="section">
         <div className="wrap">
           <Reveal className="eyebrow" as="div">
             What we arrange
