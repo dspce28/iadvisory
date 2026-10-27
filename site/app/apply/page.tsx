@@ -13,7 +13,7 @@ export default function Apply() {
     <>
       <div className="phero">
         <div className="wrap">
-          <h1>Apply for <span style={{ color: 'var(--red)' }}>Your Loan</span></h1>
+          <h1>Apply for <span style={{ color: 'var(--accent)' }}>Your Loan</span></h1>
           <p>Three short steps. No upfront fees. We handle the paperwork.</p>
         </div>
       </div>

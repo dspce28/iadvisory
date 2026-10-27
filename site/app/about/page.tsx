@@ -15,7 +15,7 @@ export default function About() {
     <>
       <div className="phero">
         <div className="wrap">
-          <h1>About <span style={{ color: 'var(--red)' }}>iAdvisory</span></h1>
+          <h1>About <span style={{ color: 'var(--accent)' }}>iAdvisory</span></h1>
           <p>Advising borrowers since {site.since} — {yearsInBusiness()} years.</p>
         </div>
       </div>

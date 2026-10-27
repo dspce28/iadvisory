@@ -53,7 +53,7 @@ export default function Cibil() {
     <>
       <div className="phero">
         <div className="wrap">
-          <h1>Your <span style={{ color: 'var(--red)' }}>CIBIL Score</span></h1>
+          <h1>Your <span style={{ color: 'var(--accent)' }}>CIBIL Score</span></h1>
           <p>What the number means, what moves it, and what to do before you apply.</p>
         </div>
       </div>
@@ -94,7 +94,7 @@ export default function Cibil() {
           <Reveal>
             <div className="aside-box" style={{ marginTop: '3rem' }}>
               <h4>Check your own report free</h4>
-              <p style={{ color: 'var(--txt2)', fontSize: '.9rem', lineHeight: 1.8 }}>
+              <p style={{ color: 'var(--mute)', fontSize: '.9rem', lineHeight: 1.8 }}>
                 Every credit bureau in India must give you one free full report each year. Get yours
                 directly from CIBIL, Experian, Equifax or CRIF High Mark. {site.name} does not
                 resell credit reports and will never ask you to pay us for one.

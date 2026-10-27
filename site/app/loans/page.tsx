@@ -14,7 +14,7 @@ export default function Loans() {
     <>
       <div className="phero">
         <div className="wrap">
-          <h1>Our <span style={{ color: 'var(--red)' }}>Loan Products</span></h1>
+          <h1>Our <span style={{ color: 'var(--accent)' }}>Loan Products</span></h1>
           <p>One profile, compared across {site.stats.partnerBanks} lenders. Pick the product you need.</p>
         </div>
       </div>

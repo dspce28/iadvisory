@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import ZoomHero from '@/components/ZoomHero';
 import Reveal from '@/components/Reveal';
+import EmiWidget from '@/components/EmiWidget';
+import ScoreEstimator from '@/components/ScoreEstimator';
 import { loanProducts, site, yearsInBusiness } from '@/lib/site';
 
 const partners = [
@@ -84,6 +86,62 @@ const faqs = [
   },
 ];
 
+const direct = [
+  {
+    q: 'Who picks the lender',
+    a: 'You do, from whoever advertised at you this week.',
+    b: 'We do, from the ones whose written policy your profile already fits.',
+  },
+  {
+    q: 'What a rejection costs',
+    a: 'A hard enquiry on your bureau file, and the next lender sees it.',
+    b: 'We aim for one application, to the lender most likely to say yes.',
+  },
+  {
+    q: 'What you are quoted',
+    a: 'The headline rate. Fees surface at sanction.',
+    b: 'Rate, processing fee, insurance loading and total interest, before you sign.',
+  },
+  {
+    q: 'Who chases the file',
+    a: 'You, between four relationship managers.',
+    b: 'One named advisor, through to disbursement.',
+  },
+  {
+    q: 'What it costs you',
+    a: 'Nothing — but nobody is working for you either.',
+    b: 'Nothing. The lender pays a distribution fee once your loan disburses.',
+  },
+];
+
+const documents = [
+  {
+    t: 'Identity and address',
+    d: 'PAN and Aadhaar. Both, in every case — PAN is how the bureau file is pulled.',
+  },
+  {
+    t: 'Income, if you are salaried',
+    d: 'Last three salary slips, six months of bank statements for the salary account, and Form 16 or two years of ITR.',
+  },
+  {
+    t: 'Income, if you are self-employed',
+    d: 'Two to three years of ITR with computation, audited financials where applicable, GST returns and twelve months of current-account statements.',
+  },
+  {
+    t: 'Property, for a secured loan',
+    d: 'Sale agreement or allotment letter, chain of title, approved plan and the latest tax receipt.',
+  },
+];
+
+const eligibility = [
+  { t: 'Age', d: '21 at application, and under 60–65 at the end of the tenure.' },
+  { t: 'Income', d: 'Varies by city and lender. In Ahmedabad, most salaried programmes start around ₹25,000 net a month.' },
+  { t: 'Credit score', d: '700+ opens the widest set. 650–700 still gets sanctioned, usually priced higher.' },
+  { t: 'Obligations', d: 'Existing EMIs plus the new one should stay under roughly 50–60% of net income.' },
+  { t: 'Stability', d: 'Six months in the current job for salaried; two to three years of business vintage otherwise.' },
+  { t: 'Banking conduct', d: 'No cheque returns or EMI bounces in the last six months. This fails more files than the score does.' },
+];
+
 const stats = [
   { n: site.stats.loansApproved, l: 'Loans facilitated' },
   { n: site.stats.partnerBanks, l: 'Partner lenders' },
@@ -152,6 +210,60 @@ export default function Home() {
               </Reveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── Tools ────────────────────────────────────────────── */}
+      <section className="section section-warm" id="tools">
+        <div className="wrap">
+          <Reveal className="eyebrow" as="div">
+            Work it out first
+          </Reveal>
+          <Reveal>
+            <h2 className="h1" style={{ marginTop: '1.1rem', maxWidth: '24ch' }}>
+              Know the number before a bank does.
+            </h2>
+          </Reveal>
+          <Reveal delay={1}>
+            <p className="body" style={{ marginTop: '1.2rem' }}>
+              Two things decide what you will be offered: what the EMI does to your monthly budget,
+              and what your credit file looks like to an underwriter. Both are worth knowing before
+              anyone pulls your bureau report.
+            </p>
+          </Reveal>
+
+          <div className="tools">
+            <Reveal>
+              <EmiWidget />
+              <p className="small" style={{ marginTop: '1rem' }}>
+                Reducing-balance method, the same one every Indian lender uses.{' '}
+                <Link href="/emi-calculator/" prefetch={false} style={{ color: 'var(--accent-ink)', fontWeight: 600 }}>
+                  Full calculator, with the amortisation split
+                </Link>
+                .
+              </p>
+            </Reveal>
+            <Reveal delay={1}>
+              <ScoreEstimator />
+            </Reveal>
+          </div>
+
+          <Reveal delay={2}>
+            <div className="tool-links">
+              <Link className="tool-link" href="/calculators/eligibility/" prefetch={false}>
+                <span>Eligibility</span>
+                How much you can borrow on your income
+              </Link>
+              <Link className="tool-link" href="/calculators/balance-transfer/" prefetch={false}>
+                <span>Balance transfer</span>
+                Whether switching lender actually saves you money
+              </Link>
+              <Link className="tool-link" href="/calculators/prepayment/" prefetch={false}>
+                <span>Prepayment</span>
+                What one lump sum takes off your interest
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -242,6 +354,114 @@ export default function Home() {
               </Reveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── Direct vs advised ────────────────────────────────── */}
+      <section className="section">
+        <div className="wrap">
+          <Reveal className="eyebrow" as="div">
+            Why go through an advisor at all
+          </Reveal>
+          <Reveal>
+            <h2 className="h1" style={{ marginTop: '1.1rem', maxWidth: '22ch' }}>
+              The same loan, two different outcomes.
+            </h2>
+          </Reveal>
+
+          <div className="vs">
+            <div className="vs-head" aria-hidden="true">
+              <span />
+              <span>Applying direct</span>
+              <span className="vs-ours">Through iAdvisory</span>
+            </div>
+            {direct.map((r, i) => (
+              <Reveal key={r.q} className="vs-row" delay={i} as="div">
+                <h3 className="vs-q">{r.q}</h3>
+                <p className="vs-a">{r.a}</p>
+                <p className="vs-b">{r.b}</p>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal delay={2}>
+            <p className="small" style={{ marginTop: '1.8rem', maxWidth: '64ch' }}>
+              The fee we are paid is set by the lender and does not change your rate. If a lender
+              paying us less is the right answer for you, that is the one we will put you in front
+              of — and we will tell you that is what we have done.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ── Eligibility ──────────────────────────────────────── */}
+      <section className="section section-warm">
+        <div className="wrap rail">
+          <div className="rail-sticky">
+            <Reveal className="eyebrow" as="div">
+              Before you apply
+            </Reveal>
+            <Reveal>
+              <h2 className="h1" style={{ marginTop: '1.1rem', maxWidth: '15ch' }}>
+                What lenders are actually checking.
+              </h2>
+            </Reveal>
+            <Reveal delay={1}>
+              <p className="body" style={{ marginTop: '1.3rem' }}>
+                None of this is secret, but almost none of it is published either. Six things decide
+                most files.
+              </p>
+            </Reveal>
+            <Reveal delay={2}>
+              <div style={{ marginTop: '1.8rem' }}>
+                <Link className="btn btn-accent btn-lg" href="/calculators/eligibility/" prefetch={false}>
+                  Check your eligibility
+                </Link>
+              </div>
+            </Reveal>
+          </div>
+
+          <div className="facts">
+            {eligibility.map((e, i) => (
+              <Reveal key={e.t} className="fact" delay={i % 3} as="div">
+                <h3 className="h3">{e.t}</h3>
+                <p className="small" style={{ marginTop: '.45rem' }}>{e.d}</p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Documents ────────────────────────────────────────── */}
+      <section className="section">
+        <div className="wrap">
+          <Reveal className="eyebrow" as="div">
+            What to keep ready
+          </Reveal>
+          <Reveal>
+            <h2 className="h1" style={{ marginTop: '1.1rem', maxWidth: '24ch' }}>
+              One set of documents. Submitted once.
+            </h2>
+          </Reveal>
+
+          <div className="docs">
+            {documents.map((d, i) => (
+              <Reveal key={d.t} className="doc" delay={i % 2} as="div">
+                <span className="doc-n">{String(i + 1).padStart(2, '0')}</span>
+                <div>
+                  <h3 className="h3">{d.t}</h3>
+                  <p className="body" style={{ marginTop: '.5rem', fontSize: '.93rem' }}>{d.d}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal delay={2}>
+            <div className="note" style={{ marginTop: '2rem', maxWidth: '72ch' }}>
+              We never ask for your PAN or Aadhaar number over WhatsApp or a web form, and nothing
+              you send us is passed to a lender until you have seen the offer and told us to proceed.
+            </div>
+          </Reveal>
         </div>
       </section>
 

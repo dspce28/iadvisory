@@ -13,7 +13,7 @@ export default function Contact() {
     <>
       <div className="phero">
         <div className="wrap">
-          <h1>Contact <span style={{ color: 'var(--red)' }}>Us</span></h1>
+          <h1>Contact <span style={{ color: 'var(--accent)' }}>Us</span></h1>
           <p>A named advisor, not a call centre. {site.hours}.</p>
         </div>
       </div>

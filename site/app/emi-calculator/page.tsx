@@ -23,7 +23,7 @@ export default function Emi() {
     <>
       <div className="phero">
         <div className="wrap">
-          <h1>EMI <span style={{ color: 'var(--red)' }}>Calculator</span></h1>
+          <h1>EMI <span style={{ color: 'var(--accent)' }}>Calculator</span></h1>
           <p>
             Move the sliders to see the instalment — and, more usefully, how much of your repayment
             is interest rather than principal.

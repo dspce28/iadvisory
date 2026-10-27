@@ -21,7 +21,7 @@ export default function Calculators() {
     <>
       <div className="phero">
         <div className="wrap">
-          <h1>Loan <span style={{ color: 'var(--red)' }}>Calculators</span></h1>
+          <h1>Loan <span style={{ color: 'var(--accent)' }}>Calculators</span></h1>
           <p>Run the numbers yourself. Nothing is stored and nothing is sent anywhere.</p>
         </div>
       </div>

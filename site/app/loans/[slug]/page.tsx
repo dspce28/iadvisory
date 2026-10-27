@@ -67,7 +67,7 @@ export default async function LoanPage({ params }: { params: Promise<{ slug: str
             <span>/</span> <span aria-current="page">{p.name}</span>
           </nav>
           <h1>
-            {p.name} <span style={{ color: 'var(--red)' }}>in {site.address.locality}</span>
+            {p.name} <span style={{ color: 'var(--accent)' }}>in {site.address.locality}</span>
           </h1>
           <p>{p.blurb}</p>
           <div className="pfacts">

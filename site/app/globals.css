@@ -15,12 +15,15 @@
   --warm:#F4F4F2;
   --warm-2:#EBEBE7;
 
-  --accent:#C41E3A;
-  --accent-ink:#A5162E;   /* for text on light, where the brand red is thin */
-  --accent-soft:rgba(196,30,58,.08);
-  /* The brand red reaches only 3.26:1 on the ink ground, so small text on dark
-     uses a lifted tint of it (6.6:1) rather than the brand value. */
-  --accent-dk:#FF5C70;
+  /* The logo's own red. Reserved for fills and graphics, because at 4.21:1 on
+     white it cannot legally carry small text — in either direction. */
+  --brand:#F80000;
+  /* The working red: the nearest value to the logo that clears AA both as
+     small text on paper (4.85:1) and as a button carrying white text (4.85:1). */
+  --accent:#E50000;
+  --accent-ink:#CC0000;   /* links and fine print on paper — 5.89:1 */
+  --accent-dk:#FF5C5C;    /* small text on the ink ground — 6.29:1 */
+  --accent-soft:rgba(248,0,0,.07);
 
   /* One easing for everything that moves. Expo-out: fast commit, soft land. */
   --ease:cubic-bezier(.22,1,.36,1);
@@ -54,7 +57,7 @@ body{
 img,svg,video,canvas{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit}
-::selection{background:var(--accent);color:#fff}
+::selection{background:var(--brand);color:#fff}
 
 /* ── Type scale ────────────────────────────────────────────────── */
 .display{
@@ -93,7 +96,7 @@ button{font:inherit;color:inherit}
   gap:.7rem;
 }
 .eyebrow::before{
-  content:'';width:26px;height:1px;background:var(--accent);flex:none;
+  content:'';width:26px;height:1px;background:var(--brand);flex:none;
 }
 .eyebrow-plain::before{display:none}
 
@@ -416,35 +419,6 @@ button{font:inherit;color:inherit}
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Hero texture — the media that shows through the letterforms.
-   Layered gradients rather than a video: real text (selectable,
-   indexable, in the real typeface) with real movement behind it,
-   for none of the bytes a video costs.
-   ═══════════════════════════════════════════════════════════════ */
-.hero-mark{
-  --hero-media:
-    radial-gradient(60% 120% at 18% 20%, #E8325A 0%, transparent 55%),
-    radial-gradient(50% 110% at 78% 72%, #7A0E20 0%, transparent 60%),
-    radial-gradient(70% 90% at 50% 110%, #1A1B1E 0%, transparent 62%),
-    linear-gradient(104deg,#C41E3A 0%,#0F1011 42%,#2E2F31 64%,#C41E3A 100%);
-  background-image:var(--hero-media);
-  background-size:180% 180%;
-  background-position:var(--hero-x,50%) var(--hero-y,50%);
-}
-[data-motion="on"] .hero-mark{animation:drift 22s var(--ease-in-out) infinite}
-@keyframes drift{
-  0%{background-position:18% 30%}
-  50%{background-position:82% 70%}
-  100%{background-position:18% 30%}
-}
-/* Grain, so the gradient reads as material and not as a CSS gradient. */
-.hero-grain{
-  position:absolute;inset:0;pointer-events:none;opacity:.5;
-  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.055'/%3E%3C/svg%3E");
-  mix-blend-mode:multiply;
-}
-
-/* ═══════════════════════════════════════════════════════════════
    Interior pages. The same tokens, applied to the content types
    the rest of the site is made of.
    ═══════════════════════════════════════════════════════════════ */
@@ -731,22 +705,6 @@ button{font:inherit;color:inherit}
   .wiz::before{left:5%;right:5%}
 }
 
-/* ── Hero wordmark plumbing ────────────────────────────────────── */
-.hero-mark-wrap{position:relative;width:100%}
-.hero-mark{
-  display:block;width:100%;text-align:center;
-  font-weight:700;letter-spacing:-.052em;line-height:.82;
-  font-size:clamp(3.6rem,19vw,18.5rem);
-  color:var(--ink);
-  /* .line clips to the line box, which stops short of the descender on the
-     final "y". Pad the box out and pull the following content back up. */
-  padding-bottom:.14em;
-  margin-bottom:-.07em;
-}
-@supports ((-webkit-background-clip:text) or (background-clip:text)){
-  .hero-mark{color:transparent;-webkit-text-fill-color:transparent;
-    -webkit-background-clip:text;background-clip:text}
-}
 .sr-only{
   position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
   clip-path:inset(50%);white-space:nowrap;border:0;
@@ -781,9 +739,9 @@ button{font:inherit;color:inherit}
   /* A static stand-in for the canvas, so the letterforms still carry colour
      on a first frame, with JS off, or if the 2D context is refused. */
   background:
-    radial-gradient(32% 42% at 36% 46%,#D62444 0%,rgba(214,36,68,0) 64%),
-    radial-gradient(20% 26% at 60% 42%,#FF5C70 0%,rgba(255,92,112,0) 62%),
-    radial-gradient(60% 70% at 50% 64%,#780C1E 0%,rgba(120,12,30,0) 66%),
+    radial-gradient(32% 42% at 36% 46%,#F80000 0%,rgba(248,0,0,0) 64%),
+    radial-gradient(20% 26% at 60% 42%,#FF6A5A 0%,rgba(255,106,90,0) 62%),
+    radial-gradient(60% 70% at 50% 64%,#7A0404 0%,rgba(122,4,4,0) 66%),
     #0B0C0D;
 }
 .zoom-stage > *{grid-area:1/1}
@@ -874,3 +832,93 @@ button{font:inherit;color:inherit}
   .zoom-copy{opacity:1}
   .zoom-hint i{animation:none}
 }
+
+/* ── Credit-health estimator ───────────────────────────────────── */
+.score-dial{position:relative;margin:.4rem 0 .2rem;max-width:268px}
+.score-dial svg{width:100%;height:auto;display:block}
+.score-track{stroke:var(--line)}
+.score-read{
+  position:absolute;inset:auto 0 2%;text-align:center;
+  display:flex;flex-direction:column;gap:.25rem;
+}
+.score-read strong{font-size:2.2rem;font-weight:600;letter-spacing:-.045em;line-height:1}
+.score-read span{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+.score-note{margin:.2rem 0 1.5rem;font-size:.9rem;line-height:1.6;color:var(--mute);max-width:40ch}
+.score-fields{display:flex;flex-direction:column;gap:1.1rem;padding-top:1.3rem;border-top:1px solid var(--line)}
+.score-fields .cf{margin-bottom:0}
+.score .emi-note{padding-top:1.1rem;border-top:1px solid var(--line);margin-top:1.4rem}
+.score .emi-note a{color:var(--accent-ink);font-weight:600}
+
+/* ── Tool pair ─────────────────────────────────────────────────── */
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2vw,30px);margin-top:clamp(32px,4vw,56px);align-items:start}
+@media (max-width:980px){.tools{grid-template-columns:1fr}}
+
+/* ── Tool shortcuts ────────────────────────────────────────────── */
+.tool-links{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.4vw,20px);margin-top:clamp(20px,2.4vw,34px)}
+.tool-link{
+  display:flex;flex-direction:column;gap:.5rem;
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--r);
+  padding:clamp(18px,1.9vw,26px);
+  font-size:.9rem;line-height:1.55;color:var(--mute);
+  transition:transform var(--t) var(--ease),border-color var(--t) var(--ease),box-shadow var(--t) var(--ease);
+}
+.tool-link span{
+  font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--ink);
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+}
+.tool-link span::after{
+  content:'';width:9px;height:9px;flex:none;
+  border-right:1.6px solid var(--accent);border-top:1.6px solid var(--accent);
+  transform:rotate(45deg);transition:transform var(--t) var(--ease);
+}
+.tool-link:hover{transform:translateY(-4px);border-color:var(--line-2);box-shadow:0 18px 48px rgba(15,16,17,.1)}
+.tool-link:hover span::after{transform:rotate(45deg) translate(2px,-2px)}
+@media (max-width:860px){.tool-links{grid-template-columns:1fr}}
+
+/* ── Direct vs advised ─────────────────────────────────────────── */
+.vs{margin-top:clamp(34px,4.5vw,60px);border-top:1px solid var(--line)}
+.vs-head,.vs-row{
+  display:grid;grid-template-columns:minmax(0,.84fr) minmax(0,1fr) minmax(0,1.1fr);
+  gap:clamp(14px,2.4vw,40px);align-items:start;
+}
+.vs-head{
+  padding-block:.9rem;
+  font-size:.66rem;letter-spacing:.15em;text-transform:uppercase;font-weight:700;color:var(--mute);
+  border-bottom:1px solid var(--line);
+}
+.vs-ours{color:var(--accent-ink)}
+.vs-row{padding-block:clamp(18px,2.2vw,30px);border-bottom:1px solid var(--line)}
+.vs-q{margin:0;font-size:1rem;font-weight:600;letter-spacing:-.016em;line-height:1.3}
+.vs-a,.vs-b{margin:0;font-size:.92rem;line-height:1.62}
+.vs-a{color:var(--mute)}
+.vs-b{color:var(--ink);font-weight:500;position:relative;padding-left:1.5rem}
+.vs-b::before{
+  content:'';position:absolute;left:1px;top:.42rem;width:11px;height:6px;
+  border-left:1.7px solid var(--accent);border-bottom:1.7px solid var(--accent);
+  transform:rotate(-45deg);
+}
+@media (max-width:860px){
+  .vs-head{display:none}
+  .vs-row{grid-template-columns:1fr;gap:.55rem}
+  .vs-a::before{content:'Applying direct — ';font-weight:700;color:var(--ink-2)}
+  .vs-b{padding-left:0}
+  .vs-b::before{display:none}
+  .vs-b::after{content:''}
+  .vs-b{font-weight:600}
+}
+
+/* ── Eligibility facts ─────────────────────────────────────────── */
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,1.8vw,26px)}
+.fact{
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--r);
+  padding:clamp(18px,2vw,28px);
+}
+@media (max-width:620px){.facts{grid-template-columns:1fr}}
+
+/* ── Documents ─────────────────────────────────────────────────── */
+.docs{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,2.6vw,44px);margin-top:clamp(34px,4.5vw,60px)}
+.doc{display:grid;grid-template-columns:auto 1fr;gap:clamp(14px,1.8vw,26px);align-items:start}
+.doc-n{
+  font-size:.7rem;font-weight:700;letter-spacing:.14em;color:var(--accent);padding-top:.34rem;
+}
+@media (max-width:760px){.docs{grid-template-columns:1fr}}

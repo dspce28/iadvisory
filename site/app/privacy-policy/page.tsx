@@ -13,7 +13,7 @@ export default function Privacy() {
     <>
       <div className="phero">
         <div className="wrap">
-          <h1>Privacy <span style={{ color: 'var(--red)' }}>Policy</span></h1>
+          <h1>Privacy <span style={{ color: 'var(--accent)' }}>Policy</span></h1>
           <p>Last updated: {new Date().toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}</p>
         </div>
       </div>

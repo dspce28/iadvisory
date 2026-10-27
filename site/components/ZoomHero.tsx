@@ -100,11 +100,11 @@ export default function ZoomHero() {
     // Three slow bodies of colour. Radial gradients are soft by construction,
     // so this needs no blur filter and no second canvas to composite through.
     const blobs = [
-      { c: [214, 36, 68], r: 0.30, ax: 0.15, ay: 0.12, sx: 0.00019, sy: 0.00015, px: 0.36, py: 0.46 },
-      { c: [255, 92, 112], r: 0.17, ax: 0.2, ay: 0.15, sx: -0.00013, sy: 0.00023, px: 0.6, py: 0.42 },
-      { c: [255, 186, 196], r: 0.055, ax: 0.2, ay: 0.15, sx: -0.00013, sy: 0.00023, px: 0.6, py: 0.42 },
-      { c: [120, 12, 30], r: 0.55, ax: 0.13, ay: 0.17, sx: 0.0001, sy: -0.00017, px: 0.5, py: 0.64 },
-      { c: [62, 6, 18], r: 0.9, ax: 0.1, ay: 0.1, sx: -0.00007, sy: 0.00009, px: 0.44, py: 0.52 },
+      { c: [248, 0, 0], r: 0.3, ax: 0.15, ay: 0.12, sx: 0.00019, sy: 0.00015, px: 0.36, py: 0.46 },
+      { c: [255, 106, 90], r: 0.17, ax: 0.2, ay: 0.15, sx: -0.00013, sy: 0.00023, px: 0.6, py: 0.42 },
+      { c: [255, 198, 184], r: 0.05, ax: 0.2, ay: 0.15, sx: -0.00013, sy: 0.00023, px: 0.6, py: 0.42 },
+      { c: [122, 4, 4], r: 0.55, ax: 0.13, ay: 0.17, sx: 0.0001, sy: -0.00017, px: 0.5, py: 0.64 },
+      { c: [58, 2, 2], r: 0.9, ax: 0.1, ay: 0.1, sx: -0.00007, sy: 0.00009, px: 0.44, py: 0.52 },
     ];
 
     let raf = 0;
@@ -140,6 +140,35 @@ export default function ZoomHero() {
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
         ctx.fill();
+      }
+
+      // Detail. Gradients alone have nothing in focus, so flying into them
+      // reads as the picture going soft rather than as arriving somewhere.
+      // A lattice and a set of rings give the eye hard edges to land on, and
+      // they stay hard because the canvas never scales — only the mask does.
+      const cx = (0.6 + Math.sin(t * -0.00013) * 0.2) * w;
+      const cy = (0.42 + Math.cos(t * 0.00023) * 0.15) * h;
+      const reach = Math.max(w, h) * 0.46;
+
+      const step = 26;
+      ctx.fillStyle = '#FFFFFF';
+      for (let gx = (w % step) / 2; gx < w; gx += step) {
+        for (let gy = (h % step) / 2; gy < h; gy += step) {
+          const d = Math.hypot(gx - cx, gy - cy) / reach;
+          if (d > 1) continue;
+          ctx.globalAlpha = (1 - d) * (1 - d) * 0.5;
+          ctx.fillRect(gx, gy, 1.2, 1.2);
+        }
+      }
+
+      ctx.globalAlpha = 1;
+      ctx.lineWidth = 1;
+      for (let k = 1; k <= 3; k++) {
+        const rr = reach * (0.26 * k) + Math.sin(t * 0.00022 + k) * 7;
+        ctx.strokeStyle = `rgba(255,255,255,${0.1 - k * 0.022})`;
+        ctx.beginPath();
+        ctx.arc(cx, cy, rr, 0, Math.PI * 2);
+        ctx.stroke();
       }
       ctx.globalCompositeOperation = 'source-over';
     }

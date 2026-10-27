@@ -15,7 +15,7 @@ export default function CompareIndex() {
     <>
       <div className="phero">
         <div className="wrap">
-          <h1>Loan <span style={{ color: 'var(--red)' }}>Comparisons</span></h1>
+          <h1>Loan <span style={{ color: 'var(--accent)' }}>Comparisons</span></h1>
           <p>The decisions worth getting right, argued both ways.</p>
         </div>
       </div>

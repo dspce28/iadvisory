@@ -18,7 +18,7 @@ export default function Blog() {
     <>
       <div className="phero">
         <div className="wrap">
-          <h1>Insights &amp; <span style={{ color: 'var(--red)' }}>Guides</span></h1>
+          <h1>Insights &amp; <span style={{ color: 'var(--accent)' }}>Guides</span></h1>
           <p>Straight answers on loans, credit and planning — no sales pitch.</p>
         </div>
       </div>

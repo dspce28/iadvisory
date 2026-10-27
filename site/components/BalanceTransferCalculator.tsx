@@ -33,7 +33,7 @@ export default function BalanceTransferCalculator() {
   return (
     <div className="emi">
       <div className="emi-head">Net saving after switching costs</div>
-      <div className="emi-val" style={{ color: worth ? '#047857' : 'var(--red)' }}>
+      <div className="emi-val" style={{ color: worth ? '#047857' : 'var(--accent)' }}>
         {r.net >= 0 ? inr(r.net) : '−' + inr(Math.abs(r.net))}
       </div>
 
