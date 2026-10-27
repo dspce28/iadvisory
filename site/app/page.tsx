@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import HeroMark from '@/components/HeroMark';
+import ZoomHero from '@/components/ZoomHero';
 import Reveal from '@/components/Reveal';
 import { loanProducts, site, yearsInBusiness } from '@/lib/site';
 
@@ -93,33 +93,7 @@ const stats = [
 export default function Home() {
   return (
     <>
-      {/* ── Hero ─────────────────────────────────────────────── */}
-      <section className="hero">
-        <div className="wrap">
-          <Reveal className="eyebrow" as="div">
-            Loan advisory · {site.address.locality}
-          </Reveal>
-          <HeroMark />
-          <div className="hero-grid">
-            <Reveal delay={1}>
-              <p className="hero-lede">
-                We are not a lender and not a lead farm. We read your profile, shortlist the banks
-                that will actually sanction it, and run the file to disbursement.
-              </p>
-            </Reveal>
-            <Reveal delay={2}>
-              <div className="hero-actions">
-                <Link className="btn btn-dark btn-lg" href="/apply/" prefetch={false}>
-                  Start an application
-                </Link>
-                <Link className="btn btn-line btn-lg" href="/emi-calculator/" prefetch={false}>
-                  Calculate an EMI
-                </Link>
-              </div>
-            </Reveal>
-          </div>
-        </div>
-      </section>
+      <ZoomHero />
 
       {/* ── Lender marquee ───────────────────────────────────── */}
       <div className="strip" aria-label="Partner banks and NBFCs">
