@@ -17,6 +17,7 @@ const MAX_SCALE = 34;
 export default function HeroLab() {
   const [variant, setVariant] = useState<FieldVariant>('engrave');
   const [p, setP] = useState(0);
+  const [luxe, setLuxe] = useState(true);
   const canvas = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -57,7 +58,7 @@ export default function HeroLab() {
   const active = VARIANTS.find((v) => v.id === variant);
 
   return (
-    <div className="lab">
+    <div className={luxe ? 'lab luxe' : 'lab'}>
       <div
         className="lab-stage"
         style={{ ['--s' as string]: s.toFixed(3), ['--veil' as string]: veil.toFixed(3) }}
@@ -101,6 +102,14 @@ export default function HeroLab() {
         </div>
 
         <p className="lab-note">{active?.note}</p>
+
+        <label className="lab-toggle">
+          <input type="checkbox" checked={luxe} onChange={(e) => setLuxe(e.target.checked)} />
+          <span>
+            Luxury register — warm ivory instead of pure white, a high-contrast serif instead of
+            the grotesk, brand red demoted to an accent
+          </span>
+        </label>
 
         <label className="lab-scrub">
           <span>Scrub the flight</span>

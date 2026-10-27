@@ -9,9 +9,19 @@
  * rather than as arriving somewhere.
  */
 
-export type FieldVariant = 'engrave' | 'particles' | 'metal' | 'solid' | 'light';
+export type FieldVariant = 'bronze' | 'skyline' | 'engrave' | 'particles' | 'metal' | 'solid' | 'light';
 
 export const VARIANTS: { id: FieldVariant; name: string; note: string }[] = [
+  {
+    id: 'bronze',
+    name: 'Bronze',
+    note: 'Deep ink under moving bronze and champagne light. Red at full saturation is the one colour luxury never uses alone — this keeps your red for the logo and lets warm metal carry the register.',
+  },
+  {
+    id: 'skyline',
+    name: 'Skyline at dusk',
+    note: 'The only one here with a subject. Property at scale, warm light, a city you are flying into — not atmosphere. Representational, so it says "loan agency" without a caption.',
+  },
   {
     id: 'engrave',
     name: 'Engraving',
@@ -53,11 +63,194 @@ const rnd = (seed: number) => {
 };
 
 export function createField(ctx: CanvasRenderingContext2D, variant: FieldVariant): Field {
+  if (variant === 'bronze') return bronze(ctx);
+  if (variant === 'skyline') return skyline(ctx);
   if (variant === 'solid') return solid(ctx);
   if (variant === 'engrave') return engrave(ctx);
   if (variant === 'particles') return particles(ctx);
   if (variant === 'metal') return metal(ctx);
   return light(ctx);
+}
+
+/* ── Bronze ──────────────────────────────────────────────────────── */
+function bronze(ctx: CanvasRenderingContext2D): Field {
+  const r = rnd(7301);
+  const grain = Array.from({ length: 1400 }, () => r());
+  let plate: HTMLCanvasElement | null = null;
+  let builtFor = '';
+
+  return (t, w, h) => {
+    const key = `${Math.round(w)}x${Math.round(h)}`;
+    if (key !== builtFor) {
+      // A fixed machined grain, drawn once. Fine hairlines rather than a
+      // gradient, so there is something hard-edged to arrive at.
+      const c = document.createElement('canvas');
+      c.width = Math.max(1, Math.round(w));
+      c.height = Math.max(1, Math.round(h));
+      const g = c.getContext('2d');
+      if (g) {
+        const base = g.createLinearGradient(0, 0, w * 0.4, h);
+        base.addColorStop(0, '#0B0A09');
+        base.addColorStop(0.5, '#15110D');
+        base.addColorStop(1, '#0A0908');
+        g.fillStyle = base;
+        g.fillRect(0, 0, w, h);
+        g.lineWidth = 1;
+        for (let i = 0, x = -h * 0.3; x <= w; i++, x += 3) {
+          const v = grain[i % grain.length];
+          g.strokeStyle = `rgba(214,170,106,${0.01 + v * 0.036})`;
+          g.beginPath();
+          g.moveTo(Math.round(x) + 0.5, 0);
+          g.lineTo(Math.round(x) + 0.5 + h * 0.3, h);
+          g.stroke();
+        }
+      }
+      plate = c;
+      builtFor = key;
+    }
+
+    if (plate) ctx.drawImage(plate, 0, 0, w, h);
+
+    // Two highlights at different speeds: one champagne, one deep bronze.
+    // Metal reads as metal because the light moves across it, not because
+    // of its colour.
+    ctx.globalCompositeOperation = 'lighter';
+    for (const [off, col, wid, a] of [
+      [0, '246,226,186', 0.26, 0.3],
+      [0.46, '198,138,62', 0.4, 0.42],
+      [0.78, '255,241,214', 0.1, 0.22],
+    ] as const) {
+      const p = (((t * 0.000024 + off) % 1) + 1) % 1;
+      const cx = -w * 0.5 + p * w * 2;
+      const g = ctx.createLinearGradient(cx - w * wid, 0, cx + w * wid, h * 0.9);
+      g.addColorStop(0, `rgba(${col},0)`);
+      g.addColorStop(0.48, `rgba(${col},${a})`);
+      g.addColorStop(0.54, `rgba(${col},${a * 0.8})`);
+      g.addColorStop(1, `rgba(${col},0)`);
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+    }
+    // One cool line through it, so the warm has something to be warm against.
+    const p2 = (((t * 0.000017 + 0.2) % 1) + 1) % 1;
+    const cx2 = w * 1.4 - p2 * w * 2;
+    const cool = ctx.createLinearGradient(cx2 - w * 0.06, 0, cx2 + w * 0.06, h);
+    cool.addColorStop(0, 'rgba(120,140,170,0)');
+    cool.addColorStop(0.5, 'rgba(120,140,170,.1)');
+    cool.addColorStop(1, 'rgba(120,140,170,0)');
+    ctx.fillStyle = cool;
+    ctx.fillRect(0, 0, w, h);
+    ctx.globalCompositeOperation = 'source-over';
+
+    vignette(ctx, w, h, 0.62);
+  };
+}
+
+/* ── Skyline at dusk ─────────────────────────────────────────────── */
+function skyline(ctx: CanvasRenderingContext2D): Field {
+  // Three depth layers of building mass, each rasterised once at twice the
+  // viewport width and then scrolled. Buildings are rectangles, so the
+  // silhouettes and the lit windows stay hard-edged however far the mask has
+  // been scaled over them.
+  const LAYERS = [
+    { seed: 11, fill: '#16161B', win: '255,196,132', winA: 0.34, density: 0.1, lo: 0.3, hi: 0.52, wmin: 0.034, wmax: 0.072, speed: 0.0000042 },
+    { seed: 29, fill: '#0C0C10', win: '255,186,118', winA: 0.54, density: 0.16, lo: 0.42, hi: 0.72, wmin: 0.046, wmax: 0.095, speed: 0.0000082 },
+    { seed: 47, fill: '#040406', win: '255,172,104', winA: 0.74, density: 0.1, lo: 0.6, hi: 1.02, wmin: 0.07, wmax: 0.15, speed: 0.0000155 },
+  ];
+
+  let plates: HTMLCanvasElement[] = [];
+  let builtFor = '';
+
+  const build = (w: number, h: number) => {
+    plates = LAYERS.map((L) => {
+      const c = document.createElement('canvas');
+      c.width = Math.max(2, Math.round(w * 2));
+      c.height = Math.max(2, Math.round(h));
+      const g = c.getContext('2d');
+      if (!g) return c;
+      const r = rnd(L.seed);
+      const base = h * 1.02;
+      let x = -w * 0.1;
+      while (x < w * 2.1) {
+        const bw = (L.wmin + r() * (L.wmax - L.wmin)) * w;
+        const bh = (L.lo + r() * (L.hi - L.lo)) * h * 0.52;
+        const top = base - bh;
+        g.fillStyle = L.fill;
+        g.fillRect(Math.round(x), Math.round(top), Math.ceil(bw), Math.ceil(bh));
+
+        // A setback on the taller blocks, so the roofline is not a bar chart.
+        if (r() > 0.58) {
+          const sw = bw * (0.3 + r() * 0.3);
+          const sh = bh * (0.1 + r() * 0.22);
+          g.fillRect(Math.round(x + (bw - sw) / 2), Math.round(top - sh), Math.ceil(sw), Math.ceil(sh) + 2);
+        }
+
+        // Lit windows: a grid, mostly dark.
+        const gx = Math.max(5, Math.round(bw / 9));
+        const gy = Math.max(7, Math.round(bh / 16));
+        for (let wy = top + gy; wy < base - gy * 0.6; wy += gy) {
+          for (let wx = x + gx * 0.7; wx < x + bw - gx * 0.7; wx += gx) {
+            if (r() > L.density) continue;
+            g.fillStyle = `rgba(${L.win},${L.winA * (0.55 + r() * 0.45)})`;
+            g.fillRect(Math.round(wx), Math.round(wy), Math.max(1, Math.round(gx * 0.34)), Math.max(1, Math.round(gy * 0.3)));
+          }
+        }
+
+        // One aviation beacon, in the brand red.
+        if (bh > h * 0.34 && r() > 0.74) {
+          g.fillStyle = `rgba(${BRAND},.85)`;
+          g.fillRect(Math.round(x + bw / 2) - 1, Math.round(top) - 3, 2, 3);
+        }
+        x += bw + w * (0.004 + r() * 0.012);
+      }
+      return c;
+    });
+  };
+
+  return (t, w, h) => {
+    const key = `${Math.round(w)}x${Math.round(h)}`;
+    if (key !== builtFor) {
+      build(w, h);
+      builtFor = key;
+    }
+
+    // Dusk: cold overhead, warm at the roofline.
+    const sky = ctx.createLinearGradient(0, 0, 0, h);
+    sky.addColorStop(0, '#05060A');
+    sky.addColorStop(0.42, '#0C0910');
+    sky.addColorStop(0.72, '#2A0F12');
+    sky.addColorStop(0.88, '#6E2015');
+    sky.addColorStop(1, '#8E3418');
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, w, h);
+
+    // The last of the sun, low and off-centre.
+    const sx = w * 0.62;
+    const sy = h * 0.9;
+    const glow = ctx.createRadialGradient(sx, sy, 0, sx, sy, Math.max(w, h) * 0.52);
+    glow.addColorStop(0, 'rgba(255,146,70,.6)');
+    glow.addColorStop(0.3, `rgba(${BRAND},.22)`);
+    glow.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, w, h);
+
+    for (let i = 0; i < plates.length; i++) {
+      const p = plates[i];
+      const off = ((t * LAYERS[i].speed * w) % w) + w * 0.5;
+      ctx.drawImage(p, off, 0, w, h, 0, 0, w, h);
+
+      // Haze between the planes: the depth cue that makes it a city and not
+      // a row of boxes.
+      if (i < plates.length - 1) {
+        const haze = ctx.createLinearGradient(0, h * 0.45, 0, h);
+        haze.addColorStop(0, 'rgba(120,40,26,0)');
+        haze.addColorStop(1, `rgba(142,52,24,${0.3 - i * 0.08})`);
+        ctx.fillStyle = haze;
+        ctx.fillRect(0, 0, w, h);
+      }
+    }
+
+    vignette(ctx, w, h, 0.66);
+  };
 }
 
 /* ── Flat brand red ──────────────────────────────────────────────── */

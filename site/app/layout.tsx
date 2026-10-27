@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter_Tight } from 'next/font/google';
+import { Inter_Tight, Instrument_Serif } from 'next/font/google';
 import Script from 'next/script';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -15,6 +15,15 @@ import './globals.css';
 const sans = Inter_Tight({
   subsets: ['latin'],
   variable: '--font-sans',
+  display: 'swap',
+});
+
+// High-contrast serif, for the luxury register under evaluation.
+const serif = Instrument_Serif({
+  subsets: ['latin'],
+  weight: ['400'],
+  style: ['normal', 'italic'],
+  variable: '--font-serif',
   display: 'swap',
 });
 
@@ -73,7 +82,7 @@ const orgSchema = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const ga = process.env.NEXT_PUBLIC_GA_ID;
   return (
-    <html lang="en-IN" className={sans.variable}>
+    <html lang="en-IN" className={`${sans.variable} ${serif.variable}`}>
       <body>
         <Motion />
         <Header />

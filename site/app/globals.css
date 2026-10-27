@@ -937,6 +937,18 @@ button{font:inherit;color:inherit}
 
 /* ── Hero field bench (unlisted) ───────────────────────────────── */
 .lab{position:fixed;inset:0;display:grid;grid-template-rows:1fr auto;background:#000}
+
+/* The luxury register, applied to the same mechanic: warm ivory instead of
+   pure white, a high-contrast serif instead of a grotesk, and the brand red
+   demoted to an accent. Pure #FFF, full-saturation red and a bold grotesk
+   are the three things that read "bold" rather than "premium". */
+.luxe .zoom-word{
+  font-family:var(--font-serif),Georgia,serif;
+  font-weight:400;
+  letter-spacing:-.012em;
+}
+.luxe .zoom-mask rect{fill:#F6F2EA}
+.luxe .lab-stage{background:#F6F2EA}
 .lab-stage{position:relative;overflow:clip;display:grid;--s:1;--veil:1}
 .lab-stage > *{grid-area:1/1}
 .lab-ctl{
@@ -969,3 +981,6 @@ button{font:inherit;color:inherit}
   .lab-scrub{flex-wrap:wrap;gap:.6rem}
   .lab-scrub input{flex:1 1 100%;order:3}
 }
+.lab-toggle{display:flex;gap:.65rem;align-items:flex-start;cursor:pointer}
+.lab-toggle input{margin-top:3px;accent-color:var(--brand);flex:none}
+.lab-toggle span{font-size:.8rem;line-height:1.5;color:rgba(255,255,255,.58);max-width:70ch}
