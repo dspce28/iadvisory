@@ -17,7 +17,7 @@ const MAX_SCALE = 34;
 export default function HeroLab() {
   const [variant, setVariant] = useState<FieldVariant>('engrave');
   const [p, setP] = useState(0);
-  const [luxe, setLuxe] = useState(true);
+  const [luxe, setLuxe] = useState(false);
   const canvas = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {

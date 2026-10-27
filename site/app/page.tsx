@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import ZoomHero from '@/components/ZoomHero';
+import ScatterHero from '@/components/ScatterHero';
 import Reveal from '@/components/Reveal';
 import EmiWidget from '@/components/EmiWidget';
 import ScoreEstimator from '@/components/ScoreEstimator';
@@ -151,7 +151,7 @@ const stats = [
 export default function Home() {
   return (
     <>
-      <ZoomHero variant="engrave" />
+      <ScatterHero />
 
       {/* ── Lender marquee ───────────────────────────────────── */}
       <div className="strip" aria-label="Partner banks and NBFCs">

@@ -984,3 +984,117 @@ button{font:inherit;color:inherit}
 .lab-toggle{display:flex;gap:.65rem;align-items:flex-start;cursor:pointer}
 .lab-toggle input{margin-top:3px;accent-color:var(--brand);flex:none}
 .lab-toggle span{font-size:.8rem;line-height:1.5;color:rgba(255,255,255,.58);max-width:70ch}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   Scatter hero.
+
+   The field is every question people arrive with. It disperses, the
+   camera goes through the dot of the i, and what is left is the mark
+   and one answer. White ground throughout — the dot supplies the only
+   colour, and only while you are inside it.
+   ═══════════════════════════════════════════════════════════════ */
+.sc{
+  position:relative;height:100svh;background:var(--paper);
+  --push:0; --fade:1; --scale:1; --flash:1; --end:1; --hint:1;
+}
+.sc[data-on]{height:340svh}
+.sc[data-on] .sc-end{opacity:var(--end)}
+.sc-stage{position:sticky;top:0;height:100svh;overflow:clip;display:grid;background:var(--paper)}
+.sc-stage > *{grid-area:1/1}
+
+/* ── The field ─────────────────────────────────────────────────── */
+.sc-field{position:relative}
+.sc-item{
+  position:absolute;left:var(--x);top:var(--y);
+  display:block;white-space:nowrap;
+  font-size:calc(var(--sz) * clamp(.72rem,1.15vw,1.1rem));
+  font-weight:600;letter-spacing:.02em;
+  color:#D2D2CC;
+  opacity:var(--fade);
+  transform:
+    translate(-50%,-50%)
+    translate(
+      calc(var(--dx) * var(--push) * var(--push) * var(--dist) * 1%),
+      calc(var(--dy) * var(--push) * var(--push) * var(--dist) * 1%)
+    )
+    rotate(var(--rot))
+    scale(calc(1 + var(--push) * var(--lead)));
+  will-change:transform,opacity;
+}
+.sc-item.on{color:var(--brand)}
+.sc-item.ic{width:calc(var(--sz) * clamp(20px,2.1vw,34px));height:auto}
+.sc-item.ic svg{width:100%;height:auto;display:block}
+
+/* ── The mark ──────────────────────────────────────────────────── */
+.sc-mark{display:grid;place-items:center;pointer-events:none}
+.sc-i{
+  position:relative;height:clamp(210px,42svh,420px);aspect-ratio:260/696;
+  transform:scale(var(--scale));
+  transform-origin:41.92% 11.28%;
+  opacity:var(--flash);
+}
+.sc-i img{width:100%;height:100%;object-fit:contain}
+.sc-dot{
+  position:absolute;z-index:2;pointer-events:none;
+  left:var(--dot-x,50%);top:var(--dot-y,50%);
+  width:var(--dot-d,0px);height:var(--dot-d,0px);
+  transform:translate(-50%,-50%);
+  opacity:var(--flash);
+  overflow:visible;
+  align-self:start;justify-self:start;
+}
+
+/* ── The answer ────────────────────────────────────────────────── */
+.sc-end{
+  position:relative;z-index:3;
+  display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,.5fr);
+  gap:clamp(24px,5vw,72px);align-items:center;
+  padding:clamp(96px,13vh,150px) var(--gut) clamp(40px,7vh,80px);
+  opacity:1;
+}
+.sc-end-copy{max-width:36ch}
+.sc-h1{
+  font-size:clamp(2rem,4.6vw,3.9rem);line-height:1.02;letter-spacing:-.036em;
+  font-weight:600;margin:1rem 0 0;text-wrap:balance;
+}
+.sc-lede{
+  font-size:clamp(.98rem,1.3vw,1.16rem);line-height:1.56;color:var(--mute);
+  margin:1.2rem 0 1.9rem;max-width:44ch;
+}
+.sc-end-mark{display:flex;justify-content:flex-end}
+.sc-end-mark img{width:auto;height:clamp(170px,32svh,330px);object-fit:contain}
+
+.sc-hint{
+  position:relative;z-index:4;align-self:end;justify-self:center;
+  padding-bottom:clamp(18px,3vh,30px);
+  display:flex;align-items:center;gap:.6rem;
+  font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;
+  color:var(--ink-2);opacity:var(--hint);
+}
+.sc-hint i{
+  width:1px;height:26px;background:currentColor;display:block;
+  transform-origin:top;animation:hintdrop 1.9s var(--ease-in-out) infinite;
+}
+
+/* Without a scroll handler there is no flight, so the field and the mark
+   stand down and the answer is simply the hero. */
+.sc:not([data-on]) .sc-field,
+.sc:not([data-on]) .sc-mark,
+.sc:not([data-on]) .sc-hint{display:none}
+
+@media (max-width:860px){
+  .sc[data-on]{height:300svh}
+  .sc-end{grid-template-columns:1fr;align-content:center;gap:clamp(20px,4vh,36px)}
+  .sc-end-mark{justify-content:flex-start}
+  .sc-end-mark img{height:clamp(120px,18svh,180px)}
+  .sc-item{font-size:calc(var(--sz) * clamp(.62rem,2.6vw,.9rem))}
+  .sc-hint{display:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .sc,.sc[data-on]{height:auto;min-height:100svh}
+  .sc-stage{position:static;height:auto;min-height:100svh}
+  .sc-field,.sc-mark,.sc-hint{display:none}
+  .sc-end{opacity:1}
+}
