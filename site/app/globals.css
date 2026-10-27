@@ -847,13 +847,25 @@ button{font:inherit;color:inherit}
   .zoom-hint{display:none}
 }
 
+/* With no flight, the three layers have nothing separating them in time,
+   so stacking them produces the wordmark, the word space and the heading
+   all on top of each other. Stand the flight down and show its destination
+   instead: the word space, the mark and the copy, with no motion at all.
+   This is the no-JS case; the reduced-motion case below matches it. */
+.zoom:not([data-zoom="on"]) .zoom-mask,
+.zoom:not([data-zoom="on"]) .zoom-canvas,
+.zoom:not([data-zoom="on"]) .zoom-grain,
+.zoom:not([data-zoom="on"]) .zoom-hint{display:none}
+.zoom:not([data-zoom="on"]) .zoom-space{display:block;opacity:1}
+.zoom:not([data-zoom="on"]) .zoom-scrim{opacity:1}
+
 @media (prefers-reduced-motion:reduce){
-  /* No pin, no flight: the wordmark and the copy are simply both there. */
   .zoom,.zoom[data-zoom="on"]{height:auto;min-height:100svh}
   .zoom-stage{position:static;height:auto;min-height:100svh}
-  .zoom-mask{transform:none;opacity:1}
-  .zoom-copy{opacity:1}
-  .zoom-hint i{animation:none}
+  .zoom-mask,.zoom-canvas,.zoom-grain,.zoom-hint{display:none}
+  .zoom[data-zoom="on"] .zoom-space,
+  .zoom .zoom-space{display:block;opacity:1}
+  .zoom-scrim,.zoom-copy{opacity:1}
 }
 
 /* ── Credit-health estimator ───────────────────────────────────── */
