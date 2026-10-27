@@ -151,7 +151,7 @@ const stats = [
 export default function Home() {
   return (
     <>
-      <ZoomHero />
+      <ZoomHero variant="engrave" />
 
       {/* ── Lender marquee ───────────────────────────────────── */}
       <div className="strip" aria-label="Partner banks and NBFCs">

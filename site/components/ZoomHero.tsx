@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
+import { createField, type FieldVariant } from '@/lib/heroField';
 import { site } from '@/lib/site';
 
 /** How far the wordmark grows by the end of the scroll. Large enough that a
@@ -12,7 +13,7 @@ const MAX_SCALE = 34;
  *  This sits on the bowl of the "d" in iAdvisory. */
 const ORIGIN = { x: 36, y: 50 };
 
-export default function ZoomHero() {
+export default function ZoomHero({ variant = 'light' }: { variant?: FieldVariant }) {
   const root = useRef<HTMLElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
 
@@ -84,6 +85,10 @@ export default function ZoomHero() {
     const ctx = c.getContext('2d', { alpha: false });
     if (!ctx) return;
 
+    const field = createField(ctx, variant);
+    let raf = 0;
+    let visible = true;
+
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     let w = 0;
     let h = 0;
@@ -97,24 +102,19 @@ export default function ZoomHero() {
     size();
     window.addEventListener('resize', size, { passive: true });
 
-    // Architectural light: a measured grid under broad shafts of light.
-    //
-    // The grid is what the eye focuses on. It is drawn at device resolution
-    // on half-pixel centres, so the lines stay one pixel wide and hard-edged
-    // however far the mask has been scaled over them — the canvas never
-    // scales, only the mask does, which is the whole reason this reads as
-    // arriving somewhere rather than as a picture going soft.
-    const GRID = 54;
-    const SHAFTS = [
-      { w: 0.3, speed: 0.0000138, phase: 0, hot: 0.5 },
-      { w: 0.17, speed: 0.0000206, phase: 0.42, hot: 0.86 },
-      { w: 0.46, speed: 0.0000096, phase: 0.74, hot: 0.26 },
-      { w: 0.12, speed: 0.0000262, phase: 0.19, hot: 1 },
-    ];
-    const TILT = (-22 * Math.PI) / 180;
+    // The field is capped at ~30fps. Everything in it moves slowly enough
+    // that the cap is invisible, and during the flight the mask is being
+    // re-rasterised at scale on the same thread — paying for sixty field
+    // frames there costs the scroll itself, which is the part the eye
+    // actually judges.
+    let painted = 0;
+    const draw: FrameRequestCallback = (t) => {
+      raf = visible ? requestAnimationFrame(draw) : 0;
+      if (t - painted < 32) return;
+      painted = t;
+      field(t, w, h);
+    };
 
-    let raf = 0;
-    let visible = true;
     const io = new IntersectionObserver(
       ([e]) => {
         visible = e.isIntersecting;
@@ -124,63 +124,6 @@ export default function ZoomHero() {
     );
     io.observe(el);
 
-    function draw(t: number) {
-      raf = visible ? requestAnimationFrame(draw) : 0;
-      if (!ctx) return;
-
-      ctx.fillStyle = '#08090A';
-      ctx.fillRect(0, 0, w, h);
-
-      // ── The grid ────────────────────────────────────────────────
-      ctx.lineWidth = 1;
-      for (let i = 0, x = 0; x <= w; i++, x += GRID) {
-        ctx.strokeStyle = i % 4 === 0 ? 'rgba(248,0,0,.16)' : 'rgba(255,255,255,.052)';
-        ctx.beginPath();
-        ctx.moveTo(Math.round(x) + 0.5, 0);
-        ctx.lineTo(Math.round(x) + 0.5, h);
-        ctx.stroke();
-      }
-      for (let i = 0, y = 0; y <= h; i++, y += GRID) {
-        ctx.strokeStyle = i % 4 === 0 ? 'rgba(248,0,0,.16)' : 'rgba(255,255,255,.052)';
-        ctx.beginPath();
-        ctx.moveTo(0, Math.round(y) + 0.5);
-        ctx.lineTo(w, Math.round(y) + 0.5);
-        ctx.stroke();
-      }
-
-      // ── The shafts ──────────────────────────────────────────────
-      // Drawn in a rotated frame, so one axis is "across the beam" and the
-      // gradient can run along it without any per-pixel work.
-      const diag = Math.hypot(w, h);
-      ctx.save();
-      ctx.translate(w / 2, h / 2);
-      ctx.rotate(TILT);
-      ctx.globalCompositeOperation = 'lighter';
-      for (const s of SHAFTS) {
-        const span = diag * 1.6;
-        const pos = (((t * s.speed + s.phase) % 1) + 1) % 1;
-        const cx = -span / 2 + pos * span;
-        const half = (s.w * diag) / 2;
-        const g = ctx.createLinearGradient(cx - half, 0, cx + half, 0);
-        g.addColorStop(0, 'rgba(248,0,0,0)');
-        g.addColorStop(0.42, `rgba(255,${Math.round(46 * s.hot)},${Math.round(38 * s.hot)},${0.14 + s.hot * 0.16})`);
-        g.addColorStop(0.5, `rgba(255,${Math.round(168 * s.hot)},${Math.round(158 * s.hot)},${0.2 + s.hot * 0.4})`);
-        g.addColorStop(0.58, `rgba(248,${Math.round(34 * s.hot)},${Math.round(28 * s.hot)},${0.14 + s.hot * 0.16})`);
-        g.addColorStop(1, 'rgba(248,0,0,0)');
-        ctx.fillStyle = g;
-        ctx.fillRect(cx - half, -diag, half * 2, diag * 2);
-      }
-      ctx.restore();
-      ctx.globalCompositeOperation = 'source-over';
-
-      // ── Fall-off ────────────────────────────────────────────────
-      const v = ctx.createRadialGradient(w / 2, h * 0.46, 0, w / 2, h * 0.46, Math.max(w, h) * 0.78);
-      v.addColorStop(0, 'rgba(0,0,0,0)');
-      v.addColorStop(0.62, 'rgba(0,0,0,.18)');
-      v.addColorStop(1, 'rgba(0,0,0,.72)');
-      ctx.fillStyle = v;
-      ctx.fillRect(0, 0, w, h);
-    }
     raf = requestAnimationFrame(draw);
 
     return () => {
@@ -188,7 +131,7 @@ export default function ZoomHero() {
       if (raf) cancelAnimationFrame(raf);
       window.removeEventListener('resize', size);
     };
-  }, []);
+  }, [variant]);
 
   return (
     <section className="zoom" ref={root} aria-label={`${site.name} — loan advisory`}>
