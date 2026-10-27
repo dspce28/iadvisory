@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
-import { createField, type FieldVariant } from '@/lib/heroField';
+import { createField } from '@/lib/heroField';
 import WordSpace from '@/components/WordSpace';
 import { site } from '@/lib/site';
 
@@ -20,7 +20,7 @@ const TITTLE = { x: 0.6, y: 0.227 };
 
 const clamp = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
-export default function ZoomHero({ variant = 'engrave' }: { variant?: FieldVariant }) {
+export default function ZoomHero() {
   const root = useRef<HTMLElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const word = useRef<SVGTextElement>(null);
@@ -166,7 +166,7 @@ export default function ZoomHero({ variant = 'engrave' }: { variant?: FieldVaria
     const ctx = c.getContext('2d', { alpha: false });
     if (!ctx) return;
 
-    const field = createField(ctx, variant);
+    const field = createField(ctx);
     let raf = 0;
     let visible = true;
 
@@ -209,7 +209,7 @@ export default function ZoomHero({ variant = 'engrave' }: { variant?: FieldVaria
       if (raf) cancelAnimationFrame(raf);
       window.removeEventListener('resize', size);
     };
-  }, [variant]);
+  }, []);
 
   return (
     <section className="zoom" ref={root} aria-label={`${site.name} — loan advisory`}>
