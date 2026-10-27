@@ -1177,22 +1177,24 @@ button{font:inherit;color:inherit}
 /* ═══════════════════════════════════════════════════════════════
    Word space — what the dive opens onto.
    ═══════════════════════════════════════════════════════════════ */
-.ws{position:relative;width:100%;height:100%;background:#07070A;overflow:clip}
+.ws{position:relative;width:100%;height:100%;background:#000;overflow:clip}
 
-/* The arc. Most of the circle is below the fold, so what reads is the
-   crown of it rising behind the mark. */
-.ws-arc{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
-.ws-arc svg{width:min(150%,1500px);height:auto;overflow:visible}
-
-
-/* The mark, drawn rather than placed, so it carries the same glow. */
-.ws-i{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
-.ws-i svg{width:auto;height:clamp(130px,23svh,220px);position:relative}
-/* A static gradient instead of a filter, for the same reason. */
-.ws-i-glow{
-  position:absolute;width:clamp(240px,34svh,420px);aspect-ratio:1;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,79,24,.38) 0%,rgba(255,79,24,.12) 38%,rgba(255,79,24,0) 68%);
+/* ── The mark, its halo and its arc ───────────────────────────── */
+.ws-mark{
+  position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;
 }
+.ws-mark > *{grid-area:1/1;justify-self:center;align-self:center}
+.ws-glow{
+  width:clamp(260px,38svh,460px);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle,
+    rgba(248,72,0,.17) 0%,
+    rgba(248,72,0,.06) 36%,
+    rgba(248,72,0,.015) 58%,
+    rgba(248,72,0,0) 74%);
+}
+.ws-arc{width:auto;height:clamp(230px,40svh,400px);overflow:visible}
+.ws-arc-halo{filter:blur(4px)}
+.ws-i{width:auto;height:clamp(120px,21svh,205px)}
 
 /* The vocabulary. */
 .ws-words{position:absolute;inset:0;pointer-events:none}
@@ -1202,14 +1204,17 @@ button{font:inherit;color:inherit}
   white-space:nowrap;cursor:default;
   font-size:calc(var(--sz) * clamp(.72rem,1.05vw,1.02rem));
   font-weight:600;letter-spacing:.01em;
-  color:rgba(255,255,255,.82);
+  /* Measured off the reference: its icons sit at #282828–#383838 and its
+     accent is #F84800. Text carries more ink than a hairline icon, so the
+     grey is taken from the top of that band rather than the middle. */
+  color:#454545;
   transition:color .22s var(--ease);
   animation:wsfloat var(--dur,8s) var(--ease-in-out) var(--delay,0s) infinite alternate;
   pointer-events:auto;
 }
-.ws-w.hot{color:#FF4F18}
-.ws-w:hover{color:#FF4F18}
-.ws-w.hot:hover{color:#fff}
+.ws-w.hot{color:#F84800}
+.ws-w:hover{color:#F84800}
+.ws-w.hot:hover{color:#9A9A9A}
 @keyframes wsfloat{
   from{transform:translate(-50%,-50%) translateY(calc(var(--drift) * -1))}
   to{transform:translate(-50%,-50%) translateY(var(--drift))}

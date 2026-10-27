@@ -13,34 +13,44 @@ export default function WordSpace() {
 
   return (
     <div className="ws">
-      <div className="ws-arc" aria-hidden="true">
-        {/* The halo: one stroked circle, glowing, most of it below the fold
-            so only the crown of the arc reads. */}
-        <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet">
+      {/* The mark and its arc. The arc is a thin rim sitting just above the
+          i — the same read as an eclipse edge, not a ring around the whole
+          composition. */}
+      <div className="ws-mark" aria-hidden="true">
+        <span className="ws-glow" />
+        <svg className="ws-arc" viewBox="-200 -200 400 400" fill="none">
           <defs>
-            <radialGradient id="ws-halo" cx="50%" cy="50%" r="50%">
-              <stop offset="58%" stopColor="rgba(255,79,24,0)" />
-              <stop offset="82%" stopColor="rgba(255,79,24,.22)" />
-              <stop offset="100%" stopColor="rgba(255,79,24,0)" />
-            </radialGradient>
+            {/* Brightest at the crown, gone at the ends — a rim light rather
+                than a drawn line, which is what the reference reads as. */}
+            <linearGradient id="ws-rim" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#F84800" stopOpacity="0" />
+              <stop offset="22%" stopColor="#F84800" stopOpacity=".55" />
+              <stop offset="50%" stopColor="#F84800" stopOpacity="1" />
+              <stop offset="78%" stopColor="#F84800" stopOpacity=".55" />
+              <stop offset="100%" stopColor="#F84800" stopOpacity="0" />
+            </linearGradient>
           </defs>
-          <circle cx="500" cy="560" r="330" fill="url(#ws-halo)" />
-          {/* The glow is three concentric strokes rather than a drop-shadow
-              filter. A filter on a 1500px SVG is re-rasterised on every frame
-              of the flight and cost two thirds of the desktop frame rate. */}
-          <circle cx="500" cy="560" r="330" fill="none" stroke="rgba(255,79,24,.10)" strokeWidth="26" />
-          <circle cx="500" cy="560" r="330" fill="none" stroke="rgba(255,79,24,.22)" strokeWidth="11" />
-          <circle cx="500" cy="560" r="330" fill="none" stroke="#FF4F18" strokeWidth="3.5" />
+          {/* A true circular crown: radius 125 about the mark's centre,
+              swept from 200° to 340°, so it is symmetric by construction
+              rather than by eye. */}
+          <path
+            className="ws-arc-halo"
+            d="M -117.5 -42.8 A 125 125 0 0 1 117.5 -42.8"
+            stroke="url(#ws-rim)"
+            strokeWidth="9"
+            strokeLinecap="round"
+            opacity=".34"
+          />
+          <path
+            d="M -117.5 -42.8 A 125 125 0 0 1 117.5 -42.8"
+            stroke="url(#ws-rim)"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+          />
         </svg>
-      </div>
-
-      {/* The mark, drawn rather than placed: a circle and a stem, so it stays
-          sharp at any size and can carry the same glow as the arc. */}
-      <div className="ws-i" aria-hidden="true">
-        <span className="ws-i-glow" />
-        <svg viewBox="0 0 120 300" fill="none">
-          <circle cx="60" cy="34" r="26" fill="#FF4F18" />
-          <rect x="34" y="84" width="52" height="186" rx="12" fill="#FF4F18" />
+        <svg className="ws-i" viewBox="0 0 120 300" fill="none">
+          <circle cx="60" cy="30" r="25" fill="#F84800" />
+          <rect x="35" y="80" width="50" height="190" rx="10" fill="#F84800" />
         </svg>
       </div>
 

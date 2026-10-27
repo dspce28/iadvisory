@@ -40,8 +40,8 @@ export function buildWordSpace(): Word[] {
   const r = rnd(529941);
   const out: Word[] = [];
   const placed: { x0: number; x1: number; y0: number; y1: number }[] = [];
-  const COLS = 6;
-  const ROWS = 8;
+  const COLS = 8;
+  const ROWS = 9;
 
   // Estimated box, in percent of a nominal 1440x900 stage. The grid alone
   // does not stop collisions, because a phrase like "Loan Against Property"
@@ -59,19 +59,16 @@ export function buildWordSpace(): Word[] {
     for (let col = 0; col < COLS; col++) {
       // Inset from the edges: these are centred on their own position, so a
       // long phrase at 95% hangs half of itself off the screen.
-      const x = 7 + (((col + 0.5) / COLS) * 100 + (r() - 0.5) * 11) * 0.86;
+      const x = 6 + (((col + 0.5) / COLS) * 100 + (r() - 0.5) * 9) * 0.88;
       // Inset from the top too: the header is fixed over this stage, so a
       // word in the first band is both clipped and unhoverable.
-      const y = 12 + (((row + 0.5) / ROWS) * 100 + (r() - 0.5) * 8) * 0.8;
+      const y = 11 + (((row + 0.5) / ROWS) * 100 + (r() - 0.5) * 7) * 0.82;
 
       // Leave the middle alone: the mark and its arc live there.
-      if (Math.hypot((x - 50) / 26, (y - 48) / 30) < 1) continue;
-      // And leave the lower left alone: the heading and the buttons land
-      // there, and white words under white words is no heading at all.
-      if (x < 56 && y > 60) continue;
+      if (Math.hypot((x - 50) / 17, (y - 48) / 24) < 1) continue;
 
       const text = WORDS[(row * COLS + col) % WORDS.length];
-      const size = 0.74 + r() * 0.72;
+      const size = 0.62 + r() * 0.5;
       const b = box(text, size, x, y);
       // Off the edges, or on top of something already placed: drop it. A
       // sparser field reads better than an unreadable one.
@@ -83,7 +80,7 @@ export function buildWordSpace(): Word[] {
         x,
         y,
         size,
-        light: r() < 0.68,
+        light: r() < 0.79,
         mobHide: false,
         dur: 5.5 + r() * 6,
         delay: -r() * 8,
