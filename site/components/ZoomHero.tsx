@@ -97,15 +97,21 @@ export default function ZoomHero() {
     size();
     window.addEventListener('resize', size, { passive: true });
 
-    // Three slow bodies of colour. Radial gradients are soft by construction,
-    // so this needs no blur filter and no second canvas to composite through.
-    const blobs = [
-      { c: [248, 0, 0], r: 0.3, ax: 0.15, ay: 0.12, sx: 0.00019, sy: 0.00015, px: 0.36, py: 0.46 },
-      { c: [255, 106, 90], r: 0.17, ax: 0.2, ay: 0.15, sx: -0.00013, sy: 0.00023, px: 0.6, py: 0.42 },
-      { c: [255, 198, 184], r: 0.05, ax: 0.2, ay: 0.15, sx: -0.00013, sy: 0.00023, px: 0.6, py: 0.42 },
-      { c: [122, 4, 4], r: 0.55, ax: 0.13, ay: 0.17, sx: 0.0001, sy: -0.00017, px: 0.5, py: 0.64 },
-      { c: [58, 2, 2], r: 0.9, ax: 0.1, ay: 0.1, sx: -0.00007, sy: 0.00009, px: 0.44, py: 0.52 },
+    // Architectural light: a measured grid under broad shafts of light.
+    //
+    // The grid is what the eye focuses on. It is drawn at device resolution
+    // on half-pixel centres, so the lines stay one pixel wide and hard-edged
+    // however far the mask has been scaled over them — the canvas never
+    // scales, only the mask does, which is the whole reason this reads as
+    // arriving somewhere rather than as a picture going soft.
+    const GRID = 54;
+    const SHAFTS = [
+      { w: 0.3, speed: 0.0000138, phase: 0, hot: 0.5 },
+      { w: 0.17, speed: 0.0000206, phase: 0.42, hot: 0.86 },
+      { w: 0.46, speed: 0.0000096, phase: 0.74, hot: 0.26 },
+      { w: 0.12, speed: 0.0000262, phase: 0.19, hot: 1 },
     ];
+    const TILT = (-22 * Math.PI) / 180;
 
     let raf = 0;
     let visible = true;
@@ -122,55 +128,58 @@ export default function ZoomHero() {
       raf = visible ? requestAnimationFrame(draw) : 0;
       if (!ctx) return;
 
-      ctx.fillStyle = '#0B0C0D';
+      ctx.fillStyle = '#08090A';
       ctx.fillRect(0, 0, w, h);
 
-      const unit = Math.max(w, h);
-      ctx.globalCompositeOperation = 'lighter';
-      for (const b of blobs) {
-        const x = (b.px + Math.sin(t * b.sx) * b.ax) * w;
-        const y = (b.py + Math.cos(t * b.sy) * b.ay) * h;
-        const r = b.r * unit * 0.5;
-        const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-        g.addColorStop(0, `rgba(${b.c[0]},${b.c[1]},${b.c[2]},.95)`);
-        g.addColorStop(0.3, `rgba(${b.c[0]},${b.c[1]},${b.c[2]},.5)`);
-        g.addColorStop(0.62, `rgba(${b.c[0]},${b.c[1]},${b.c[2]},.13)`);
-        g.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Detail. Gradients alone have nothing in focus, so flying into them
-      // reads as the picture going soft rather than as arriving somewhere.
-      // A lattice and a set of rings give the eye hard edges to land on, and
-      // they stay hard because the canvas never scales — only the mask does.
-      const cx = (0.6 + Math.sin(t * -0.00013) * 0.2) * w;
-      const cy = (0.42 + Math.cos(t * 0.00023) * 0.15) * h;
-      const reach = Math.max(w, h) * 0.46;
-
-      const step = 26;
-      ctx.fillStyle = '#FFFFFF';
-      for (let gx = (w % step) / 2; gx < w; gx += step) {
-        for (let gy = (h % step) / 2; gy < h; gy += step) {
-          const d = Math.hypot(gx - cx, gy - cy) / reach;
-          if (d > 1) continue;
-          ctx.globalAlpha = (1 - d) * (1 - d) * 0.5;
-          ctx.fillRect(gx, gy, 1.2, 1.2);
-        }
-      }
-
-      ctx.globalAlpha = 1;
+      // ── The grid ────────────────────────────────────────────────
       ctx.lineWidth = 1;
-      for (let k = 1; k <= 3; k++) {
-        const rr = reach * (0.26 * k) + Math.sin(t * 0.00022 + k) * 7;
-        ctx.strokeStyle = `rgba(255,255,255,${0.1 - k * 0.022})`;
+      for (let i = 0, x = 0; x <= w; i++, x += GRID) {
+        ctx.strokeStyle = i % 4 === 0 ? 'rgba(248,0,0,.16)' : 'rgba(255,255,255,.052)';
         ctx.beginPath();
-        ctx.arc(cx, cy, rr, 0, Math.PI * 2);
+        ctx.moveTo(Math.round(x) + 0.5, 0);
+        ctx.lineTo(Math.round(x) + 0.5, h);
         ctx.stroke();
       }
+      for (let i = 0, y = 0; y <= h; i++, y += GRID) {
+        ctx.strokeStyle = i % 4 === 0 ? 'rgba(248,0,0,.16)' : 'rgba(255,255,255,.052)';
+        ctx.beginPath();
+        ctx.moveTo(0, Math.round(y) + 0.5);
+        ctx.lineTo(w, Math.round(y) + 0.5);
+        ctx.stroke();
+      }
+
+      // ── The shafts ──────────────────────────────────────────────
+      // Drawn in a rotated frame, so one axis is "across the beam" and the
+      // gradient can run along it without any per-pixel work.
+      const diag = Math.hypot(w, h);
+      ctx.save();
+      ctx.translate(w / 2, h / 2);
+      ctx.rotate(TILT);
+      ctx.globalCompositeOperation = 'lighter';
+      for (const s of SHAFTS) {
+        const span = diag * 1.6;
+        const pos = (((t * s.speed + s.phase) % 1) + 1) % 1;
+        const cx = -span / 2 + pos * span;
+        const half = (s.w * diag) / 2;
+        const g = ctx.createLinearGradient(cx - half, 0, cx + half, 0);
+        g.addColorStop(0, 'rgba(248,0,0,0)');
+        g.addColorStop(0.42, `rgba(255,${Math.round(46 * s.hot)},${Math.round(38 * s.hot)},${0.14 + s.hot * 0.16})`);
+        g.addColorStop(0.5, `rgba(255,${Math.round(168 * s.hot)},${Math.round(158 * s.hot)},${0.2 + s.hot * 0.4})`);
+        g.addColorStop(0.58, `rgba(248,${Math.round(34 * s.hot)},${Math.round(28 * s.hot)},${0.14 + s.hot * 0.16})`);
+        g.addColorStop(1, 'rgba(248,0,0,0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(cx - half, -diag, half * 2, diag * 2);
+      }
+      ctx.restore();
       ctx.globalCompositeOperation = 'source-over';
+
+      // ── Fall-off ────────────────────────────────────────────────
+      const v = ctx.createRadialGradient(w / 2, h * 0.46, 0, w / 2, h * 0.46, Math.max(w, h) * 0.78);
+      v.addColorStop(0, 'rgba(0,0,0,0)');
+      v.addColorStop(0.62, 'rgba(0,0,0,.18)');
+      v.addColorStop(1, 'rgba(0,0,0,.72)');
+      ctx.fillStyle = v;
+      ctx.fillRect(0, 0, w, h);
     }
     raf = requestAnimationFrame(draw);
 

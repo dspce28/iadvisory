@@ -279,7 +279,10 @@ button{font:inherit;color:inherit}
 .ocard-body{margin-top:auto;padding-top:1.6rem}
 
 /* ── Product / work cards: image over an info panel ────────────── */
-.work-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(16px,2vw,30px);margin-top:clamp(36px,5vw,64px)}
+.work-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.6vw,24px);
+  margin-top:clamp(36px,5vw,64px);
+}
 .work{
   display:block;border-radius:var(--r);overflow:clip;background:var(--paper);
   border:1px solid var(--line);
@@ -287,11 +290,14 @@ button{font:inherit;color:inherit}
 }
 .work:hover{transform:translateY(-6px);box-shadow:0 26px 70px rgba(15,16,17,.16)}
 .work-media{
-  aspect-ratio:16/9;background:var(--warm);overflow:hidden;position:relative;
+  /* Six square illustrations stacked two-up were taller than the copy they
+     introduce. A wider panel and a smaller plate puts the emphasis back on
+     the product name and the rate. */
+  aspect-ratio:2/1;background:var(--warm);overflow:hidden;position:relative;
   display:grid;place-items:center;
 }
 .work-media img{
-  width:auto;height:80%;max-width:72%;object-fit:contain;
+  width:auto;height:74%;max-width:46%;object-fit:contain;
   mix-blend-mode:multiply;
   filter:grayscale(1) contrast(1.04) brightness(1.02);
   transition:transform .8s var(--ease),filter .6s var(--ease);
@@ -388,6 +394,9 @@ button{font:inherit;color:inherit}
 .wa:hover{transform:scale(1.07);background:var(--accent)}
 
 /* ── Breakpoints ───────────────────────────────────────────────── */
+@media (max-width:1180px){
+  .work-grid{grid-template-columns:repeat(2,1fr)}
+}
 @media (max-width:1040px){
   .offset-grid{grid-template-columns:1fr 1fr}
   .offset-grid > :nth-child(n){margin-top:0}
@@ -408,6 +417,8 @@ button{font:inherit;color:inherit}
   .burger{display:flex}
   .hdr-cta .btn-line{display:none}
   .offset-grid,.work-grid,.stats,.field-row{grid-template-columns:1fr}
+  .work-media{aspect-ratio:5/2}
+  .work-media img{max-width:40%}
   .hero-grid{grid-template-columns:1fr;align-items:start}
   .ftr-grid{grid-template-columns:1fr}
 }
@@ -739,10 +750,11 @@ button{font:inherit;color:inherit}
   /* A static stand-in for the canvas, so the letterforms still carry colour
      on a first frame, with JS off, or if the 2D context is refused. */
   background:
-    radial-gradient(32% 42% at 36% 46%,#F80000 0%,rgba(248,0,0,0) 64%),
-    radial-gradient(20% 26% at 60% 42%,#FF6A5A 0%,rgba(255,106,90,0) 62%),
-    radial-gradient(60% 70% at 50% 64%,#7A0404 0%,rgba(122,4,4,0) 66%),
-    #0B0C0D;
+    linear-gradient(112deg,rgba(248,0,0,0) 30%,rgba(255,138,130,.3) 44%,rgba(248,0,0,0) 56%),
+    linear-gradient(112deg,rgba(248,0,0,0) 58%,rgba(248,30,26,.16) 67%,rgba(248,0,0,0) 76%),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 54px),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 54px),
+    #08090A;
 }
 .zoom-stage > *{grid-area:1/1}
 
