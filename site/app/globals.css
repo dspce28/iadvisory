@@ -289,10 +289,88 @@ button{font:inherit;color:inherit}
   transition:transform var(--t) var(--ease),box-shadow var(--t) var(--ease);
 }
 .work:hover{transform:translateY(-6px);box-shadow:0 26px 70px rgba(15,16,17,.16)}
+/* ── Product plate: a cover hinged at its left edge ────────────── */
+.work-stage{
+  position:relative;aspect-ratio:2/1;background:var(--warm);overflow:clip;
+  /* Shallow enough that the open cover has real depth, deep enough that the
+     near edge does not balloon. */
+  perspective:1500px;
+}
+.work-stage > *{position:absolute;inset:0}
+
+.work-leaf{
+  transform-style:preserve-3d;
+  transform-origin:left center;
+  transform:rotateY(0deg);
+  transition:transform .8s var(--ease);
+}
+.work:hover .work-leaf,
+.work:focus-visible .work-leaf{transform:rotateY(-62deg)}
+
+.work-face{
+  position:absolute;inset:0;
+  backface-visibility:hidden;
+  display:grid;place-items:center;
+}
+.work-front{
+  background:var(--warm);
+  /* The spine side darkens as the cover turns away from the light. */
+  box-shadow:inset 26px 0 34px -26px rgba(15,16,17,.4);
+}
+.work-front img{
+  width:auto;height:74%;max-width:46%;object-fit:contain;
+  mix-blend-mode:multiply;
+  filter:grayscale(1) contrast(1.04) brightness(1.02);
+  transition:filter .6s var(--ease);
+}
+.work:hover .work-front img{filter:none}
+.work-back{
+  transform:rotateY(180deg);
+  background:linear-gradient(100deg,#15161A 0%,#23252B 52%,#101116 100%);
+  box-shadow:inset -22px 0 40px -24px rgba(0,0,0,.8);
+}
+
+.work-inside{
+  /* The cover hinges on the left, so only the right of the plate is ever
+     uncovered — at 62 degrees that is a little over half of it. Anything
+     laid out from the left edge stays hidden behind the closed part. */
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+  gap:.2rem;
+  padding:0 clamp(16px,1.8vw,26px) 0 56%;
+  background:
+    linear-gradient(100deg,#0D0E10 0%,#1A1B20 72%,#0F1011 100%);
+  color:var(--paper);
+  opacity:0;transition:opacity .4s var(--ease) .12s;
+}
+/* The open cover casts across the page it has lifted off. */
+.work-inside::before{
+  content:'';position:absolute;inset:0 auto 0 0;width:62%;
+  background:linear-gradient(90deg,rgba(0,0,0,.6) 0%,rgba(0,0,0,.22) 55%,rgba(0,0,0,0) 100%);
+  pointer-events:none;
+}
+.work-inside-k{
+  font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;font-weight:700;
+  color:rgba(255,255,255,.5);
+}
+.work-inside-v{
+  font-size:clamp(1.1rem,1.5vw,1.45rem);font-weight:600;letter-spacing:-.028em;
+  line-height:1.1;margin-bottom:.55rem;
+}
+.work:hover .work-inside,
+.work:focus-visible .work-inside{opacity:1}
+.work-open{
+  position:relative;flex:none;display:inline-flex;align-items:center;gap:.4rem;
+  font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+  color:var(--accent-dk);white-space:nowrap;
+}
+.work-open::after{
+  content:'';width:8px;height:8px;
+  border-right:1.6px solid currentColor;border-top:1.6px solid currentColor;
+  transform:rotate(45deg);
+}
+
+/* Kept so older markup on interior pages still has a media panel. */
 .work-media{
-  /* Six square illustrations stacked two-up were taller than the copy they
-     introduce. A wider panel and a smaller plate puts the emphasis back on
-     the product name and the rate. */
   aspect-ratio:2/1;background:var(--warm);overflow:hidden;position:relative;
   display:grid;place-items:center;
 }
@@ -953,19 +1031,57 @@ button{font:inherit;color:inherit}
 
 /* ── Eligibility facts ─────────────────────────────────────────── */
 .facts{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,1.8vw,26px)}
+/* The grid item is now the reveal wrapper, so the card has to fill it for
+   the row heights to stay level. */
+.facts > .reveal{display:block;height:100%}
+.facts > .reveal > .pcard{height:100%}
 .fact{
   background:var(--paper);border:1px solid var(--line);border-radius:var(--r);
   padding:clamp(18px,2vw,28px);
 }
 @media (max-width:620px){.facts{grid-template-columns:1fr}}
 
-/* ── Documents ─────────────────────────────────────────────────── */
-.docs{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,2.6vw,44px);margin-top:clamp(34px,4.5vw,60px)}
-.doc{display:grid;grid-template-columns:auto 1fr;gap:clamp(14px,1.8vw,26px);align-items:start}
-.doc-n{
-  font-size:.7rem;font-weight:700;letter-spacing:.14em;color:var(--accent);padding-top:.34rem;
+/* ── Documents: pinned notes ───────────────────────────────────── */
+.docs{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:clamp(18px,2vw,30px);margin-top:clamp(46px,5.5vw,72px);
+  align-items:start;
 }
-@media (max-width:760px){.docs{grid-template-columns:1fr}}
+.docs > .reveal{display:block}
+.note-card{
+  position:relative;background:var(--paper);
+  border:1px solid var(--line);border-radius:18px;
+  padding:clamp(34px,3vw,44px) clamp(16px,1.5vw,22px) clamp(18px,1.8vw,26px);
+  box-shadow:0 10px 26px rgba(15,16,17,.07);
+  transform:rotate(var(--tilt,0deg));
+  transition:transform var(--t) var(--ease),box-shadow var(--t) var(--ease);
+}
+.note-card:nth-child(odd){--tilt:-1.4deg}
+.note-card:nth-child(even){--tilt:1.2deg}
+.note-card:hover{--tilt:0deg;box-shadow:0 20px 48px rgba(15,16,17,.13)}
+
+.note-pin{
+  position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+  width:34px;height:40px;display:block;
+}
+.note-pin svg{width:100%;height:100%;display:block}
+
+.note-n{
+  display:block;font-size:.76rem;font-weight:700;letter-spacing:.1em;
+  color:var(--mute);font-variant-numeric:tabular-nums;margin-bottom:.9rem;
+}
+.note-panel{
+  background:var(--accent-soft);border-radius:12px;
+  padding:clamp(14px,1.4vw,20px);
+}
+.note-t{margin:0 0 .5rem;font-size:1rem;font-weight:700;letter-spacing:-.014em;line-height:1.25}
+.note-d{margin:0;font-size:.86rem;line-height:1.6;color:var(--ink-2)}
+
+@media (max-width:1180px){.docs{grid-template-columns:1fr 1fr}}
+@media (max-width:620px){
+  .docs{grid-template-columns:1fr;gap:clamp(22px,5vw,32px)}
+  .note-card,.note-card:hover{--tilt:0deg}
+}
 
 /* ── Hero field bench (unlisted) ───────────────────────────────── */
 .lab{position:fixed;inset:0;display:grid;grid-template-rows:1fr auto;background:#000}
@@ -1260,4 +1376,57 @@ button{font:inherit;color:inherit}
 @media (prefers-reduced-motion:reduce){
   .ws-w{animation:none}
   .ws-mark{transform:translate(26vw,var(--mark-rest-y))}
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   Program cards: lift, a glow that follows the cursor, an accent
+   border and one shimmer sweep.
+   ═══════════════════════════════════════════════════════════════ */
+.pcard{
+  position:relative;overflow:hidden;isolation:isolate;
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--r);
+  transition:transform var(--t) var(--ease),border-color var(--t) var(--ease),
+             box-shadow var(--t) var(--ease);
+}
+.pcard-body{position:relative;z-index:2;padding:clamp(18px,2vw,28px)}
+.pcard:hover{
+  transform:translateY(-6px);
+  border-color:rgba(248,0,0,.42);
+  box-shadow:0 18px 44px rgba(15,16,17,.1),0 0 0 1px rgba(248,0,0,.08);
+}
+
+/* The glow sits where the cursor is. Its position comes from two custom
+   properties the component writes on this element. */
+.pcard-glow{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  opacity:0;transition:opacity .3s var(--ease);
+  background:radial-gradient(240px circle at var(--px,50%) var(--py,50%),
+    rgba(248,0,0,.09) 0%,rgba(248,0,0,.035) 42%,rgba(248,0,0,0) 70%);
+}
+.pcard:hover .pcard-glow{opacity:1}
+
+/* One sweep per hover, not a loop: a repeating shine on six cards at once
+   reads as a page fault, not as polish. */
+.pcard-shine{
+  position:absolute;top:-20%;bottom:-20%;left:0;width:36%;z-index:1;
+  pointer-events:none;opacity:0;
+  transform:translateX(-180%) skewX(-16deg);
+  background:linear-gradient(90deg,
+    rgba(248,0,0,0) 0%,rgba(248,0,0,.13) 46%,rgba(255,255,255,.5) 52%,
+    rgba(248,0,0,.13) 58%,rgba(248,0,0,0) 100%);
+}
+.pcard:hover .pcard-shine{animation:pshine .85s var(--ease) 1}
+@keyframes pshine{
+  0%{opacity:0;transform:translateX(-180%) skewX(-16deg)}
+  12%{opacity:1}
+  100%{opacity:0;transform:translateX(320%) skewX(-16deg)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .note-card,.note-card:hover{--tilt:0deg}
+  .work-leaf,.work:hover .work-leaf,.work:focus-visible .work-leaf{transform:none;transition:none}
+  .work-inside{display:none}
+  .pcard:hover{transform:none}
+  .pcard:hover .pcard-shine{animation:none}
 }

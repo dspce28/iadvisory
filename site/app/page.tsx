@@ -2,6 +2,7 @@ import Link from 'next/link';
 import ZoomHero from '@/components/ZoomHero';
 import Reveal from '@/components/Reveal';
 import EmiWidget from '@/components/EmiWidget';
+import ProgramCards from '@/components/ProgramCards';
 import ScoreEstimator from '@/components/ScoreEstimator';
 import { loanProducts, site, yearsInBusiness } from '@/lib/site';
 
@@ -283,15 +284,29 @@ export default function Home() {
             {loanProducts.map((p, i) => (
               <Reveal key={p.slug} delay={i % 2}>
                 <Link className="work" href={`/loans/${p.slug}/`} prefetch={false}>
-                  <div className="work-media">
-                    <img
-                      src={p.image}
-                      alt={p.name}
-                      width={400}
-                      height={400}
-                      loading="lazy"
-                      decoding="async"
-                    />
+                  {/* The plate is hinged at its left edge and swings open on
+                      hover, the way a file does. Everything behind it is
+                      repeated in the card below, so nothing that matters is
+                      only reachable with a cursor. */}
+                  <div className="work-stage">
+                    <div className="work-inside" aria-hidden="true">
+                      <span className="work-inside-k">Rate from</span>
+                      <span className="work-inside-v">{p.rateFrom}</span>
+                      <span className="work-open">Open the file</span>
+                    </div>
+                    <div className="work-leaf">
+                      <span className="work-face work-front">
+                        <img
+                          src={p.image}
+                          alt={p.name}
+                          width={400}
+                          height={400}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </span>
+                      <span className="work-face work-back" aria-hidden="true" />
+                    </div>
                   </div>
                   <div className="work-info">
                     <span className="work-rate">From {p.rateFrom}</span>
@@ -421,14 +436,7 @@ export default function Home() {
             </Reveal>
           </div>
 
-          <div className="facts">
-            {eligibility.map((e, i) => (
-              <Reveal key={e.t} className="fact" delay={i % 3} as="div">
-                <h3 className="h3">{e.t}</h3>
-                <p className="small" style={{ marginTop: '.45rem' }}>{e.d}</p>
-              </Reveal>
-            ))}
-          </div>
+          <ProgramCards items={eligibility} />
         </div>
       </section>
 
@@ -446,11 +454,23 @@ export default function Home() {
 
           <div className="docs">
             {documents.map((d, i) => (
-              <Reveal key={d.t} className="doc" delay={i % 2} as="div">
-                <span className="doc-n">{String(i + 1).padStart(2, '0')}</span>
-                <div>
-                  <h3 className="h3">{d.t}</h3>
-                  <p className="body" style={{ marginTop: '.5rem', fontSize: '.93rem' }}>{d.d}</p>
+              <Reveal key={d.t} delay={i} as="div">
+                <div className="note-card">
+                {/* Pinned to the board: the tilt alternates per card and
+                    straightens under the cursor, as if pressed flat. */}
+                <span className="note-pin" aria-hidden="true">
+                  <svg viewBox="0 0 40 46" fill="none">
+                    <ellipse cx="20" cy="41" rx="9" ry="3.2" fill="rgba(15,16,17,.22)" />
+                    <path d="M20 20 L20 41" stroke="#8C8C86" strokeWidth="2.2" strokeLinecap="round" />
+                    <circle cx="20" cy="15" r="13" fill="var(--brand)" />
+                    <circle cx="15.5" cy="10.5" r="4.2" fill="rgba(255,255,255,.55)" />
+                  </svg>
+                </span>
+                <span className="note-n">{String(i + 1).padStart(2, '0')}</span>
+                <div className="note-panel">
+                  <h3 className="note-t">{d.t}</h3>
+                  <p className="note-d">{d.d}</p>
+                </div>
                 </div>
               </Reveal>
             ))}
