@@ -3,6 +3,7 @@ import ZoomHero from '@/components/ZoomHero';
 import Reveal from '@/components/Reveal';
 import EmiWidget from '@/components/EmiWidget';
 import ProgramCards from '@/components/ProgramCards';
+import ProductBook from '@/components/ProductBook';
 import ScoreEstimator from '@/components/ScoreEstimator';
 import { loanProducts, site, yearsInBusiness } from '@/lib/site';
 
@@ -280,51 +281,9 @@ export default function Home() {
             </h2>
           </Reveal>
 
-          <div className="work-grid">
-            {loanProducts.map((p, i) => (
-              <Reveal key={p.slug} delay={i % 2}>
-                <Link className="work" href={`/loans/${p.slug}/`} prefetch={false}>
-                  {/* The plate is hinged at its left edge and swings open on
-                      hover, the way a file does. Everything behind it is
-                      repeated in the card below, so nothing that matters is
-                      only reachable with a cursor. */}
-                  <div className="work-stage">
-                    <div className="work-inside" aria-hidden="true">
-                      <span className="work-inside-k">Rate from</span>
-                      <span className="work-inside-v">{p.rateFrom}</span>
-                      <span className="work-open">Open the file</span>
-                    </div>
-                    <div className="work-leaf">
-                      <span className="work-face work-front">
-                        <img
-                          src={p.image}
-                          alt={p.name}
-                          width={400}
-                          height={400}
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </span>
-                      <span className="work-face work-back" aria-hidden="true" />
-                    </div>
-                  </div>
-                  <div className="work-info">
-                    <span className="work-rate">From {p.rateFrom}</span>
-                    <h3 className="h2" style={{ fontSize: 'clamp(1.25rem,2vw,1.7rem)' }}>
-                      {p.name}
-                    </h3>
-                    <p className="body" style={{ marginTop: '.6rem', fontSize: '.93rem' }}>
-                      {p.blurb}
-                    </p>
-                    <div className="work-meta">
-                      <span>Up to {p.maxAmount}</span>
-                      <span>Tenure {p.maxTenure}</span>
-                    </div>
-                  </div>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
+          <Reveal delay={1}>
+            <ProductBook products={loanProducts} />
+          </Reveal>
         </div>
       </section>
 

@@ -278,117 +278,185 @@ button{font:inherit;color:inherit}
 .ocard-ink .ocard-arrow{border-color:rgba(255,255,255,.28)}
 .ocard-body{margin-top:auto;padding-top:1.6rem}
 
-/* ── Product / work cards: image over an info panel ────────────── */
-.work-grid{
+/* ═══════════════════════════════════════════════════════════════
+   Product book.
+
+   Without the 3D switched on this is a plain grid of six cards — a
+   book nobody can turn is worse than no book — so every rule for the
+   book itself is gated on [data-book="on"], which only the component
+   sets once it is running.
+   ═══════════════════════════════════════════════════════════════ */
+.bookwrap{margin-top:clamp(34px,4.6vw,62px)}
+
+.book{
   display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.6vw,24px);
-  margin-top:clamp(36px,5vw,64px);
 }
-.work{
-  display:block;border-radius:var(--r);overflow:clip;background:var(--paper);
-  border:1px solid var(--line);
+.book .book-left,
+.book .face-back{display:none}
+.book .leaf{position:relative}
+.book-ctl{display:none}
+
+.face-front{
+  display:flex;flex-direction:column;
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--r);
+  overflow:clip;height:100%;
   transition:transform var(--t) var(--ease),box-shadow var(--t) var(--ease);
 }
-.work:hover{transform:translateY(-6px);box-shadow:0 26px 70px rgba(15,16,17,.16)}
-/* ── Product plate: a cover hinged at its left edge ────────────── */
-.work-stage{
-  position:relative;aspect-ratio:2/1;background:var(--warm);overflow:clip;
-  /* Shallow enough that the open cover has real depth, deep enough that the
-     near edge does not balloon. */
-  perspective:1500px;
+.book:not([data-book="on"]) .face-front:hover{
+  transform:translateY(-6px);box-shadow:0 26px 70px rgba(15,16,17,.16);
 }
-.work-stage > *{position:absolute;inset:0}
-
-.work-leaf{
-  transform-style:preserve-3d;
-  transform-origin:left center;
-  transform:rotateY(0deg);
-  transition:transform .8s var(--ease);
+.face-plate{
+  display:grid;place-items:center;aspect-ratio:2/1;background:var(--warm);
+  overflow:hidden;flex:none;
 }
-.work:hover .work-leaf,
-.work:focus-visible .work-leaf{transform:rotateY(-62deg)}
-
-.work-face{
-  position:absolute;inset:0;
-  backface-visibility:hidden;
-  display:grid;place-items:center;
-}
-.work-front{
-  background:var(--warm);
-  /* The spine side darkens as the cover turns away from the light. */
-  box-shadow:inset 26px 0 34px -26px rgba(15,16,17,.4);
-}
-.work-front img{
+.face-plate img{
   width:auto;height:74%;max-width:46%;object-fit:contain;
-  mix-blend-mode:multiply;
-  filter:grayscale(1) contrast(1.04) brightness(1.02);
+  mix-blend-mode:multiply;filter:grayscale(1) contrast(1.04);
   transition:filter .6s var(--ease);
 }
-.work:hover .work-front img{filter:none}
-.work-back{
-  transform:rotateY(180deg);
-  background:linear-gradient(100deg,#15161A 0%,#23252B 52%,#101116 100%);
-  box-shadow:inset -22px 0 40px -24px rgba(0,0,0,.8);
+.face-front:hover .face-plate img{filter:none}
+.face-rate{
+  display:block;margin:clamp(16px,1.8vw,24px) clamp(16px,1.8vw,26px) 0;
+  font-size:.7rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--accent-ink);
 }
-
-.work-inside{
-  /* The cover hinges on the left, so only the right of the plate is ever
-     uncovered — at 62 degrees that is a little over half of it. Anything
-     laid out from the left edge stays hidden behind the closed part. */
-  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
-  gap:.2rem;
-  padding:0 clamp(16px,1.8vw,26px) 0 56%;
-  background:
-    linear-gradient(100deg,#0D0E10 0%,#1A1B20 72%,#0F1011 100%);
-  color:var(--paper);
-  opacity:0;transition:opacity .4s var(--ease) .12s;
+.face-name{
+  display:block;margin:.55rem clamp(16px,1.8vw,26px) 0;
+  font-size:clamp(1.2rem,1.7vw,1.55rem);font-weight:600;letter-spacing:-.024em;
+  line-height:1.1;
 }
-/* The open cover casts across the page it has lifted off. */
-.work-inside::before{
-  content:'';position:absolute;inset:0 auto 0 0;width:62%;
-  background:linear-gradient(90deg,rgba(0,0,0,.6) 0%,rgba(0,0,0,.22) 55%,rgba(0,0,0,0) 100%);
-  pointer-events:none;
+.face-blurb{
+  display:block;margin:.6rem clamp(16px,1.8vw,26px) 0;
+  font-size:.92rem;line-height:1.6;color:var(--mute);
 }
-.work-inside-k{
-  font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;font-weight:700;
-  color:rgba(255,255,255,.5);
+.face-meta{
+  display:flex;flex-wrap:wrap;gap:.4rem .9rem;
+  margin:auto clamp(16px,1.8vw,26px) 0;padding-top:1.1rem;
+  font-size:.64rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--mute);font-weight:600;
 }
-.work-inside-v{
-  font-size:clamp(1.1rem,1.5vw,1.45rem);font-weight:600;letter-spacing:-.028em;
-  line-height:1.1;margin-bottom:.55rem;
+.face-open{
+  display:inline-flex;align-items:center;gap:.45rem;
+  margin:1rem clamp(16px,1.8vw,26px) clamp(16px,1.8vw,24px);
+  font-size:.66rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink);transition:gap var(--t) var(--ease),color var(--t) var(--ease);
 }
-.work:hover .work-inside,
-.work:focus-visible .work-inside{opacity:1}
-.work-open{
-  position:relative;flex:none;display:inline-flex;align-items:center;gap:.4rem;
-  font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
-  color:var(--accent-dk);white-space:nowrap;
-}
-.work-open::after{
-  content:'';width:8px;height:8px;
-  border-right:1.6px solid currentColor;border-top:1.6px solid currentColor;
+.face-open::after{
+  content:'';width:8px;height:8px;flex:none;
+  border-right:1.7px solid currentColor;border-top:1.7px solid currentColor;
   transform:rotate(45deg);
 }
+.face-front:hover .face-open{gap:.8rem;color:var(--accent)}
+.face-folio{display:none}
 
-/* Kept so older markup on interior pages still has a media panel. */
-.work-media{
-  aspect-ratio:2/1;background:var(--warm);overflow:hidden;position:relative;
+/* ── The book proper ───────────────────────────────────────────── */
+.book[data-book="on"]{
+  display:block;position:relative;
+  width:min(100%,960px);margin-inline:auto;
+  aspect-ratio:2/1.3;
+  perspective:2400px;
+  outline:none;
+}
+.book[data-book="on"]:focus-visible{outline:2px solid var(--accent);outline-offset:14px;border-radius:4px}
+
+.book[data-book="on"] .book-left{
+  position:absolute;inset:0 50% 0 0;z-index:0;
+  display:flex;flex-direction:column;justify-content:center;gap:1rem;
+  padding:clamp(22px,3.4vw,52px);
+  background:linear-gradient(90deg,#FBFAF8 0%,#F2F1ED 86%,#E4E3DE 100%);
+  border:1px solid var(--line);border-right:none;
+  border-radius:var(--r) 0 0 var(--r);
+}
+.book-left-t{
+  margin:0;font-size:clamp(1.05rem,1.6vw,1.45rem);line-height:1.3;
+  letter-spacing:-.022em;font-weight:600;max-width:20ch;
+}
+.book-left-h{
+  font-size:.64rem;letter-spacing:.15em;text-transform:uppercase;
+  font-weight:700;color:var(--mute);
+}
+
+.book[data-book="on"] .leaf{
+  position:absolute;top:0;left:50%;width:50%;height:100%;
+  transform-origin:left center;
+  transform-style:preserve-3d;
+  transition:transform .95s var(--ease);
+}
+.book[data-book="on"] .leaf.turned{transform:rotateY(-180deg)}
+
+.book[data-book="on"] .face{
+  position:absolute;inset:0;
+  backface-visibility:hidden;
+  border:1px solid var(--line);
+  border-radius:0 var(--r) var(--r) 0;
+  overflow:clip;
+}
+.book[data-book="on"] .face-front{
+  border-left:none;
+  /* The gutter: the page darkens as it falls into the spine. */
+  box-shadow:inset 30px 0 38px -30px rgba(15,16,17,.42);
+}
+.book[data-book="on"] .face-front:hover{transform:none;box-shadow:inset 30px 0 38px -30px rgba(15,16,17,.42)}
+.book[data-book="on"] .face-back{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.9rem;
+  transform:rotateY(180deg);
+  border-radius:var(--r) 0 0 var(--r);border-right:none;
+  background:linear-gradient(90deg,#E4E3DE 0%,#F2F1ED 14%,#FBFAF8 100%);
+  box-shadow:inset -30px 0 38px -30px rgba(15,16,17,.42);
+}
+.verso-mark{
+  font-size:2.2rem;font-weight:700;line-height:1;color:var(--brand);
+}
+.verso-name{
+  font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;
+  font-weight:700;color:var(--line-2);
+}
+.book[data-book="on"] .face-folio{
+  display:block;position:absolute;right:clamp(16px,1.8vw,26px);
+  bottom:clamp(14px,1.6vw,20px);
+  font-size:.62rem;letter-spacing:.14em;font-weight:700;color:var(--line-2);
+  font-variant-numeric:tabular-nums;
+}
+
+/* ── Controls ──────────────────────────────────────────────────── */
+.book[data-book="on"] ~ .book-ctl{
+  display:flex;align-items:center;justify-content:center;gap:1.1rem;
+  margin-top:clamp(20px,2.6vw,34px);
+}
+.book-arrow{
+  width:46px;height:46px;flex:none;border-radius:100px;cursor:pointer;
+  border:1px solid var(--line-2);background:var(--paper);color:var(--ink);
   display:grid;place-items:center;
+  transition:background var(--t-fast) var(--ease),color var(--t-fast) var(--ease),
+             border-color var(--t-fast) var(--ease),opacity var(--t-fast) var(--ease);
 }
-.work-media img{
-  width:auto;height:74%;max-width:46%;object-fit:contain;
-  mix-blend-mode:multiply;
-  filter:grayscale(1) contrast(1.04) brightness(1.02);
-  transition:transform .8s var(--ease),filter .6s var(--ease);
+.book-arrow svg{width:19px;height:19px}
+.book-arrow:hover:not(:disabled){background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.book-arrow:disabled{opacity:.3;cursor:default}
+.book-folio{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.74rem;letter-spacing:.12em;font-weight:700;color:var(--mute);
+  font-variant-numeric:tabular-nums;
 }
-.work:hover .work-media img{transform:scale(1.055);filter:none}
-.work-info{padding:clamp(18px,2vw,28px)}
-.work-meta{
-  display:flex;flex-wrap:wrap;gap:.45rem .9rem;margin-top:1rem;
-  font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;color:var(--mute);font-weight:600;
+.book-folio strong{color:var(--ink)}
+.book-folio i{width:18px;height:1px;background:var(--line-2);display:block}
+
+@media (max-width:1180px){
+  .book{grid-template-columns:repeat(2,1fr)}
 }
-.work-rate{
-  display:inline-block;margin-bottom:.7rem;font-size:.7rem;font-weight:700;
-  letter-spacing:.09em;text-transform:uppercase;color:var(--accent-ink);
+@media (max-width:860px){
+  .book{grid-template-columns:1fr}
+  /* One page at a time on a phone: a two-page spread at this width is two
+     columns of nothing. */
+  .book[data-book="on"]{aspect-ratio:1/1.26;width:min(100%,420px)}
+  .book[data-book="on"] .book-left{display:none}
+  .book[data-book="on"] .leaf{left:0;width:100%}
+  .book[data-book="on"] .face{border-radius:var(--r)}
+  .book[data-book="on"] .face-front{border-left:1px solid var(--line)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .book[data-book="on"] .leaf{transition:none}
 }
 
 /* ── Sticky process rail ───────────────────────────────────────── */
@@ -472,9 +540,6 @@ button{font:inherit;color:inherit}
 .wa:hover{transform:scale(1.07);background:var(--accent)}
 
 /* ── Breakpoints ───────────────────────────────────────────────── */
-@media (max-width:1180px){
-  .work-grid{grid-template-columns:repeat(2,1fr)}
-}
 @media (max-width:1040px){
   .offset-grid{grid-template-columns:1fr 1fr}
   .offset-grid > :nth-child(n){margin-top:0}
@@ -494,9 +559,7 @@ button{font:inherit;color:inherit}
   .nav a{font-size:1.08rem;letter-spacing:-.015em;text-transform:none;padding-block:11px;width:100%}
   .burger{display:flex}
   .hdr-cta .btn-line{display:none}
-  .offset-grid,.work-grid,.stats,.field-row{grid-template-columns:1fr}
-  .work-media{aspect-ratio:5/2}
-  .work-media img{max-width:40%}
+  .offset-grid,.stats,.field-row{grid-template-columns:1fr}
   .hero-grid{grid-template-columns:1fr;align-items:start}
   .ftr-grid{grid-template-columns:1fr}
 }
@@ -1425,8 +1488,6 @@ button{font:inherit;color:inherit}
 
 @media (prefers-reduced-motion:reduce){
   .note-card,.note-card:hover{--tilt:0deg}
-  .work-leaf,.work:hover .work-leaf,.work:focus-visible .work-leaf{transform:none;transition:none}
-  .work-inside{display:none}
   .pcard:hover{transform:none}
   .pcard:hover .pcard-shine{animation:none}
 }
