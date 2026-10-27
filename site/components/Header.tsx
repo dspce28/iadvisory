@@ -7,53 +7,105 @@ import { navLinks, site } from '@/lib/site';
 
 export default function Header() {
   const path = usePathname();
-  const [scrolled, setScrolled] = useState(false);
+  const [lifted, setLifted] = useState(false);
+  const [onInk, setOnInk] = useState(false);
   const [open, setOpen] = useState(false);
 
+  // The bar is translucent, so over a dark section a white header cuts a seam
+  // straight across it. Instead it inverts: we ask, once per frame, whether a
+  // section marked data-ink is crossing the header band.
   useEffect(() => {
-    const on = () => setScrolled(window.scrollY > 20);
-    on();
+    let frame = 0;
+    const measure = () => {
+      frame = 0;
+      setLifted(window.scrollY > 24);
+      const band = 34;
+      let dark = false;
+      for (const s of Array.from(document.querySelectorAll('[data-ink]'))) {
+        const r = s.getBoundingClientRect();
+        if (r.top <= band && r.bottom >= band) {
+          dark = true;
+          break;
+        }
+      }
+      setOnInk(dark);
+    };
+    const on = () => {
+      if (!frame) frame = requestAnimationFrame(measure);
+    };
+    measure();
     window.addEventListener('scroll', on, { passive: true });
-    return () => window.removeEventListener('scroll', on);
-  }, []);
+    window.addEventListener('resize', on, { passive: true });
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', on);
+      window.removeEventListener('resize', on);
+    };
+  }, [path]);
 
   useEffect(() => setOpen(false), [path]);
+
+  // Lock the page behind the open drawer, so the menu is not scrolled away
+  // from under the finger that opened it.
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
 
   const isOn = (href: string) =>
     href === '/' ? path === '/' : path.startsWith(href.replace(/\/$/, ''));
 
   return (
-    <header id="hdr" className={scrolled ? 'scrolled' : ''}>
-      <Link className="logo" href="/" aria-label={`${site.name} — home`}>
-        <Image src="/assets/img-1329a877e0.webp" alt="" width={220} height={220} priority />
-        <span className="logo-name">
-          <span className="la">Advisory</span>
-        </span>
+    <header className={`hdr${lifted ? ' lifted' : ''}${onInk && !open ? ' ink' : ''}`}>
+      <Link className="hdr-logo" href="/" aria-label={`${site.name} — home`}>
+        <Image
+          className="lg-dark"
+          src="/assets/logo-horizontal.webp"
+          alt={site.name}
+          width={480}
+          height={162}
+          priority
+        />
+        <Image
+          className="lg-light"
+          src="/assets/logo-horizontal-light.webp"
+          alt=""
+          aria-hidden="true"
+          width={480}
+          height={162}
+        />
       </Link>
 
-      <nav id="nav" className={open ? 'open' : ''}>
+      <nav id="nav" className={`nav${open ? ' open' : ''}`}>
         {navLinks.map((l) => (
-          <Link key={l.href} href={l.href} className={isOn(l.href) ? 'on' : ''}>
+          <Link
+            key={l.href}
+            href={l.href}
+            prefetch={false}
+            aria-current={isOn(l.href) ? 'page' : undefined}
+          >
             {l.label}
           </Link>
         ))}
       </nav>
 
-      <div className="hbtns">
-        <Link className="btn btn-ghost hbtn-cibil" href="/cibil-score/">
+      <div className="hdr-cta">
+        <Link className="btn btn-line" href="/cibil-score/" prefetch={false}>
           Check CIBIL
         </Link>
-        <Link className="btn btn-red hbtn-apply" href="/apply/">
-          Apply Now →
+        <Link className="btn btn-dark" href="/apply/" prefetch={false}>
+          Apply
         </Link>
         <button
-          className="ham"
+          className="burger"
+          type="button"
           onClick={() => setOpen((v) => !v)}
           aria-label={open ? 'Close menu' : 'Open menu'}
           aria-expanded={open}
           aria-controls="nav"
         >
-          <span />
           <span />
           <span />
         </button>

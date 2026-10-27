@@ -1,54 +1,41 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
-type Dir = 'up' | 'left' | 'right' | 'scale';
-
-/** Scroll-triggered reveal. Renders visible immediately when the viewer
- *  prefers reduced motion, so content is never hidden behind an animation. */
+/**
+ * Marks a block for the scroll reveal that <Motion/> drives.
+ *
+ * Deliberately not a client-side observer of its own: one observer for the
+ * whole document is cheaper than one per block, and it means a reveal works
+ * the same whether it was server-rendered or arrived with a route change.
+ */
 export default function Reveal({
   children,
   dir = 'up',
   delay = 0,
   className = '',
   as: Tag = 'div',
+  style,
 }: {
-  children: React.ReactNode;
-  dir?: Dir;
-  delay?: 1 | 2 | 3 | 4 | 5 | 6 | 0;
+  children: ReactNode;
+  dir?: 'up' | 'left' | 'right';
+  delay?: number;
   className?: string;
-  as?: 'div' | 'section' | 'li' | 'article';
+  as?: 'div' | 'section' | 'li' | 'article' | 'header' | 'figure';
+  style?: CSSProperties;
 }) {
-  const ref = useRef<HTMLElement>(null);
-  const [shown, setShown] = useState(false);
-
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) {
-      setShown(true);
-      return;
-    }
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            setShown(true);
-            io.unobserve(e.target);
-          }
-        });
-      },
-      { threshold: 0.15, rootMargin: '0px 0px -40px 0px' },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  const cls = ['r', dir, delay ? `d${delay}` : '', shown ? 'show' : '', className]
+  const cls = [
+    'reveal',
+    dir === 'left' ? 'reveal-x' : dir === 'right' ? 'reveal-xr' : '',
+    className,
+  ]
     .filter(Boolean)
     .join(' ');
+
   return (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    <Tag ref={ref as any} className={cls}>
+    <Tag
+      className={cls}
+      style={delay ? { ...style, transitionDelay: `${delay * 90}ms` } : style}
+    >
       {children}
     </Tag>
   );

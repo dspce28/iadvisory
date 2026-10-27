@@ -4,106 +4,77 @@ import { loanProducts, site, yearsInBusiness } from '@/lib/site';
 
 export default function Footer() {
   return (
-    <footer>
+    <footer className="ftr" data-ink>
       <div className="wrap">
-        <div className="fg5">
+        <div className="ftr-grid">
           <div>
-            <div className="logo" style={{ marginBottom: '1.25rem' }}>
-              <Image
-                src="/assets/img-1329a877e0.webp"
-                alt=""
-                width={220}
-                height={220}
-                style={{ height: 44, width: 'auto', filter: 'brightness(0) invert(1)' }}
-              />
-              <div className="logo-name" style={{ color: '#fff' }}>
-                <span style={{ color: '#ff7a7a' }}>i</span>
-                <span>Advisory</span>
-              </div>
-            </div>
-            <p>
-              India&rsquo;s trusted loan advisory — connecting borrowers with {site.stats.partnerBanks}{' '}
-              partner banks and NBFCs since {site.since}. Expert guidance, transparent comparisons,
-              no upfront fees.
+            <Image
+              src="/assets/logo-horizontal-light.webp"
+              alt={site.name}
+              width={480}
+              height={162}
+              style={{ width: 148, height: 'auto' }}
+            />
+            <p className="small" style={{ margin: '1.2rem 0 1.6rem', maxWidth: '34ch' }}>
+              Loan advisory in {site.address.locality} since {site.since}. We compare offers across
+              our partner lenders, explain the trade-offs, and charge you nothing for it.
             </p>
-            <div className="fsoc">
-              <a
-                className="fsl"
-                href={`https://wa.me/${site.whatsapp}`}
-                target="_blank"
-                rel="noopener"
-                aria-label="WhatsApp"
-              >
-                wa
-              </a>
-            </div>
+            <a className="btn btn-line" href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener">
+              WhatsApp us
+            </a>
           </div>
 
           <div>
-            <h4>Loan Services</h4>
+            <h4>Loans</h4>
             <ul>
               {loanProducts.map((p) => (
                 <li key={p.slug}>
-                  <Link prefetch={false} href={`/loans/${p.slug}/`}>{p.name}</Link>
+                  <Link prefetch={false} href={`/loans/${p.slug}/`}>
+                    {p.name}
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <h4>Quick Links</h4>
+            <h4>Company</h4>
             <ul>
-              <li><Link prefetch={false} href="/about/">About Us</Link></li>
-              <li><Link prefetch={false} href="/calculators/">Loan Calculators</Link></li>
-              <li><Link prefetch={false} href="/compare/">Loan Comparisons</Link></li>
-              <li><Link prefetch={false} href="/cibil-score/">Check CIBIL Score</Link></li>
-              <li><Link prefetch={false} href="/blog/">Blog &amp; Insights</Link></li>
-              <li><Link prefetch={false} href="/privacy-policy/">Privacy Policy</Link></li>
-              <li><Link prefetch={false} href="/terms/">Terms &amp; Conditions</Link></li>
+              <li><Link prefetch={false} href="/about/">About</Link></li>
+              <li><Link prefetch={false} href="/calculators/">Calculators</Link></li>
+              <li><Link prefetch={false} href="/compare/">Comparisons</Link></li>
+              <li><Link prefetch={false} href="/cibil-score/">CIBIL score</Link></li>
+              <li><Link prefetch={false} href="/blog/">Guides</Link></li>
+              <li><Link prefetch={false} href="/contact/">Contact</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4>Contact Us</h4>
+            <h4>Reach us</h4>
             <ul>
               <li>
-                <span>📍</span>
-                <span>
-                  {site.address.locality}, {site.address.region} — {site.address.postalCode}
-                </span>
+                {site.address.locality}, {site.address.region} — {site.address.postalCode}
               </li>
-              <li>
-                <span>📞</span>
-                <a href={`tel:${site.phone}`}>{site.phoneDisplay}</a>
-              </li>
-              <li>
-                <span>✉️</span>
-                <a href={`mailto:${site.email}`}>{site.email}</a>
-              </li>
-              <li>
-                <span>🕐</span>
-                <span>{site.hours}</span>
-              </li>
+              <li><a href={`tel:${site.phone}`}>{site.phoneDisplay}</a></li>
+              <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+              <li>{site.hours}</li>
             </ul>
-            <div className="fbadges">
-              <div className="fbadge">🔒 SSL Secure</div>
-              <div className="fbadge">🤝 No Upfront Fees</div>
-            </div>
           </div>
         </div>
 
-        <div className="fdisc">
+        <p className="ftr-note">
           {site.name} is a loan advisory and facilitation service. We are not a bank or an NBFC and
-          we do not lend. Loan sanction, final interest rate and disbursement timelines rest solely
-          with the lending institution. Interest rates shown are indicative and subject to change.
-          {' '}Advising borrowers since {site.since} ({yearsInBusiness()} years).
-        </div>
+          we do not lend. Loan sanction, the final interest rate and disbursement timelines rest
+          solely with the lending institution. Interest rates shown anywhere on this site are
+          indicative, change without notice, and are not an offer of credit. Advising borrowers
+          since {site.since} ({yearsInBusiness()} years).
+        </p>
 
-        <div className="fbot">
+        <div className="ftr-bot">
           <span>
-            © {new Date().getFullYear()} {site.legalName} All rights reserved.
+            © {new Date().getFullYear()} {site.legalName}
           </span>
-          <div className="fbot-links">
+          <div style={{ display: 'flex', gap: '1.4rem', flexWrap: 'wrap' }}>
             <Link prefetch={false} href="/privacy-policy/">Privacy</Link>
             <Link prefetch={false} href="/terms/">Terms</Link>
             <Link prefetch={false} href="/contact/">Contact</Link>

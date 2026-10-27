@@ -39,10 +39,10 @@ export default function About() {
               and why we will tell you when the answer is to wait or not to borrow at all.
             </p>
             <div className="astat-grid">
-              <div className="astat"><div className="astat-n">{site.stats.loansApproved}</div><div className="astat-l">Loans Approved</div></div>
-              <div className="astat"><div className="astat-n">{site.stats.partnerBanks}</div><div className="astat-l">Partner Banks</div></div>
+              <div className="astat"><div className="astat-n">{site.stats.loansApproved}</div><div className="astat-l">Loans Facilitated</div></div>
+              <div className="astat"><div className="astat-n">{site.stats.partnerBanks}</div><div className="astat-l">Partner Lenders</div></div>
               <div className="astat"><div className="astat-n">{site.since}</div><div className="astat-l">Advising Since</div></div>
-              <div className="astat"><div className="astat-n">{site.stats.successRate}</div><div className="astat-l">Success Rate</div></div>
+              <div className="astat"><div className="astat-n">{yearsInBusiness()}</div><div className="astat-l">Years Advising</div></div>
             </div>
             <div className="hero-actions" style={{ marginTop: '2rem' }}>
               <Link className="btn btn-red btn-lg" href="/apply/">Apply Now</Link>

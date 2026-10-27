@@ -1,29 +1,23 @@
 import type { Metadata } from 'next';
-import { Cormorant, Space_Grotesk } from 'next/font/google';
+import { Inter_Tight } from 'next/font/google';
 import Script from 'next/script';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WhatsAppFab from '@/components/WhatsAppFab';
-import ScrollProgress from '@/components/ScrollProgress';
+import Motion from '@/components/Motion';
 import { site } from '@/lib/site';
 import './globals.css';
 
 // Self-hosted at build time: no render-blocking request to fonts.googleapis.com.
-// Only the weights the stylesheet actually asks for: every extra weight is
-// another font file on the critical path.
-const display = Cormorant({
+// One family, variable weight. The reference site runs on Switzer; Inter Tight
+// is the closest open equivalent — same tight apertures, same -0.04em display
+// tracking — and it ships as a single variable file instead of four static ones.
+const sans = Inter_Tight({
   subsets: ['latin'],
-  weight: ['700'],
-  style: ['normal', 'italic'],
-  variable: '--font-display',
-  display: 'swap',
-});
-const sans = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
   variable: '--font-sans',
   display: 'swap',
 });
+
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
@@ -79,9 +73,9 @@ const orgSchema = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const ga = process.env.NEXT_PUBLIC_GA_ID;
   return (
-    <html lang="en-IN" className={`${display.variable} ${sans.variable}`}>
+    <html lang="en-IN" className={sans.variable}>
       <body>
-        <ScrollProgress />
+        <Motion />
         <Header />
         <main>{children}</main>
         <Footer />

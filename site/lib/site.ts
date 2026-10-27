@@ -6,7 +6,7 @@ export const site = {
   since: 2017,
   tagline: 'Smart Loan Solutions',
   description:
-    'iAdvisory is a loan advisory service in Ahmedabad. Compare personal, home, business and car loan offers across 30+ partner banks and NBFCs — free advice, no upfront fees.',
+    'iAdvisory is a loan advisory service in Ahmedabad. Compare personal, home, business and car loan offers across 15+ partner banks and NBFCs — free advice, no upfront fees.',
   phone: '+919601050241',
   phoneDisplay: '+91 96010 50241',
   whatsapp: '919601050241',
@@ -19,10 +19,13 @@ export const site = {
   },
   hours: 'Mon–Sat: 9 AM – 7 PM',
   // Only figures the business has confirmed. Anything unverified stays off the site.
+  // Only figures the business has confirmed, at the numbers it confirmed them
+  // at. The earlier 50,000+/30+ pair was corrected down by the owner; nothing
+  // here is rounded up for effect, and no success rate is claimed because none
+  // has been substantiated.
   stats: {
-    loansApproved: '50,000+',
-    successRate: '98%',
-    partnerBanks: '30+',
+    loansApproved: '250+',
+    partnerBanks: '15+',
   },
 } as const;
 
@@ -60,7 +63,7 @@ export const loanProducts: LoanProduct[] = [
       'Finance a new, resale or under-construction home, or transfer an existing loan to a lower rate. Special rates are available for women borrowers.',
     metaTitle: 'Home Loan in Ahmedabad — Rates from 8.4% p.a.',
     metaDescription:
-      'Compare home loan offers from 30+ partner banks and NBFCs. Up to ₹5 Crore, tenure up to 30 years, rates from 8.4% p.a. Free advisory, no upfront fees.',
+      'Compare home loan offers from our partner banks and NBFCs. Up to ₹5 Crore, tenure up to 30 years, rates from 8.4% p.a. Free advisory, no upfront fees.',
     highlights: [
       'New, resale and under-construction properties',
       'Balance transfer from your existing lender',

@@ -61,11 +61,11 @@ export default function ApplyForm() {
 
   return (
     <div>
-      <ol className="steps" aria-label="Application progress">
+      <ol className="wiz" aria-label="Application progress">
         {STEPS.map((s, i) => (
-          <li key={s} className={`step ${i === step ? 'on' : ''} ${i < step ? 'done' : ''}`}>
-            <span className="sdot">{i < step ? '✓' : i + 1}</span>
-            <span className="slbl">{s}</span>
+          <li key={s} className={`wiz-step ${i === step ? 'on' : ''} ${i < step ? 'done' : ''}`}>
+            <span className="wiz-dot">{i < step ? '✓' : i + 1}</span>
+            <span className="wiz-lbl">{s}</span>
           </li>
         ))}
       </ol>
