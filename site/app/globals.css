@@ -747,6 +747,7 @@ button{font:inherit;color:inherit}
 .zoom-stage{
   position:sticky;top:0;height:100svh;overflow:clip;
   display:grid;
+  background:#07070A;
   /* A static stand-in for the canvas, so the letterforms still carry colour
      on a first frame, with JS off, or if the 2D context is refused. */
   background:
@@ -766,15 +767,25 @@ button{font:inherit;color:inherit}
 .zoom:not([data-zoom="on"]) .zoom-mask{grid-row:1}
 .zoom:not([data-zoom="on"]) .zoom-copy{grid-row:2;align-self:auto}
 .zoom:not([data-zoom="on"]) .zoom-hint{display:none}
-.zoom-canvas{width:100%;height:100%}
+/* Everything stacked above the word space has to let the pointer through,
+   or the words are never hovered: an invisible layer still takes the
+   cursor. */
+.zoom-canvas{width:100%;height:100%;opacity:var(--media,1);pointer-events:none}
+.zoom-space{opacity:var(--space,1);pointer-events:none}
+/* Out of the tree entirely until the dive is close enough to reveal it:
+   thirty-six animated elements and a 1500px SVG are not free just because
+   they are at opacity 0. */
+.zoom[data-zoom="on"] .zoom-space{display:none}
+.zoom[data-zoom="on"][data-near] .zoom-space{display:block}
+.zoom[data-space] .zoom-space{pointer-events:auto}
 .zoom-grain{
-  pointer-events:none;opacity:.42;
+  pointer-events:none;opacity:calc(.42 * var(--media,1));
   background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
   mix-blend-mode:overlay;
 }
 
 .zoom-mask{
-  width:100%;height:100%;
+  width:100%;height:100%;pointer-events:none;
   transform:scale(var(--s));
   transform-origin:var(--ox) var(--oy);
   opacity:var(--veil);
@@ -793,7 +804,7 @@ button{font:inherit;color:inherit}
   opacity:var(--copy);
 }
 .zoom-copy{
-  position:relative;z-index:2;align-self:end;justify-self:start;
+  position:relative;z-index:4;align-self:end;justify-self:start;
   padding:0 var(--gut) clamp(54px,9vh,104px);
   max-width:min(720px,92vw);
   color:var(--paper);
@@ -986,6 +997,57 @@ button{font:inherit;color:inherit}
 .lab-toggle span{font-size:.8rem;line-height:1.5;color:rgba(255,255,255,.58);max-width:70ch}
 
 
+/* ── Hero field bench (unlisted) ───────────────────────────────── */
+.lab{position:fixed;inset:0;display:grid;grid-template-rows:1fr auto;background:#000}
+
+/* The luxury register, applied to the same mechanic: warm ivory instead of
+   pure white, a high-contrast serif instead of a grotesk, and the brand red
+   demoted to an accent. Pure #FFF, full-saturation red and a bold grotesk
+   are the three things that read "bold" rather than "premium". */
+.luxe .zoom-word{
+  font-family:var(--font-serif),Georgia,serif;
+  font-weight:400;
+  letter-spacing:-.012em;
+}
+.luxe .zoom-mask rect{fill:#F6F2EA}
+.luxe .lab-stage{background:#F6F2EA}
+.lab-stage{position:relative;overflow:clip;display:grid;--s:1;--veil:1}
+.lab-stage > *{grid-area:1/1}
+.lab-ctl{
+  background:var(--ink);color:var(--paper);
+  padding:clamp(14px,2vw,22px) clamp(16px,3vw,34px) clamp(16px,2.4vw,26px);
+  border-top:1px solid rgba(255,255,255,.12);
+  display:flex;flex-direction:column;gap:.9rem;
+}
+.lab-pills{display:flex;gap:.5rem;flex-wrap:wrap}
+.lab-pill{
+  padding:.6rem 1.05rem;border-radius:100px;cursor:pointer;
+  border:1px solid rgba(255,255,255,.26);background:none;color:rgba(255,255,255,.76);
+  font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  transition:background var(--t-fast) var(--ease),color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease);
+}
+.lab-pill:hover{border-color:#fff;color:#fff}
+.lab-pill.on{background:#fff;color:var(--ink);border-color:#fff}
+.lab-note{margin:0;font-size:.88rem;line-height:1.55;color:rgba(255,255,255,.64);max-width:76ch}
+.lab-scrub{display:flex;align-items:center;gap:1rem}
+.lab-scrub span{
+  font-size:.66rem;letter-spacing:.15em;text-transform:uppercase;font-weight:700;
+  color:rgba(255,255,255,.48);flex:none;
+}
+.lab-scrub input{flex:1;accent-color:var(--brand)}
+.lab-scrub em{
+  font-style:normal;font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--accent-dk);min-width:6.5ch;text-align:right;flex:none;
+}
+@media (max-width:640px){
+  .lab-scrub{flex-wrap:wrap;gap:.6rem}
+  .lab-scrub input{flex:1 1 100%;order:3}
+}
+.lab-toggle{display:flex;gap:.65rem;align-items:flex-start;cursor:pointer}
+.lab-toggle input{margin-top:3px;accent-color:var(--brand);flex:none}
+.lab-toggle span{font-size:.8rem;line-height:1.5;color:rgba(255,255,255,.58);max-width:70ch}
+
+
 /* ═══════════════════════════════════════════════════════════════
    Scatter hero.
 
@@ -1097,4 +1159,64 @@ button{font:inherit;color:inherit}
   .sc-stage{position:static;height:auto;min-height:100svh}
   .sc-field,.sc-mark,.sc-hint{display:none}
   .sc-end{opacity:1}
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   Word space — what the dive opens onto.
+   ═══════════════════════════════════════════════════════════════ */
+.ws{position:relative;width:100%;height:100%;background:#07070A;overflow:clip}
+
+/* The arc. Most of the circle is below the fold, so what reads is the
+   crown of it rising behind the mark. */
+.ws-arc{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.ws-arc svg{width:min(150%,1500px);height:auto;overflow:visible}
+
+
+/* The mark, drawn rather than placed, so it carries the same glow. */
+.ws-i{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.ws-i svg{width:auto;height:clamp(130px,23svh,220px);position:relative}
+/* A static gradient instead of a filter, for the same reason. */
+.ws-i-glow{
+  position:absolute;width:clamp(240px,34svh,420px);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,79,24,.38) 0%,rgba(255,79,24,.12) 38%,rgba(255,79,24,0) 68%);
+}
+
+/* The vocabulary. */
+.ws-words{position:absolute;inset:0;pointer-events:none}
+.ws-w{
+  position:absolute;left:var(--x);top:var(--y);
+  transform:translate(-50%,-50%);
+  white-space:nowrap;cursor:default;
+  font-size:calc(var(--sz) * clamp(.72rem,1.05vw,1.02rem));
+  font-weight:600;letter-spacing:.01em;
+  color:rgba(255,255,255,.82);
+  transition:color .22s var(--ease);
+  animation:wsfloat var(--dur,8s) var(--ease-in-out) var(--delay,0s) infinite alternate;
+  pointer-events:auto;
+}
+.ws-w.hot{color:#FF4F18}
+.ws-w:hover{color:#FF4F18}
+.ws-w.hot:hover{color:#fff}
+@keyframes wsfloat{
+  from{transform:translate(-50%,-50%) translateY(calc(var(--drift) * -1))}
+  to{transform:translate(-50%,-50%) translateY(var(--drift))}
+}
+
+.zoom-scrim{
+  position:relative;z-index:3;pointer-events:none;opacity:var(--copy,0);
+  background:
+    radial-gradient(90% 70% at 8% 100%,rgba(5,5,7,.92) 0%,rgba(5,5,7,.55) 42%,rgba(5,5,7,0) 72%),
+    linear-gradient(to top,rgba(5,5,7,.8) 0%,rgba(5,5,7,0) 46%);
+}
+
+@media (max-width:860px){
+  .ws-w{font-size:calc(var(--sz) * clamp(.62rem,2.5vw,.86rem))}
+  /* On a phone the heading and buttons take most of the lower half, so the
+     words that live there are dropped rather than set behind the type. */
+  .ws-w[data-low]{display:none}
+  .ws-i svg{height:clamp(96px,16svh,150px)}
+}
+@media (prefers-reduced-motion:reduce){
+  .ws-w{animation:none}
 }

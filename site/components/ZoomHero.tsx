@@ -2,22 +2,65 @@
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { createField, type FieldVariant } from '@/lib/heroField';
+import WordSpace from '@/components/WordSpace';
 import { site } from '@/lib/site';
 
-/** How far the wordmark grows by the end of the scroll. Large enough that a
- *  single letterform is wider than any viewport we care about. */
-const MAX_SCALE = 34;
+/** How far the plane grows. Enough that the tittle alone is wider than any
+ *  viewport, which is what turns a dot into the ground. */
+const MAX_SCALE = 44;
 
-/** Where the camera flies. Must land on ink — on the knocked-out letterform,
- *  not on the white plane — or the zoom never opens onto the media.
- *  This sits on the bowl of the "d" in iAdvisory. */
-const ORIGIN = { x: 36, y: 50 };
+/** Which character the camera goes through: the "i" of Advisory.
+ *  "iAdvisory" → i A d v i s o r y, so index 4. */
+const TITTLE_CHAR = 4;
 
-export default function ZoomHero({ variant = 'light' }: { variant?: FieldVariant }) {
+/** Where the tittle's ink sits inside that character's cell, as a fraction of
+ *  the cell. Measured off the rendered glyph rather than guessed — see the
+ *  note in the component. */
+const TITTLE = { x: 0.6, y: 0.227 };
+
+const clamp = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+
+export default function ZoomHero({ variant = 'engrave' }: { variant?: FieldVariant }) {
   const root = useRef<HTMLElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
+  const word = useRef<SVGTextElement>(null);
+  /** The field stops painting once it is fully behind the word space. */
+  const fieldLive = useRef(true);
 
-  // ── Scroll → progress ──────────────────────────────────────────
+  // ── Anchor the flight on the tittle ─────────────────────────────
+  useEffect(() => {
+    const el = root.current;
+    const text = word.current;
+    if (!el || !text) return;
+
+    const place = () => {
+      const svg = text.ownerSVGElement;
+      if (!svg) return;
+      let ext: { x: number; y: number; width: number; height: number };
+      try {
+        ext = text.getExtentOfChar(TITTLE_CHAR);
+      } catch {
+        return; // font not ready yet; the resize/fonts handler will retry
+      }
+      const ctm = svg.getScreenCTM();
+      if (!ctm) return;
+      const pt = svg.createSVGPoint();
+      pt.x = ext.x + ext.width * TITTLE.x;
+      pt.y = ext.y + ext.height * TITTLE.y;
+      const s = pt.matrixTransform(ctm);
+      const r = svg.getBoundingClientRect();
+      el.style.setProperty('--ox', `${(((s.x - r.left) / r.width) * 100).toFixed(2)}%`);
+      el.style.setProperty('--oy', `${(((s.y - r.top) / r.height) * 100).toFixed(2)}%`);
+    };
+
+    place();
+    // The glyph moves when the webfont swaps in, so place it again then.
+    document.fonts?.ready.then(place).catch(() => {});
+    window.addEventListener('resize', place, { passive: true });
+    return () => window.removeEventListener('resize', place);
+  }, []);
+
+  // ── Scroll → progress ───────────────────────────────────────────
   useEffect(() => {
     const el = root.current;
     if (!el) return;
@@ -27,38 +70,53 @@ export default function ZoomHero({ variant = 'light' }: { variant?: FieldVariant
 
     let frame = 0;
     let wasInk = false;
+    let wasSpace = false;
+    let wasNear = false;
     const measure = () => {
       frame = 0;
       const travel = el.offsetHeight - window.innerHeight;
       if (travel <= 0) return;
-      const raw = Math.min(1, Math.max(0, -el.getBoundingClientRect().top / travel));
+      const raw = clamp(-el.getBoundingClientRect().top / travel);
 
-      // Scale geometrically, not linearly: doubling per equal scroll step is
-      // what reads as a constant rate of approach. A linear ramp in scale
-      // feels like it stalls at the start and lurches at the end.
+      // Geometric, so the approach reads at a constant rate rather than
+      // stalling and then lurching.
       const s = Math.pow(MAX_SCALE, raw);
-
-      // The last stretch cross-fades the white plane out, so the reveal
-      // completes cleanly whatever the glyph under the origin happens to be.
-      const veil = 1 - Math.min(1, Math.max(0, (raw - 0.82) / 0.18));
-      const copy = Math.min(1, Math.max(0, (raw - 0.74) / 0.22));
+      const veil = 1 - clamp((raw - 0.78) / 0.16);
+      // The engraving hands over to the word space on the way through.
+      const media = 1 - clamp((raw - 0.52) / 0.22);
+      const space = clamp((raw - 0.58) / 0.26);
+      const copy = clamp((raw - 0.84) / 0.14);
 
       el.style.setProperty('--s', s.toFixed(3));
       el.style.setProperty('--veil', veil.toFixed(3));
+      el.style.setProperty('--media', media.toFixed(3));
+      el.style.setProperty('--space', space.toFixed(3));
       el.style.setProperty('--copy', copy.toFixed(3));
-      el.style.setProperty('--hint', (1 - Math.min(1, raw * 6)).toFixed(3));
+      el.style.setProperty('--hint', (1 - clamp(raw * 6)).toFixed(3));
 
-      // Once the plane has thinned out, the bar is over media, not paper.
-      // The header reads this on its own scroll frame, which may already have
-      // run by now — so when the state flips, nudge it to look again. If the
-      // visitor stops scrolling on exactly this frame, a stale white bar over
-      // black media is what they would otherwise be left looking at.
-      const wantsInk = raw > 0.6;
-      if (wantsInk !== wasInk) {
-        wasInk = wantsInk;
-        if (wantsInk) el.setAttribute('data-ink', '');
+      // The bar is over black from here, and the words only become
+      // hoverable once they are actually on screen.
+      const ink = raw > 0.5;
+      if (ink !== wasInk) {
+        wasInk = ink;
+        if (ink) el.setAttribute('data-ink', '');
         else el.removeAttribute('data-ink');
         window.dispatchEvent(new Event('scroll'));
+      }
+      fieldLive.current = media > 0.01;
+
+      const near = raw > 0.5;
+      if (near !== wasNear) {
+        wasNear = near;
+        if (near) el.setAttribute('data-near', '');
+        else el.removeAttribute('data-near');
+      }
+
+      const live = raw > 0.86;
+      if (live !== wasSpace) {
+        wasSpace = live;
+        if (live) el.setAttribute('data-space', '');
+        else el.removeAttribute('data-space');
       }
     };
     const onScroll = () => {
@@ -73,10 +131,12 @@ export default function ZoomHero({ variant = 'light' }: { variant?: FieldVariant
       window.removeEventListener('resize', onScroll);
       delete el.dataset.zoom;
       el.removeAttribute('data-ink');
+      el.removeAttribute('data-space');
+      el.removeAttribute('data-near');
     };
   }, []);
 
-  // ── The media the letterforms are a window onto ────────────────
+  // ── The media the letterforms are a window onto ─────────────────
   useEffect(() => {
     const c = canvas.current;
     const el = root.current;
@@ -102,15 +162,12 @@ export default function ZoomHero({ variant = 'light' }: { variant?: FieldVariant
     size();
     window.addEventListener('resize', size, { passive: true });
 
-    // The field is capped at ~30fps. Everything in it moves slowly enough
-    // that the cap is invisible, and during the flight the mask is being
-    // re-rasterised at scale on the same thread — paying for sixty field
-    // frames there costs the scroll itself, which is the part the eye
-    // actually judges.
     let painted = 0;
     const draw: FrameRequestCallback = (t) => {
       raf = visible ? requestAnimationFrame(draw) : 0;
       if (t - painted < 32) return;
+      // Nothing to paint once the word space has covered it.
+      if (!fieldLive.current) return;
       painted = t;
       field(t, w, h);
     };
@@ -136,19 +193,18 @@ export default function ZoomHero({ variant = 'light' }: { variant?: FieldVariant
   return (
     <section className="zoom" ref={root} aria-label={`${site.name} — loan advisory`}>
       <div className="zoom-stage">
+        {/* Bottom: where the dive lands. */}
+        <div className="zoom-space">
+          <WordSpace />
+        </div>
+
+        {/* Middle: what shows through the letterforms on the way in. */}
         <canvas className="zoom-canvas" ref={canvas} aria-hidden="true" />
         <span className="zoom-grain" aria-hidden="true" />
 
-        {/*
-          A white plane with the wordmark cut out of it, rather than the
-          wordmark filled with the media. Same picture at rest, but scaling the
-          plane up flies the camera through the letterform and opens onto what
-          is behind it, which filling the glyphs could never do.
-
-          The mask text is inline SVG, so it uses the page's own webfont — an
-          SVG loaded as an image could not, and would silently fall back to
-          whatever the system had.
-        */}
+        {/* Top: a white plane with the wordmark cut out of it. Scaling the
+            plane about the tittle flies the camera through that dot and
+            opens onto what is behind it; filling the glyphs could not. */}
         <svg
           className="zoom-mask"
           viewBox="0 0 1200 600"
@@ -159,6 +215,7 @@ export default function ZoomHero({ variant = 'light' }: { variant?: FieldVariant
             <mask id="zoom-cut" maskUnits="userSpaceOnUse" x="-4800" y="-3000" width="10800" height="6600">
               <rect x="-4800" y="-3000" width="10800" height="6600" fill="#fff" />
               <text
+                ref={word}
                 className="zoom-word"
                 x="600"
                 y="300"
@@ -172,16 +229,7 @@ export default function ZoomHero({ variant = 'light' }: { variant?: FieldVariant
               </text>
             </mask>
           </defs>
-          {/* Oversized, so the plane still covers the viewport once "meet"
-              has letterboxed the viewBox on a tall screen. */}
-          <rect
-            x="-4800"
-            y="-3000"
-            width="10800"
-            height="6600"
-            fill="#FFFFFF"
-            mask="url(#zoom-cut)"
-          />
+          <rect x="-4800" y="-3000" width="10800" height="6600" fill="#FFFFFF" mask="url(#zoom-cut)" />
         </svg>
 
         <div className="zoom-hint small" aria-hidden="true">
@@ -193,8 +241,9 @@ export default function ZoomHero({ variant = 'light' }: { variant?: FieldVariant
 
         <div className="zoom-copy">
           <h1 className="zoom-h1">
-            Borrow on terms you were<br />
-            actually going to get.
+            Every loan question,
+            <br />
+            one straight answer.
           </h1>
           <p className="zoom-lede">
             We are not a lender and not a lead farm. We read your profile, shortlist the banks that
