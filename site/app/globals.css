@@ -363,7 +363,10 @@ button{font:inherit;color:inherit}
   overflow:hidden;
 }
 .book[data-book="on"] .face-front{min-height:0}
-.book[data-book="on"] .face-points{min-height:0;overflow:hidden}
+/* A clamped box still reports its full text height to flexbox, so the column
+   shrank it and sliced the last line in half. Nothing on a page may shrink. */
+.book[data-book="on"] .face-front > *{flex:none;min-height:0}
+.book[data-book="on"] .face-points{overflow:hidden}
 .face-points{
   display:none;flex-direction:column;gap:.55rem;
   margin:1.1rem clamp(16px,1.8vw,26px) 0;
@@ -652,6 +655,16 @@ button{font:inherit;color:inherit}
   .book-folio{top:12px;right:14px;left:auto;bottom:auto;transform:none}
   /* Keep the page's own content clear of them. */
   .book[data-book="on"] .face-front{padding-bottom:50px}
+}
+
+/* Below about 340px the page runs short of its own contents: the picture
+   band shrinks with the width while the text, wrapping more, grows, and on
+   the car loan the facts row wraps to two lines where elsewhere it is one.
+   The blurb gives up its third line and the page itself gets taller, which
+   is cheaper than deleting a fact from one page and not the others. */
+@media (max-width:340px){
+  .book[data-book="on"]{aspect-ratio:1/1.55}
+  .book[data-book="on"] .face-blurb{-webkit-line-clamp:2}
 }
 
 @media (prefers-reduced-motion:reduce){
