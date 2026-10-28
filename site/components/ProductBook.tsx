@@ -118,7 +118,7 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
                     the product's own highlights, so it fills with something
                     worth reading rather than with spacing. */}
                 <span className="face-points">
-                  {p.highlights.slice(0, 3).map((h) => (
+                  {p.highlights.slice(0, 2).map((h) => (
                     <span key={h}>{h}</span>
                   ))}
                 </span>

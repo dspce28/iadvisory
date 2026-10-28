@@ -353,6 +353,17 @@ button{font:inherit;color:inherit}
   display:block;margin:.65rem clamp(16px,1.8vw,26px) 0;
   font-size:.92rem;line-height:1.6;color:var(--mute);
 }
+/* A page cannot grow, so its contents must not either. */
+.book[data-book="on"] .face-blurb{
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;
+  overflow:hidden;
+}
+.book[data-book="on"] .face-points span{
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+  overflow:hidden;
+}
+.book[data-book="on"] .face-front{min-height:0}
+.book[data-book="on"] .face-points{min-height:0;overflow:hidden}
 .face-points{
   display:none;flex-direction:column;gap:.55rem;
   margin:1.1rem clamp(16px,1.8vw,26px) 0;
@@ -516,7 +527,13 @@ button{font:inherit;color:inherit}
   position:absolute;top:0;left:50%;width:50%;height:100%;
   transform-origin:left center;
   transform-style:preserve-3d;
-  transition:transform .95s var(--ease);
+  /* Timed off the reference by sampling its rotation every 45ms through a
+     turn: it reaches -180° at about 720ms, and the curve starts slow, runs
+     hard through the middle and lands gently — 4% of the turn at 100ms,
+     28% at 200ms, 64% at 370ms, 97% at 565ms. The site's usual expo-out
+     starts fast, which is what made the old turn feel like a snap rather
+     than a page. */
+  transition:transform .72s cubic-bezier(.52,0,.12,1);
 }
 .book[data-book="on"] .leaf.turned{transform:rotateY(-180deg)}
 
@@ -600,18 +617,41 @@ button{font:inherit;color:inherit}
 @media (max-width:860px){
   .book{grid-template-columns:1fr}
   /* One page at a time on a phone: a two-page spread at this width is two
-     columns of nothing. The picture rides above the details instead. */
-  .book[data-book="on"]{aspect-ratio:1/1.2;width:min(100%,420px)}
+     columns of nothing. The picture rides above the details instead — which
+     means this page carries both, so it needs to be taller than a spread's
+     page, not shorter. At 1/1.2 the rate, the name and the facts were all
+     falling off the bottom. */
+  .book[data-book="on"]{aspect-ratio:1/1.46;width:min(100%,380px)}
+  /* .plate-flat borrows .plate, which is sized to fill a page of its own —
+     on the phone that made the picture the whole page and pushed the rate,
+     the name and the facts off the bottom. It is a band here, not a page. */
+  .book[data-book="on"] .plate-flat{
+    height:auto;aspect-ratio:16/7;flex:none;padding:0;gap:0;
+  }
+  .book[data-book="on"] .plate-flat .plate-ring,
+  .book[data-book="on"] .plate-flat .plate-n,
+  .book[data-book="on"] .plate-flat .plate-name{display:none}
+  .book[data-book="on"] .plate-flat img{max-height:82%;max-width:52%}
+  .book[data-book="on"] .face-points span{-webkit-line-clamp:1}
+  .book[data-book="on"] .face-blurb{-webkit-line-clamp:3}
+  .book[data-book="on"] .face-name{font-size:1.18rem}
   .book[data-book="on"][data-open="no"]{transform:none}
   .book[data-book="on"] .book-board{display:none}
   .book[data-book="on"] .leaf{left:0;width:100%}
   .book[data-book="on"] .face{border-radius:var(--r)}
   .book[data-book="on"] .face-front{border-left:1px solid var(--line)}
   .book[data-book="on"] .plate-flat{display:grid}
-  .book-arrow.prev{left:10px}
+  /* Centred vertically, the arrows sat on top of the blurb, and the counter
+     under the spine sat on top of the link. On one page there is no margin
+     to put them in, so they go to the bottom right as a pair and the
+     counter goes up into the picture band. */
+  .book-arrow{top:auto;bottom:10px;transform:none;width:38px;height:38px}
+  .book-arrow svg{width:16px;height:16px}
+  .book-arrow.prev{left:auto;right:56px}
   .book-arrow.next{right:10px}
-  /* One page on a phone, so the counter goes back under the spine. */
-  .book-folio{left:50%;bottom:8px}
+  .book-folio{top:12px;right:14px;left:auto;bottom:auto;transform:none}
+  /* Keep the page's own content clear of them. */
+  .book[data-book="on"] .face-front{padding-bottom:50px}
 }
 
 @media (prefers-reduced-motion:reduce){
