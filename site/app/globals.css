@@ -363,6 +363,27 @@ button{font:inherit;color:inherit}
   overflow:hidden;
 }
 .book[data-book="on"] .face-front{min-height:0}
+/* The page's type was fixed while the page itself was not, so on a short
+   window the page shrank under the words and the clamp ate the end of the
+   sentence. Everything on a page is now measured in that page's own width,
+   which keeps a page a scale drawing of itself: the same words, the same
+   three lines, at every size the book takes. The px floors stop it going
+   unreadable if the book is ever squeezed harder than this. */
+.book[data-book="on"] .face-front{container-type:inline-size;padding-top:0}
+.book[data-book="on"] .face-rate{font-size:max(11.2px,2.6cqw);margin:8cqw 6cqw 0}
+.book[data-book="on"] .face-name{font-size:max(15px,5.9cqw);margin:1.9cqw 6cqw 0}
+.book[data-book="on"] .face-name::after{width:8.8cqw;margin-top:3.2cqw}
+.book[data-book="on"] .face-blurb{font-size:max(11.5px,3.42cqw);margin:2.4cqw 6cqw 0}
+.book[data-book="on"] .face-points{margin:4cqw 6cqw 0;gap:2cqw}
+.book[data-book="on"] .face-points span{font-size:max(12.5px,3.2cqw);padding-left:5.6cqw}
+.book[data-book="on"] .face-meta{
+  margin:auto 6cqw 0;padding-top:4cqw;font-size:max(10.2px,2.38cqw);gap:1cqw 3.3cqw;
+}
+.book[data-book="on"] .face-open{
+  margin:1.2cqw 6cqw 3.2cqw;font-size:max(11.2px,2.45cqw);
+  /* A line of text is not a tap target. */
+  padding-block:max(10px,2.3cqw);
+}
 /* A clamped box still reports its full text height to flexbox, so the column
    shrank it and sliced the last line in half. Nothing on a page may shrink. */
 .book[data-book="on"] .face-front > *{flex:none;min-height:0}
@@ -410,7 +431,7 @@ button{font:inherit;color:inherit}
   display:block;position:relative;
   /* Bounded by the viewport's height as well as its width, so the spread
      always sits inside the screen rather than filling it. */
-  width:min(100%,860px,calc(56vh * 1.87));margin-inline:auto;
+  width:min(100%,860px,max(660px,calc(72vh * 1.87)));margin-inline:auto;
   /* Shut, only the right-hand half exists, so the whole thing slides left to
      stand the cover in the middle. Opening widens it into a spread. */
   transition:transform .95s var(--ease);
@@ -581,7 +602,7 @@ button{font:inherit;color:inherit}
 }
 .book[data-book="on"] .face-folio{
   display:block;position:absolute;right:clamp(16px,1.8vw,26px);
-  bottom:clamp(12px,1.4vw,18px);
+  top:clamp(12px,1.4vw,18px);bottom:auto;
   font-size:.62rem;letter-spacing:.14em;font-weight:700;color:var(--line-2);
   font-variant-numeric:tabular-nums;
 }
@@ -600,6 +621,10 @@ button{font:inherit;color:inherit}
              border-color var(--t-fast) var(--ease),opacity var(--t-fast) var(--ease);
 }
 .book-arrow svg{width:18px;height:18px}
+/* Centred, the next arrow sat squarely on the blurb at every width. The
+   foot of each page is the one band with nothing in it on the left and only
+   the link, which starts at the inner margin, on the right. */
+.book-arrow{top:auto;bottom:clamp(14px,1.9vw,26px);transform:none}
 .book-arrow.prev{left:clamp(12px,1.8vw,26px)}
 .book-arrow.next{right:clamp(12px,1.8vw,26px)}
 .book-arrow:hover:not(:disabled){background:var(--ink);border-color:var(--ink);color:var(--paper)}
@@ -624,7 +649,7 @@ button{font:inherit;color:inherit}
      means this page carries both, so it needs to be taller than a spread's
      page, not shorter. At 1/1.2 the rate, the name and the facts were all
      falling off the bottom. */
-  .book[data-book="on"]{aspect-ratio:1/1.46;width:min(100%,380px)}
+  .book[data-book="on"]{aspect-ratio:1/1.58;width:min(100%,380px)}
   /* .plate-flat borrows .plate, which is sized to fill a page of its own —
      on the phone that made the picture the whole page and pushed the rate,
      the name and the facts off the bottom. It is a band here, not a page. */
@@ -635,9 +660,26 @@ button{font:inherit;color:inherit}
   .book[data-book="on"] .plate-flat .plate-n,
   .book[data-book="on"] .plate-flat .plate-name{display:none}
   .book[data-book="on"] .plate-flat img{max-height:82%;max-width:52%}
-  .book[data-book="on"] .face-points span{-webkit-line-clamp:1}
-  .book[data-book="on"] .face-blurb{-webkit-line-clamp:3}
-  .book[data-book="on"] .face-name{font-size:1.18rem}
+  /* The phone page's height is measured off the whole, unclamped sentence,
+     so the clamp has nothing left to do; it stays only as a backstop. */
+  .book[data-book="on"] .face-points span{-webkit-line-clamp:3}
+  .book[data-book="on"] .face-blurb{-webkit-line-clamp:6}
+  /* The cqw figures are cut against a half-width page of a spread. Here a
+     leaf is the whole book, so the same fractions would set the type a
+     third smaller than it reads at on a desktop page. Phone pages keep
+     their own sizes. */
+  .book[data-book="on"] .face-rate{font-size:.7rem;margin:16px 18px 0}
+  .book[data-book="on"] .face-name{font-size:1.18rem;margin:.5rem 18px 0}
+  .book[data-book="on"] .face-name::after{width:38px;margin-top:.85rem}
+  .book[data-book="on"] .face-blurb{font-size:.92rem;margin:.65rem 18px 0}
+  .book[data-book="on"] .face-points{margin:1.1rem 18px 0;gap:.55rem}
+  .book[data-book="on"] .face-points span{font-size:.86rem;padding-left:1.5rem}
+  .book[data-book="on"] .face-meta{
+    margin:auto 18px 0;padding-top:1.1rem;font-size:.64rem;gap:.4rem .9rem;
+  }
+  .book[data-book="on"] .face-open{
+    margin:.5rem 18px 12px;font-size:.66rem;padding-block:10px;
+  }
   .book[data-book="on"][data-open="no"]{transform:none}
   .book[data-book="on"] .book-board{display:none}
   .book[data-book="on"] .leaf{left:0;width:100%}
@@ -660,11 +702,17 @@ button{font:inherit;color:inherit}
 /* Below about 340px the page runs short of its own contents: the picture
    band shrinks with the width while the text, wrapping more, grows, and on
    the car loan the facts row wraps to two lines where elsewhere it is one.
-   The blurb gives up its third line and the page itself gets taller, which
-   is cheaper than deleting a fact from one page and not the others. */
+   The page itself gets taller to take all of it, which is cheaper than
+   deleting a sentence from one page and not the others. */
+/* A phone page keeps the type it reads best at, so the page has to find the
+   height instead: the narrower the screen, the more lines the same sentence
+   takes, and the taller a page must be to hold all of it. These three
+   ratios are measured off the longest page at each width, not guessed. */
+@media (max-width:375px){
+  .book[data-book="on"]{aspect-ratio:1/1.78}
+}
 @media (max-width:340px){
-  .book[data-book="on"]{aspect-ratio:1/1.55}
-  .book[data-book="on"] .face-blurb{-webkit-line-clamp:2}
+  .book[data-book="on"]{aspect-ratio:1/2.12}
 }
 
 @media (prefers-reduced-motion:reduce){

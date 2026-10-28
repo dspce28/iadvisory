@@ -19,6 +19,14 @@ import { site } from '@/lib/site';
  */
 export default function ProductBook({ products }: { products: LoanProduct[] }) {
   const [turned, setTurned] = useState(0);
+  /**
+   * The leaf that is mid-turn. z-index cannot be animated, so without this
+   * the leaf you just turned drops under the stack on the first frame and
+   * the page beneath it is simply uncovered: the next page appears to arrive
+   * before the turn rather than because of it. A turning leaf stays on top
+   * of everything until it lands.
+   */
+  const [turning, setTurning] = useState<number | null>(null);
   const root = useRef<HTMLDivElement>(null);
   const lastSpread = products.length; // leaf index of the final right-hand page
   const open = turned > 0;
@@ -33,8 +41,22 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
   }, []);
 
   /** Forward from the last spread shuts the book rather than stopping dead. */
-  const next = () => setTurned((v) => (v >= lastSpread ? 0 : v + 1));
-  const prev = () => setTurned((v) => Math.max(0, v - 1));
+  const next = () =>
+    setTurned((v) => {
+      // Shutting the book turns every leaf back at once; there is no single
+      // leaf to lift for that one.
+      setTurning(v >= lastSpread ? null : v);
+      return v >= lastSpread ? 0 : v + 1;
+    });
+  const prev = () =>
+    setTurned((v) => {
+      if (v <= 0) return 0;
+      setTurning(v - 1);
+      return v - 1;
+    });
+
+  /** The leaf has landed, so it goes back to its place in the stack. */
+  const settle = (leaf: number) => () => setTurning((t) => (t === leaf ? null : t));
 
   const onKey = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowRight' || e.key === 'Enter' || e.key === ' ') {
@@ -80,7 +102,8 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
         {/* Leaf 0: the cover. */}
         <div
           className={`leaf leaf-cover${turned > 0 ? ' turned' : ''}`}
-          style={{ zIndex: turned > 0 ? 1 : (products.length + 1) * 2 }}
+          style={{ zIndex: turning === 0 ? 999 : turned > 0 ? 1 : (products.length + 1) * 2 }}
+          onTransitionEnd={settle(0)}
         >
           <div className="face face-cover" onClick={next} aria-hidden={open ? true : undefined}>
             <span className="cover-mark">i</span>
@@ -103,7 +126,15 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
             <div
               key={p.slug}
               className={`leaf${leaf < turned ? ' turned' : ''}`}
-              style={{ zIndex: leaf < turned ? leaf + 1 : (products.length + 1) * 2 - leaf }}
+              style={{
+                zIndex:
+                  turning === leaf
+                    ? 999
+                    : leaf < turned
+                      ? leaf + 1
+                      : (products.length + 1) * 2 - leaf,
+              }}
+              onTransitionEnd={settle(leaf)}
             >
               <div className="face face-front" onClick={next} aria-hidden={current ? undefined : true}>
                 {/* Only ever seen in the no-JS grid, where a card with no
