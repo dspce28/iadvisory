@@ -20,6 +20,15 @@ import { site } from '@/lib/site';
 export default function ProductBook({ products }: { products: LoanProduct[] }) {
   const [turned, setTurned] = useState(0);
   /**
+   * Shutting the book from the back is not six turns at once: the reference
+   * folds the stack back one leaf at a time, last leaf first, each 83ms
+   * behind the one in front of it. `lead` is while they are in the air, when
+   * the leaf furthest along is the one you see; `land` is from the moment the
+   * first one comes down, after which the cover is on top because it is the
+   * last to arrive. Both measured off the reference, not guessed.
+   */
+  const [closing, setClosing] = useState<null | 'lead' | 'land'>(null);
+  /**
    * The leaf that is mid-turn. z-index cannot be animated, so without this
    * the leaf you just turned drops under the stack on the first frame and
    * the page beneath it is simply uncovered: the next page appears to arrive
@@ -29,7 +38,12 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
   const [turning, setTurning] = useState<number | null>(null);
   const root = useRef<HTMLDivElement>(null);
   const lastSpread = products.length; // leaf index of the final right-hand page
-  const open = turned > 0;
+  const shutBack = lastSpread + 1; // every leaf turned: the back cover alone
+  const open = turned > 0 && turned <= lastSpread;
+  const atBack = turned === shutBack;
+
+  const LEAF_STEP = 83; // ms between one leaf starting and the next
+  const LEAF_FALL = 470; // ms a single leaf takes on the way back
 
   useEffect(() => {
     const el = root.current;
@@ -40,23 +54,49 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
     };
   }, []);
 
-  /** Forward from the last spread shuts the book rather than stopping dead. */
-  const next = () =>
-    setTurned((v) => {
-      // Shutting the book turns every leaf back at once; there is no single
-      // leaf to lift for that one.
-      setTurning(v >= lastSpread ? null : v);
-      return v >= lastSpread ? 0 : v + 1;
-    });
-  const prev = () =>
-    setTurned((v) => {
-      if (v <= 0) return 0;
-      setTurning(v - 1);
-      return v - 1;
-    });
+  const timers = useRef<number[]>([]);
+  useEffect(() => () => timers.current.forEach(clearTimeout), []);
+
+  /** Fold the whole stack back onto the front cover. */
+  const shut = () => {
+    timers.current.forEach(clearTimeout);
+    setTurning(null);
+    setClosing('lead');
+    setTurned(0);
+    timers.current = [
+      window.setTimeout(() => setClosing('land'), LEAF_FALL),
+      window.setTimeout(() => setClosing(null), LEAF_FALL + lastSpread * LEAF_STEP + 80),
+    ];
+  };
+
+  /**
+   * Forward from the last spread shuts the book onto its back cover, and
+   * forward from there folds the whole stack back to the front.
+   */
+  const next = () => {
+    if (turned === shutBack) return shut();
+    setTurning(turned);
+    setTurned(turned + 1);
+  };
+  const prev = () => {
+    if (turned <= 0) return;
+    setTurning(turned - 1);
+    setTurned(turned - 1);
+  };
 
   /** The leaf has landed, so it goes back to its place in the stack. */
   const settle = (leaf: number) => () => setTurning((t) => (t === leaf ? null : t));
+
+  const stack = (leaf: number) => {
+    // In the air the leaf furthest along leads; once they start landing the
+    // cover is on top, because it is the one that comes down last.
+    if (closing) return closing === 'lead' ? leaf : (products.length + 1) * 2 - leaf;
+    if (turning === leaf) return 999;
+    return leaf < turned ? leaf + 1 : (products.length + 1) * 2 - leaf;
+  };
+  /** Last leaf first, each one a step behind the one in front of it. */
+  const fall = (leaf: number) =>
+    closing ? { transitionDelay: `${(lastSpread - leaf) * LEAF_STEP}ms` } : undefined;
 
   const onKey = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowRight' || e.key === 'Enter' || e.key === ' ') {
@@ -89,12 +129,19 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
       <div
         className="book"
         ref={root}
-        data-open={open ? 'yes' : 'no'}
+        data-open={open ? 'yes' : atBack ? 'back' : 'no'}
+        data-closing={closing ?? undefined}
         onKeyDown={onKey}
         tabIndex={0}
         role="group"
         aria-roledescription="book"
-        aria-label={open ? `Loan products, page ${turned} of ${products.length}` : 'Loan products, closed. Open the book.'}
+        aria-label={
+          open
+            ? `Loan products, page ${turned} of ${products.length}`
+            : atBack
+              ? 'Loan products, back cover. Close the book.'
+              : 'Loan products, closed. Open the book.'
+        }
       >
         {/* The pages already turned rest on this. */}
         <span className="book-board" aria-hidden="true" />
@@ -102,7 +149,7 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
         {/* Leaf 0: the cover. */}
         <div
           className={`leaf leaf-cover${turned > 0 ? ' turned' : ''}`}
-          style={{ zIndex: turning === 0 ? 999 : turned > 0 ? 1 : (products.length + 1) * 2 }}
+          style={{ zIndex: stack(0), ...fall(0) }}
           onTransitionEnd={settle(0)}
         >
           <div className="face face-cover" onClick={next} aria-hidden={open ? true : undefined}>
@@ -126,14 +173,7 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
             <div
               key={p.slug}
               className={`leaf${leaf < turned ? ' turned' : ''}`}
-              style={{
-                zIndex:
-                  turning === leaf
-                    ? 999
-                    : leaf < turned
-                      ? leaf + 1
-                      : (products.length + 1) * 2 - leaf,
-              }}
+              style={{ zIndex: stack(leaf), ...fall(leaf) }}
               onTransitionEnd={settle(leaf)}
             >
               <div className="face face-front" onClick={next} aria-hidden={current ? undefined : true}>
@@ -169,8 +209,32 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
                 <span className="face-folio">{String(leaf).padStart(2, '0')}</span>
               </div>
 
-              <div className="face face-back" onClick={prev} aria-hidden="true">
-                {facing ? plate(facing, idx + 2, false) : <span className="plate-end">{site.name}</span>}
+              <div
+                className={`face face-back${facing ? '' : ' face-rear'}`}
+                onClick={facing ? prev : shut}
+                aria-hidden={!facing && atBack ? undefined : true}
+              >
+                {facing ? (
+                  plate(facing, idx + 2, false)
+                ) : (
+                  <>
+                    <span className="cover-mark" aria-hidden="true">i</span>
+                    <span className="cover-rule" />
+                    <span className="cover-t">That is all six</span>
+                    <span className="cover-s">One form, one set of documents, and the whole panel of lenders behind it.</span>
+                    <Link
+                      className="rear-cta"
+                      href="/apply/"
+                      prefetch={false}
+                      tabIndex={atBack ? 0 : -1}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Start an application
+                    </Link>
+                    <span className="rear-shut">Close the book</span>
+                    <span className="cover-brand">{site.name}</span>
+                  </>
+                )}
               </div>
             </div>
           );
@@ -200,7 +264,7 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
                 {String(products.length).padStart(2, '0')}
               </>
             ) : (
-              <strong>Cover</strong>
+              <strong>{atBack ? 'Back' : 'Cover'}</strong>
             )}
           </span>
 
@@ -211,7 +275,7 @@ export default function ProductBook({ products }: { products: LoanProduct[] }) {
               e.stopPropagation();
               next();
             }}
-            aria-label={turned >= lastSpread ? 'Close the book' : 'Next page'}
+            aria-label={atBack ? 'Back to the cover' : turned === lastSpread ? 'Back cover' : 'Next page'}
           >
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />

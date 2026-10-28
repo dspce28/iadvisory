@@ -305,7 +305,11 @@ button{font:inherit;color:inherit}
    — so every rule for the book is gated on [data-book="on"], which the
    component sets only once it is running.
    ═══════════════════════════════════════════════════════════════ */
-.bookwrap{margin-top:clamp(34px,4.6vw,62px)}
+/* The stage slides sideways as the book opens and shuts, and a transform
+   still counts towards the page's scrollable width. Clipping the strip
+   keeps that off the document; `clip` rather than `hidden` so it never
+   becomes a scroll container and steals the sticky positioning. */
+.bookwrap{margin-top:clamp(34px,4.6vw,62px);overflow-x:clip}
 
 /* ── Fallback: six cards ───────────────────────────────────────── */
 .book{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.6vw,24px)}
@@ -443,7 +447,15 @@ button{font:inherit;color:inherit}
 }
 .book[data-book="on"]:focus-visible{outline:2px solid var(--accent);outline-offset:14px;border-radius:4px}
 .book[data-book="on"][data-open="no"]{transform:translateX(-25%)}
+/* Every leaf turned: the only page left is the one lying on the left, so the
+   book slides the other way to stand the back cover in the middle. */
+.book[data-book="on"][data-open="back"]{transform:translateX(25%)}
+/* Shut at the back, the right half of the stage is empty, so the controls
+   come in over the one page there is. */
+.book[data-book="on"][data-open="back"] .book-nav{right:50%}
+.book[data-book="on"][data-open="back"] .book-folio{left:50%}
 .book[data-book="on"][data-open="no"] .book-nav{opacity:0;pointer-events:none}
+.book[data-book="on"] .book-folio{transition:opacity .4s var(--ease)}
 .book-nav{transition:opacity .5s var(--ease) .25s}
 .book[data-book="on"] .plate-flat{display:none}
 .book[data-book="on"] .face-front,
@@ -551,14 +563,21 @@ button{font:inherit;color:inherit}
   position:absolute;top:0;left:50%;width:50%;height:100%;
   transform-origin:left center;
   transform-style:preserve-3d;
-  /* Timed off the reference by sampling its rotation every 45ms through a
-     turn: it reaches -180° at about 720ms, and the curve starts slow, runs
-     hard through the middle and lands gently — 4% of the turn at 100ms,
-     28% at 200ms, 64% at 370ms, 97% at 565ms. The site's usual expo-out
-     starts fast, which is what made the old turn feel like a snap rather
-     than a page. */
-  transition:transform .72s cubic-bezier(.52,0,.12,1);
+  /* Read straight off the reference: one turn sampled every frame, rotateY
+     recovered from its matrix3d, then a cubic-bezier least-squares fitted
+     to the 16 points: cubic-bezier(.4,.02,.2,1) over 700ms, within half a
+     degree the whole way. Half the turn is done by 250ms and the rest is a
+     long settle. It is declared at 680ms because the reference drives its
+     transform per frame in JavaScript and so pays none of the frame of
+     latency a CSS transition does; 680 declared measures as 700 turned.
+     The earlier guess had the right shape but ran a tenth of a turn late
+     through the first half. */
+  transition:transform .68s cubic-bezier(.4,.02,.2,1);
 }
+/* Shutting from the back is a cascade, not six turns at once: the last leaf
+   drops first and each one in front of it follows 83ms later, 470ms of
+   travel each. The delay itself is set per leaf on the element. */
+.book[data-book="on"][data-closing] .leaf{transition-duration:.47s}
 .book[data-book="on"] .leaf.turned{transform:rotateY(-180deg)}
 
 .book[data-book="on"] .face{
@@ -596,6 +615,43 @@ button{font:inherit;color:inherit}
   content:'';position:absolute;inset:0 0 0 auto;width:38px;pointer-events:none;
   background:linear-gradient(270deg,rgba(15,16,17,.13),rgba(15,16,17,0));
 }
+/* The back cover. Same board as the front, mirrored: its gutter is on the
+   right, so the light comes the other way. */
+.book[data-book="on"] .face-rear{
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+  gap:.1rem;padding:clamp(26px,3.6vw,54px);
+  background-color:#0C0D10;
+  background-image:
+    radial-gradient(120% 90% at 14% 8%,rgba(248,0,0,.26) 0%,rgba(248,0,0,0) 58%),
+    linear-gradient(215deg,#17181C 0%,#0C0D10 62%,#141519 100%);
+  color:var(--paper);border-color:#0C0D10;
+  box-shadow:-22px 30px 70px rgba(15,16,17,.34),inset 0 1px 0 rgba(255,255,255,.07);
+}
+.book[data-book="on"] .face-rear::before{
+  background:linear-gradient(270deg,rgba(0,0,0,.3),rgba(0,0,0,0));
+}
+.rear-cta{
+  margin-top:1.6rem;display:inline-flex;align-items:center;gap:.5rem;
+  padding:.72rem 1.1rem;border-radius:100px;
+  background:var(--brand);color:#fff;
+  font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+  transition:background var(--t-fast) var(--ease),gap var(--t-fast) var(--ease);
+}
+.rear-cta::after{
+  content:'';width:7px;height:7px;flex:none;
+  border-right:1.7px solid currentColor;border-top:1.7px solid currentColor;
+  transform:rotate(45deg);
+}
+.rear-cta:hover{background:var(--accent-dk);gap:.8rem}
+/* The foot of the rear page belongs to the controls, so the mark goes up. */
+.book[data-book="on"] .face-rear .cover-brand{bottom:auto;top:clamp(18px,2vw,28px)}
+.rear-shut{
+  /* Under the call to action rather than pinned to the foot of the page,
+     which is where the controls live. */
+  margin-top:1.3rem;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;
+  font-weight:700;color:rgba(255,255,255,.4);
+}
+
 .book[data-book="on"] .face-name::after{
   content:'';display:block;width:38px;height:2px;background:var(--brand);
   margin-top:.85rem;
@@ -681,6 +737,12 @@ button{font:inherit;color:inherit}
     margin:.5rem 18px 12px;font-size:.66rem;padding-block:10px;
   }
   .book[data-book="on"][data-open="no"]{transform:none}
+  /* A phone leaf is the whole book and still hinges on its left edge, so a
+     turned leaf lies a full page to the left of the stage. Shut at the
+     back, the stage follows it over rather than standing empty. */
+  .book[data-book="on"][data-open="back"]{transform:translateX(100%)}
+  .book[data-book="on"][data-open="back"] .book-nav{right:100%;left:0}
+  .book[data-book="on"][data-open="back"] .book-folio{left:auto}
   .book[data-book="on"] .book-board{display:none}
   .book[data-book="on"] .leaf{left:0;width:100%}
   .book[data-book="on"] .face{border-radius:var(--r)}
